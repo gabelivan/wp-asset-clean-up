@@ -3,8 +3,8 @@ Contributors: gabelivan
 Tags: speed, pagespeed, dequeue style, dequeue script, unload style, unload script, fast
 Donate link: http://www.gabelivan.com/donate/
 Requires at least: 4.0
-Tested up to: 4.5.2
-Stable tag: 1.2.2
+Tested up to: 4.6.1
+Stable tag: 1.2.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -92,9 +92,15 @@ If that's the case, then it's advisable to consult with a developer (ideally the
 4. Scripts (.JS) are selected for site-wide unload
 
 == Changelog ==
-= 1.2.2 =
+= 1.2.4 =
+* Bug Fix: Remove "Unload everywhere" rule had to be updated to work no matter what key is assigned to the handle in the array resulting from the JSON
+
+= 1.2.3 =
 * Assets can now be disabled for all the pages belonging to a specific post type
 * The list of assets disabled globally (everywhere, for a specific post type etc.) can be managed in a single page too
+
+= 1.2.2 =
+* Bug Fix: Sometimes scripts in the footer were not detected for unloading
 
 = 1.2.1 =
 * Bug Fix: Sometimes the assets exceptions list (when disabled globally) for the homepage is not loaded from the right source
