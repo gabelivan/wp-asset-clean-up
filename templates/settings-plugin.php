@@ -7,7 +7,7 @@ if (! isset($data)) {
 }
 ?>
 <div class="wrap">
-    <h1><?php _e('WP Asset Clean Up', WPACU_PLUGIN_NAME); ?></h1>
+    <h1><?php _e('WP Asset CleanUp', WPACU_PLUGIN_NAME); ?></h1>
     <h2><?php _e('Plugin Settings', WPACU_PLUGIN_NAME); ?></h2>
 
     <form method="post" action="options.php">

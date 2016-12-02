@@ -24,8 +24,8 @@ class Menu
         $capability = 'manage_options';
 
         add_menu_page(
-            __('WP Asset Clean Up', WPACU_PLUGIN_NAME),
-            __('WP Asset Clean Up', WPACU_PLUGIN_NAME),
+            __('WP Asset CleanUp', WPACU_PLUGIN_NAME),
+            __('WP Asset CleanUp', WPACU_PLUGIN_NAME),
             $capability,
             $menuSlug,
             array('\WpAssetCleanUp\Settings', 'settingsPage'),

@@ -135,7 +135,7 @@ if (! empty($data['all']['styles'])) {
                         </ul>
                     </div>
 
-                    <?php if ($globalUnloaded || $data['post_type']) { ?>
+                    <?php if ($data['post_type']) { ?>
                     <div style="padding: 5px 10px; margin: 15px 0; background: white; border: 1px solid #eee; border-radius: 5px;">
                     <?php } ?>
 
@@ -192,7 +192,7 @@ if (! empty($data['all']['styles'])) {
                     ?>
                         </ul>
 
-                    <?php if ($globalUnloaded || $data['post_type']) { ?>
+                    <?php if ($data['post_type']) { ?>
                     </div>
                     <?php } ?>
 
@@ -372,7 +372,7 @@ if (! empty($data['all']['scripts'])) {
                         </ul>
                         </div>
 
-                    <?php if ($globalUnloaded || $data['post_type']) { ?>
+                    <?php if ($data['post_type']) { ?>
                     <div style="padding: 5px 10px; margin: 15px 0; background: white; border: 1px solid #eee; border-radius: 5px;">
                     <?php } ?>
 
@@ -428,7 +428,7 @@ if (! empty($data['all']['scripts'])) {
                     // [END] ALL PAGES HAVING THE SAME POST TYPE
                     ?>
                             </ul>
-                    <?php if ($globalUnloaded || $data['post_type']) { ?>
+                    <?php if ($data['post_type']) { ?>
                     </div>
                     <?php } ?>
 

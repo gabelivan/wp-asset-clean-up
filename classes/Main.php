@@ -157,7 +157,7 @@ class Main
         if ($obj->public > 0) {
             add_meta_box(
                 WPACU_PLUGIN_NAME.'_asset_list',
-                __('WP Asset Clean Up', WPACU_PLUGIN_NAME),
+                __('WP Asset CleanUp', WPACU_PLUGIN_NAME),
                 array($this, 'renderMetaBoxContent'),
                 $postType,
                 'advanced',

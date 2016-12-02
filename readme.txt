@@ -1,4 +1,4 @@
-=== WP Asset Clean Up ===
+=== WP Asset CleanUp ===
 Contributors: gabelivan
 Tags: speed, pagespeed, dequeue style, dequeue script, unload style, unload script, fast
 Donate link: http://www.gabelivan.com/donate/
@@ -11,14 +11,14 @@ License URI: http://www.gnu.org/licenses/gpl.html
 Make your website load FASTER by preventing specific scripts (.JS) & styles (.CSS) from loading on pages/posts and home page
 
 == Description ==
-* Make your web pages load FASTER with "WP Asset Clean Up"
+* Make your web pages load FASTER with "WP Asset CleanUp"
 * Faster page load = Happier Visitors = More Conversions
 
 There are often times when you are using a theme and a number of plugins which are enabled and run on the same page. However, you don't need to use all of them and to improve the speed of your website and make the HTML source code cleaner (convenient for debugging purposes), it's better to prevent those styles and scripts from loading.
 
 For instance, you might use a plugin that generates contact forms and it loads its assets (.CSS and .JS files) in every page of your website instead of doing it only in the /contact page (if that's the only place where you need it).
 
-WP Asset Clean Up scans your page and detects all the assets that are loaded. All you have to do when editing a page/post is just to select the ones you DO NOT wish to load.
+WP Asset CleanUp scans your page and detects all the assets that are loaded. All you have to do when editing a page/post is just to select the ones you DO NOT wish to load.
 
 = This plugin's benefits include =
 * Decreases number of HTTP requests loaded (important for faster load)
@@ -38,15 +38,15 @@ NOTE: People that have tested the plugin are so far happy with it and I want to 
 == Installation ==
 1. Upload the "wp-asset-clean-up" folder in your plugins folder
 2. Activate the plugin (if server's PHP version is below 5.3, it will show you an error and activation will not be made)
-3. Edit any page / post/ custom post and you will see a meta box called "WP Asset Clean Up" which will load the list of all the loaded .css and .js files
-4. To unload the assets for the "Home Page", go to "WP Asset Clean Up" menu on the left panel of the Dashboard
+3. Edit any page / post/ custom post and you will see a meta box called "WP Asset CleanUp" which will load the list of all the loaded .css and .js files
+4. To unload the assets for the "Home Page", go to "WP Asset CleanUp" menu on the left panel of the Dashboard
 
 == Frequently Asked Questions ==
 = What PHP version is required for this plugin to work? =
 
 5.3+
 
-= I've noticed scripts and styles that are loaded on the page, but they do not show in the "WP Asset Clean Up" list when editing the page. Why is that? =
+= I've noticed scripts and styles that are loaded on the page, but they do not show in the "WP Asset CleanUp" list when editing the page. Why is that? =
 
 If that's the case, then those assets weren't loaded properly into WordPress by the theme/plugin author as they were likely hardcoded and not enqueued the WordPress way. Here's a tutorial that will help you understand better the enqueuing process: http://www.wpbeginner.com/wp-tutorials/how-to-properly-add-javascripts-and-styles-in-wordpress/
 
@@ -70,14 +70,14 @@ The plugin makes AJAX calls to retrieve the data from the front-end page with 10
 
 - You are loading the WordPress Dashboard through HTTPS, but you are forcing the front-end to load via HTTP.
 
-In this case, it's advisable to enable "Manage in the Front-end?" in "Settings" of "WP Asset Clean Up", thus making the list to show at the bottom of the posts, pages and front-page only for the logged in users with admin privileges.
+In this case, it's advisable to enable "Manage in the Front-end?" in "Settings" of "WP Asset CleanUp", thus making the list to show at the bottom of the posts, pages and front-page only for the logged in users with admin privileges.
 
 Although I've written the code to ensure maximum compatibility, there are factors which are not up to the quality of the plugin that could interfere with it.
 In case the assets are not loading for you, please write me on the forum and I will be happy to assist you!
 
-= In some pages, I do not see styles and scripts in the "WP Asset Clean Up" List =
+= In some pages, I do not see styles and scripts in the "WP Asset CleanUp" List =
 
-If that's the case, you might have other functions or plugins (e.g. Plugin Organizer) that are loading prior to WP Asset Clean Up.
+If that's the case, you might have other functions or plugins (e.g. Plugin Organizer) that are loading prior to WP Asset CleanUp.
 
 Note that Plugin Organizer has a file that is in "mu-plugins" which will load prior to any plugin you have in "plugins", thus, if you have disabled specific plugins through "Plugin Organizer" in some pages, their assets will obviously not show in the assets list as they are not loaded at all in the first place.
 
@@ -87,11 +87,14 @@ If that's the case, then it's advisable to consult with a developer (ideally the
 
 == Screenshots ==
 1. When editing a post/page (custom post type as well) a meta box will load with the asset list
-2. Styles (.CSS) loaded for the home page when accessing the "WP Asset Clean Up" Dashboard's menu
-3. Scripts (.JS) loaded for the home page having an alert message when accessing the "WP Asset Clean Up" Dashboard's menu
+2. Styles (.CSS) loaded for the home page when accessing the "WP Asset CleanUp" Dashboard's menu
+3. Scripts (.JS) loaded for the home page having an alert message when accessing the "WP Asset CleanUp" Dashboard's menu
 4. Scripts (.JS) are selected for site-wide unload
 
 == Changelog ==
+= 1.2.4.1 =
+* Bug Fix: When the handle's key on update was equal with 0 (for remove global unload), the rule would not be remove *
+
 = 1.2.4 =
 * Bug Fix: Remove "Unload everywhere" rule had to be updated to work no matter what key is assigned to the handle in the array resulting from the JSON
 

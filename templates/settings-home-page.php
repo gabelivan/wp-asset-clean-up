@@ -6,7 +6,7 @@ if (! isset($data)) {
     exit;
 }
 ?>
-<h1><?php _e('WP Asset Clean Up', WPACU_PLUGIN_NAME); ?></h1>
+<h1><?php _e('WP Asset CleanUp', WPACU_PLUGIN_NAME); ?></h1>
 <h2><?php _e('Home Page Scripts &amp; Styles Management', WPACU_PLUGIN_NAME); ?></h2>
 
 <?php

@@ -357,7 +357,9 @@ class Update
                 }
 
                 foreach ($list as $handle) {
-                    if ($handleKey = array_search($handle, $existingList[$assetType])) {
+                    $handleKey = array_search($handle, $existingList[$assetType]);
+
+                    if ($handleKey !== false) {
                         unset($existingList[$assetType][$handleKey]);
                         $isUpdated = true;
                     }
