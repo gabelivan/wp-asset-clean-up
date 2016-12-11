@@ -101,15 +101,17 @@ class Main
 
         // Front-end View - Unload the assets
         if (! isset($_POST[WPACU_PLUGIN_NAME.'_load'])) {
+            // Unload Styles - HEAD
+            add_action('wp_print_styles', array($this, 'filterStyles'), 100000);
+
             // Unload Scripts - HEAD
             add_action('wp_print_scripts', array($this, 'filterScripts'), 100000);
 
-            // Unload Scripts - FOOTER
+            // Unload Scripts & Styles - FOOTER
             // Needs to be triggered very soon as some old plugins/themes use wp_footer() to enqueue scripts
+            // Sometimes styles are loaded in the BODY section of the page
             add_action('wp_print_footer_scripts', array($this, 'filterScripts'), 1);
-
-            // Unload Styles - HEAD only
-            add_action('wp_print_styles', array($this, 'filterStyles'), 100000);
+            add_action('wp_print_footer_scripts', array($this, 'filterStyles'), 1);
         }
 
         // Send an AJAX request to get the list of loaded scripts and styles and print it nicely
