@@ -205,7 +205,7 @@ if (! empty($data['all']['styles'])) {
                                     <?php if ($isLoadException) { ?> checked="checked" <?php } ?>
                                           name="wpacu_styles_load_it[]"
                                           value="<?php echo $obj->handle; ?>"/>
-                                Load it on this page (make exception<?php if (! $isGlobalRule) { echo ' IF any unload rule is applied'; } ?>)</label>
+                                Load it on this page (make exception<?php if (! $isGlobalRule) { echo ' * works only IF any of two rules above are selected'; } ?>)</label>
                         </li>
                     </ul>
                     <?php
@@ -441,7 +441,7 @@ if (! empty($data['all']['scripts'])) {
                                           name="wpacu_scripts_load_it[]"
                                     <?php if ($isLoadException) { ?> checked="checked" <?php } ?>
                                           value="<?php echo $obj->handle; ?>" />
-                                Load it on this page (make exception<?php if (! $isGlobalRule) { echo ' IF any unload rule is applied'; } ?>)</label>
+                                Load it on this page (make exception<?php if (! $isGlobalRule) { echo ' * works only IF any of two rules above are selected'; } ?>)</label>
                         </li>
                     </ul>
                     <?php

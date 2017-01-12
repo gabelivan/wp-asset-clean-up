@@ -1,5 +1,5 @@
 /**
- * WP Asset CleanUp
+ * WP Asset Clean Up
  */
 jQuery(document).ready(function($) {
     //

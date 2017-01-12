@@ -9,6 +9,21 @@ namespace WpAssetCleanUp;
 class Misc
 {
     /**
+     * Misc constructor.
+     */
+    public function __construct()
+    {
+        if (isset($_REQUEST['wpacuNoAdminBar'])) {
+            Misc::noAdminBarLoad();
+        }
+    }
+
+    /**
+     * @var
+     */
+    public static $showOnFront;
+
+    /**
      * @param $string
      * @param $start
      * @param $end
@@ -51,11 +66,11 @@ class Misc
 
     /**
      * @param $postId
-     * @return false|mixed|string|void
+     * @return false|mixed|string
      */
     public static function getPostUrl($postId)
     {
-        if (is_front_page()) {
+        if (self::isHomePage()) {
             return get_option('siteurl');
         }
 
@@ -79,5 +94,41 @@ class Misc
         }
 
         return $postUrl;
+    }
+
+    /**
+     * @return mixed
+     */
+    public static function isHomePage()
+    {
+        $homePage = false;
+
+        if (self::$showOnFront === 'page') {
+            $homePage = is_front_page();
+        } elseif (self::$showOnFront === 'posts') {
+            $homePage = is_home();
+        }
+
+        return apply_filters('wpacu_home_page', $homePage);
+    }
+
+    /**
+     * @return mixed
+     */
+    public static function getShowOnFront()
+    {
+        if (! self::$showOnFront) {
+            self::$showOnFront = get_option('show_on_front');
+        }
+
+        return self::$showOnFront;
+    }
+
+    /**
+     *
+     */
+    public static function noAdminBarLoad()
+    {
+        add_filter('show_admin_bar', '__return_false');
     }
 }

@@ -40,13 +40,17 @@ WpAssetCleanUp\Main::instance();
 new \WpAssetCleanUp\OwnAssets;
 
 // Add / Update / Remove Settings
-(new WpAssetCleanUp\Update)->init();
+$wpacuUpdate = new WpAssetCleanUp\Update;
+$wpacuUpdate->init();
 
 // Settings
 new WpAssetCleanUp\Settings;
 
 // HomePage
 new WpAssetCleanUp\HomePage;
+
+// Various functions
+new WpAssetCleanUp\Misc;
 
 // Menu
 new \WpAssetCleanUp\Menu;

@@ -30,7 +30,7 @@ class Main
     /**
      * @var array
      */
-    public $loadExceptions = array();
+    public $loadExceptions = array('styles' => array(), 'scripts' => array());
 
     /**
      * @var
@@ -92,7 +92,7 @@ class Main
         // Fetch the page in the background to see what scripts/styles are already loading
         if (isset($_POST[WPACU_PLUGIN_NAME.'_load']) || $this->frontendShow) {
             if (isset($_POST[WPACU_PLUGIN_NAME.'_load'])) {
-                add_filter('show_admin_bar', '__return_false'); // not relevant
+                Misc::noAdminBarLoad();
             }
 
             add_action('wp_head', array($this, 'saveFooterAssets'), 100000000);
@@ -131,7 +131,7 @@ class Main
         if (! isset($_POST[WPACU_PLUGIN_NAME.'_load'])) {
             $this->globalUnloaded = $this->getGlobalUnload();
 
-            if (!is_singular() && !is_front_page()) {
+            if (! is_singular() && ! Misc::isHomePage()) {
                 return;
             }
 
@@ -139,7 +139,7 @@ class Main
 
             $postId = isset($post->ID) ? $post->ID : '';
 
-            $type = (is_front_page()) ? 'front_page' : 'post';
+            $type = (Misc::isHomePage()) ? 'front_page' : 'post';
 
             if (is_singular()) {
                 $this->postTypesUnloaded = $this->getPostTypeUnload($post->post_type);
@@ -211,7 +211,7 @@ class Main
             return;
         }
 
-        $nonAssetConfigPage = (!is_singular() && !is_front_page());
+        $nonAssetConfigPage = (! is_singular() && ! Misc::getShowOnFront());
 
         // It looks like the page loaded is neither a post, page or the front-page
         // We'll see if there are assets unloaded globally and unload them
@@ -311,7 +311,7 @@ class Main
             return;
         }
 
-        $nonAssetConfigPage = (!is_singular() && !is_front_page());
+        $nonAssetConfigPage = (! is_singular() && ! Misc::getShowOnFront());
 
         // It looks like the page loaded is neither a post, page or the front-page
         // We'll see if there are assets unloaded globally and unload them
@@ -404,23 +404,24 @@ class Main
     /**
      * @param string $type
      * @param string $postId
-     * @return array|mixed|object|void
+     * @return array|mixed|object
      */
     public function getLoadExceptions($type = 'post', $postId = '')
     {
+        $exceptionsListDefault = $exceptionsList = $this->loadExceptions;
+
         if ($type == 'post' && !$postId) {
             // $postId needs to have a value if $type is a 'post' type
-            return false;
+            return $exceptionsListDefault;
         }
 
         if (! in_array($type, array('post', 'front_page'))) {
             // Invalid request
-            return false;
+            return $exceptionsListDefault;
         }
 
         // Default
         $exceptionsListJson = '';
-        $exceptionsListEmpty = $exceptionsList = array('styles' => array(), 'scripts' => array());
 
         $homepageClass = new HomePage;
 
@@ -443,7 +444,7 @@ class Main
             $exceptionsList = json_decode($exceptionsListJson, true);
 
             if (json_last_error() != JSON_ERROR_NONE) {
-                $exceptionsList = $exceptionsListEmpty;
+                $exceptionsList = $exceptionsListDefault;
             }
         }
 
@@ -549,6 +550,8 @@ class Main
 
         $stylesBeforeUnload = $this->wpStyles;
         $scriptsBeforeUnload = $this->wpScripts;
+
+
 
         global $wp_scripts, $wp_styles;
 
@@ -704,7 +707,7 @@ class Main
 
             $data['global_unload'] = $this->globalUnloaded;
 
-            $type = (is_front_page()) ? 'front_page' : 'post';
+            $type = Misc::getShowOnFront() ? 'front_page' : 'post';
             $postId = $post->ID;
 
             $data['load_exceptions'] = $this->getLoadExceptions($type, $postId);
@@ -944,7 +947,7 @@ class Main
 
     /**
      * @param int $postId
-     * @return array|mixed|string|void
+     * @return array|mixed|string
      */
     public function getAssetsUnloaded($postId = 0)
     {

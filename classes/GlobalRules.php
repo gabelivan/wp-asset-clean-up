@@ -84,8 +84,10 @@ class GlobalRules
      */
     public function update()
     {
+        $wpacuUpdate = new Update;
+
         if ($this->wpacuFor === 'everywhere') {
-            $removed = (new Update)->removeEverywhereUnloads();
+            $removed = $wpacuUpdate->removeEverywhereUnloads();
 
             if ($removed) {
                 add_action('admin_notices', array($this, 'noticeGlobalsRemoved'));
@@ -93,7 +95,7 @@ class GlobalRules
         }
 
         if ($this->wpacuFor === 'post_types') {
-            $removed = (new Update)->removeBulkUnloads($this->wpacuPostType);
+            $removed = $wpacuUpdate->removeBulkUnloads($this->wpacuPostType);
 
             if ($removed) {
                 add_action('admin_notices', array($this, 'noticePostTypesRemoved'));

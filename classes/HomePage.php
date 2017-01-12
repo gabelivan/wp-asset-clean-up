@@ -18,7 +18,7 @@ class HomePage
     public function __construct()
     {
         $this->data['nonce_name'] = WPACU_PLUGIN_NAME.'_settings';
-        $this->data['show_on_front'] = get_option('show_on_front');
+        $this->data['show_on_front'] = Misc::getShowOnFront();
 
         $isHomePageEdit = (isset($_GET['page']) && $_GET['page'] == WPACU_PLUGIN_NAME.'_home_page');
 
@@ -64,7 +64,8 @@ class HomePage
             ? $_POST[$this->data['nonce_name']] : '';
         
         if (is_array($wpacuNoLoadAssets) && wp_verify_nonce($noncePost, $this->data['nonce_name'])) {
-            (new Update)->updateFrontPage($wpacuNoLoadAssets);
+            $wpacuUpdate = new Update;
+            $wpacuUpdate->updateFrontPage($wpacuNoLoadAssets);
         }
 
         $this->data['nonce_value'] = wp_create_nonce($this->data['nonce_name']);

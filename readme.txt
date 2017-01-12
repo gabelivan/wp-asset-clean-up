@@ -1,10 +1,10 @@
 === WP Asset CleanUp ===
 Contributors: gabelivan
 Tags: speed, pagespeed, dequeue style, dequeue script, unload style, unload script, fast
-Donate link: http://www.gabelivan.com/donate/
+Donate link: https://www.gabelivan.com/donate/
 Requires at least: 4.0
-Tested up to: 4.7
-Stable tag: 1.2.4.2
+Tested up to: 4.7.1
+Stable tag: 1.2.4.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -92,6 +92,9 @@ If that's the case, then it's advisable to consult with a developer (ideally the
 4. Scripts (.JS) are selected for site-wide unload
 
 == Changelog ==
+= 1.2.4.3 =
+* Bug Fix: PHP versions < 5.4 triggered errors
+
 = 1.2.4.2 =
 * Now styles that are loaded in the BODY section of the page are unloaded (if selected); Sometimes, in special cases, within "wp_footer" action (or other similar one such as "get_footer"), wp_enqueue_style is called
 
