@@ -70,14 +70,19 @@ class Misc
      */
     public static function getPostUrl($postId)
     {
+        // Was the home page detected?
         if (self::isHomePage()) {
-            return get_option('siteurl');
+            if (get_site_url() != get_home_url()) {
+                return get_home_url();
+            } else {
+                return get_site_url();
+            }
         }
 
         if ($postId > 0) {
             $postUrl = get_permalink($postId);
         } else {
-            $postUrl = get_option('siteurl');
+            $postUrl = get_site_url();
 
             if (substr($postUrl, -1) != '/') {
                 $postUrl .= '/';
@@ -101,13 +106,15 @@ class Misc
      */
     public static function isHomePage()
     {
-        $homePage = false;
+        // "Your latest posts" -> sometimes it works as is_front_page(), sometimes as is_home())
+        // "A static page (select below)" -> In this case is_front_page() should work
 
-        if (self::$showOnFront === 'page') {
-            $homePage = is_front_page();
-        } elseif (self::$showOnFront === 'posts') {
-            $homePage = is_home();
-        }
+        // Sometimes neither of these two options are selected
+        // (it happens with some themes that have an incorporated page builder)
+        // and is_home() tends to work fine
+
+        // Both will be used to be sure the home page is detected
+        $homePage = (is_front_page() || is_home());
 
         return apply_filters('wpacu_home_page', $homePage);
     }

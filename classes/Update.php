@@ -22,19 +22,20 @@ class Update
     public function init()
     {
         if (Main::instance()->frontendShow) {
-            add_action('wp', array($this, 'frontendUpdate'), 1);
+            add_action('wp', array($this, 'frontendUpdate'), 9);
         }
 
         // After post/page is saved - update your styles/scripts lists
+        // This triggers ONLY in the Dashboard after "Update" button is clicked (on Edit mode)
         add_action('save_post', array($this, 'savePost'));
     }
 
     /**
-     *
+     * Priority: 9 (AFTER current post ID is correctly retrieved and BEFORE the data from the database is fetched)
      */
     public function frontendUpdate()
     {
-        global $post;
+        $post = get_post(Main::instance()->currentPostId);
 
         // Check nonce
         $nonceName = self::NONCE_FIELD_NAME;
@@ -75,7 +76,10 @@ class Update
     }
 
     /**
-     * Save post metadata when a post is saved.
+     * Save post metadata when a post is saved
+     *
+     * Admin: triggered via hook
+     * Front-end view: triggered by direct call
      *
      * @param $postId
      * @param array $post
@@ -167,7 +171,7 @@ class Update
     /**
      * @param string $type
      * @param string $postId
-     * @return bool|void
+     * @return bool
      */
     public function saveLoadExceptions($type = 'post', $postId = '')
     {

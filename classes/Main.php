@@ -10,12 +10,12 @@ class Main
     /**
      *
      */
-    const STARTDEL = '@ BEGIN WPACU PLUGIN JSON @';
+    const START_DEL = '@ BEGIN WPACU PLUGIN JSON @';
 
     /**
      *
      */
-    const ENDDEL = '@ END WPACU PLUGIN JSON @';
+    const END_DEL = '@ END WPACU PLUGIN JSON @';
 
     /**
      * @var array
@@ -38,9 +38,39 @@ class Main
     public $fetchUrl;
 
     /**
+     * @var
+     */
+    public $isUpdateable = true;
+
+    /**
+     * @var bool
+     */
+    public $isWooCommerceShopPage = false;
+
+    /**
+     * @var int
+     */
+    public $currentPostId = 0;
+
+    /**
+     * @var array
+     */
+    public $currentPost = array();
+
+    /**
+     * @var array
+     */
+    public $vars = array();
+
+    /**
      * @var bool|mixed|void
      */
     public $frontendShow = false;
+
+    /**
+     * @var bool
+     */
+    public $isFrontendView = false;
 
     /**
      * @var array
@@ -87,7 +117,8 @@ class Main
         $this->frontendShow = (get_option(WPACU_PLUGIN_NAME.'_frontend_show'));
 
         // Early Triggers
-        add_action('wp', array($this, 'setVars'), 2);
+        add_action('wp', array($this, 'setVarsBeforeUpdate'), 8);
+        add_action('wp', array($this, 'setVarsAfterAnyUpdate'), 10);
 
         // Fetch the page in the background to see what scripts/styles are already loading
         if (isset($_POST[WPACU_PLUGIN_NAME.'_load']) || $this->frontendShow) {
@@ -124,28 +155,38 @@ class Main
     }
 
     /**
-     *
+     * Priority: 8 (earliest)
      */
-    public function setVars()
+    public function setVarsBeforeUpdate()
+    {
+        $this->isFrontendView = ($this->frontendShow && current_user_can('manage_options')
+            && !isset($_POST[WPACU_PLUGIN_NAME.'_load'])
+            && !is_admin());
+
+        // it will update $this->isUpdateable;
+        $this->getCurrentPostId();
+    }
+
+    /**
+     * Priority: 10 (latest)
+     */
+    public function setVarsAfterAnyUpdate()
     {
         if (! isset($_POST[WPACU_PLUGIN_NAME.'_load'])) {
             $this->globalUnloaded = $this->getGlobalUnload();
 
-            if (! is_singular() && ! Misc::isHomePage()) {
+            if (! $this->isUpdateable && ! Misc::isHomePage()) {
                 return;
             }
 
-            global $post;
-
-            $postId = isset($post->ID) ? $post->ID : '';
-
             $type = (Misc::isHomePage()) ? 'front_page' : 'post';
 
-            if (is_singular()) {
+            if (! empty($this->getCurrentPost())) {
+                $post = $this->getCurrentPost();
                 $this->postTypesUnloaded = $this->getPostTypeUnload($post->post_type);
             }
 
-            $this->loadExceptions = $this->getLoadExceptions($type, $postId);
+            $this->loadExceptions = $this->getLoadExceptions($type, $this->currentPostId);
         }
     }
 
@@ -169,7 +210,7 @@ class Main
     }
 
     /**
-     *
+     * This is triggered only in the Edit Mode Dashboard View
      */
     public function renderMetaBoxContent()
     {
@@ -211,7 +252,7 @@ class Main
             return;
         }
 
-        $nonAssetConfigPage = (! is_singular() && ! Misc::getShowOnFront());
+        $nonAssetConfigPage = (! $this->isUpdateable && ! Misc::getShowOnFront());
 
         // It looks like the page loaded is neither a post, page or the front-page
         // We'll see if there are assets unloaded globally and unload them
@@ -247,10 +288,10 @@ class Main
                 }
             }
 
-            if (is_singular()) {
+            if ($this->isSinglePage()) {
                 // Any bulk unloaded styles (e.g. for all pages belonging to a post type)? Append them
                 if (empty($this->postTypesUnloaded)) {
-                    global $post;
+                    $post = $this->getCurrentPost();
                     $this->postTypesUnloaded = $this->getPostTypeUnload($post->post_type);
                 }
 
@@ -311,7 +352,7 @@ class Main
             return;
         }
 
-        $nonAssetConfigPage = (! is_singular() && ! Misc::getShowOnFront());
+        $nonAssetConfigPage = (! $this->isUpdateable && ! Misc::getShowOnFront());
 
         // It looks like the page loaded is neither a post, page or the front-page
         // We'll see if there are assets unloaded globally and unload them
@@ -347,10 +388,10 @@ class Main
                 }
             }
 
-            if (is_singular()) {
+            if ($this->isSinglePage()) {
                 // Any bulk unloaded styles (e.g. for all pages belonging to a post type)? Append them
                 if (empty($this->postTypesUnloaded)) {
-                    global $post;
+                    $post = $this->getCurrentPost();
                     $this->postTypesUnloaded = $this->getPostTypeUnload($post->post_type);
                 }
 
@@ -532,11 +573,7 @@ class Main
             return;
         }
 
-        global $post;
-
-        $isFrontEndView = ($this->frontendShow && current_user_can('manage_options')
-            && !isset($_POST[WPACU_PLUGIN_NAME.'_load'])
-            && !is_admin());
+        $isFrontEndView = $this->isFrontendView;
         $isDashboardView = (!$isFrontEndView && isset($_POST[WPACU_PLUGIN_NAME.'_load']));
 
         if (!$isFrontEndView && !$isDashboardView) {
@@ -551,14 +588,12 @@ class Main
         $stylesBeforeUnload = $this->wpStyles;
         $scriptsBeforeUnload = $this->wpScripts;
 
-
-
         global $wp_scripts, $wp_styles;
 
         $list = array();
 
         $currentUnloadedAll = $currentUnloaded = (array)json_decode(
-            $this->getAssetsUnloaded($post->ID)
+            $this->getAssetsUnloaded($this->getCurrentPostId())
         );
 
         // Append global unloaded assets to current (one by one) unloaded ones
@@ -575,7 +610,7 @@ class Main
         }
 
         // Append bulk unloaded assets to current (one by one) unloaded ones
-        if (is_singular()) {
+        if ($this->isSinglePage()) {
             if (! empty($this->postTypesUnloaded['styles'])) {
                 foreach ($this->postTypesUnloaded['styles'] as $postTypeStyle) {
                     $currentUnloadedAll['styles'][] = $postTypeStyle;
@@ -689,30 +724,37 @@ class Main
 
         // Front-end View while admin is logged in
         if ($isFrontEndView) {
-            $data = array();
+            $data = array('is_updateable' => true);
 
-            $data['current'] = $currentUnloaded;
+            if ($this->isUpdateable) {
+                $data['current'] = $currentUnloaded;
 
-            $data['all']['scripts'] = $list['scripts'];
-            $data['all']['styles'] = $list['styles'];
+                $data['all']['scripts'] = $list['scripts'];
+                $data['all']['styles'] = $list['styles'];
 
-            $this->fetchUrl = Misc::getPostUrl($post->ID);
+                $this->fetchUrl = Misc::getPostUrl($this->getCurrentPostId());
 
-            $data['fetch_url'] = $this->fetchUrl;
+                $data['fetch_url'] = $this->fetchUrl;
 
-            $data['nonce_name'] = Update::NONCE_FIELD_NAME;
-            $data['nonce_action'] = Update::NONCE_ACTION_NAME;
+                $data['nonce_name'] = Update::NONCE_FIELD_NAME;
+                $data['nonce_action'] = Update::NONCE_ACTION_NAME;
 
-            $data = $this->alterAssetObj($data);
+                $data = $this->alterAssetObj($data);
 
-            $data['global_unload'] = $this->globalUnloaded;
+                $data['global_unload'] = $this->globalUnloaded;
 
-            $type = Misc::getShowOnFront() ? 'front_page' : 'post';
-            $postId = $post->ID;
+                $type = Misc::getShowOnFront() ? 'front_page' : 'post';
 
-            $data['load_exceptions'] = $this->getLoadExceptions($type, $postId);
+                $data['load_exceptions'] = $this->getLoadExceptions($type, $this->getCurrentPostId());
+            } else {
+                $data['is_updateable'] = false;
+            }
 
-            if (is_singular()) {
+            $data['is_woocommerce_shop_page'] = $this->isWooCommerceShopPage;
+
+            if ($this->isSinglePage()) {
+                $post = $this->getCurrentPost();
+
                 // Current Post Type
                 $data['post_type'] = $post->post_type;
 
@@ -721,12 +763,14 @@ class Main
                 $data['post_type_unloaded'] = $this->getPostTypeUnload($data['post_type']);
             }
 
+            $data['status'] = $this->status;
+
             $this->parseTemplate('settings-frontend', $data, true);
         } elseif ($isDashboardView) {
             // AJAX call from the WordPress Dashboard
-            echo self::STARTDEL
+            echo self::START_DEL
                 .base64_encode(json_encode($list)).
-                self::ENDDEL;
+                self::END_DEL;
         }
     }
 
@@ -763,22 +807,16 @@ class Main
      */
     public function ajaxGetJsonListCallback()
     {
-        $contents = isset($_POST['contents']) ? $_POST['contents'] : '';
+        $wpacuList = isset($_POST['wpacu_list']) ? $_POST['wpacu_list'] : '';
         $postId = isset($_POST['post_id']) ? (int)$_POST['post_id'] : '';
         $postUrl = isset($_POST['post_url']) ? $_POST['post_url'] : '';
 
-        $json = base64_decode(
-            Misc::extractBetween(
-                $contents,
-                self::STARTDEL,
-                self::ENDDEL
-            )
-        );
+        $json = base64_decode($wpacuList);
 
         $data = array();
 
         $data['all'] = (array)json_decode($json);
-        $data['contents'] = $contents;
+        $data['contents'] = $wpacuList;
 
         $data = $this->alterAssetObj($data);
 
@@ -824,7 +862,7 @@ class Main
      */
     public function alterAssetObj($data)
     {
-        $siteUrl = get_option('siteurl');
+        $siteUrl = get_site_url();
 
         if (! empty($data['all']['styles'])) {
             $data['core_styles_loaded'] = false;
@@ -951,9 +989,10 @@ class Main
      */
     public function getAssetsUnloaded($postId = 0)
     {
-        // Post Type (Overwrites 'front' if we are in a singular post)
-        global $post;
-        $postId = (isset($post->ID) && is_singular()) ? $post->ID : $postId;
+        // Post Type (Overwrites 'front' - home page - if we are in a singular post)
+        if ($postId == 0) {
+            $postId = $this->getCurrentPostId();
+        }
 
         if (! $this->assetsRemoved) {
             // For Home Page (latest blog posts)
@@ -970,5 +1009,84 @@ class Main
         }
 
         return $this->assetsRemoved;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSinglePage()
+    {
+        if (is_singular() || $this->isWooCommerceShopPage) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return int|mixed|string
+     */
+    public function getCurrentPostId()
+    {
+        if ($this->currentPostId > 0) {
+            return $this->currentPostId;
+        }
+
+        // Are we on the `Shop` page from WooCommerce?
+        $wooCommerceShopPageId = get_option('woocommerce_shop_page_id');
+
+        if (function_exists('is_shop') && is_shop()) {
+            $this->currentPostId = $wooCommerceShopPageId;
+
+            if ($this->currentPostId > 0) {
+                $this->isWooCommerceShopPage = true;
+            }
+        } else {
+            if ($wooCommerceShopPageId > 0 && Misc::isHomePage()) {
+                $siteUrl = get_site_url();
+
+                list($url) = explode('?', get_site_url(), 2);
+                list($requestUriNoParams) = explode('?', $_SERVER['REQUEST_URI'], 2);
+                $parts = parse_url($url);
+                $currentPageUrl = substr($url, 0, -strlen($parts['path'])) . $requestUriNoParams;
+
+                if ($siteUrl != $currentPageUrl && (strpos($currentPageUrl, '/shop') !== false)) {
+                    $this->vars['woo_url_not_match'] = true;
+                }
+            }
+        }
+
+        if (is_singular() && (! $this->currentPostId)) {
+            global $post;
+            $this->currentPostId = isset($post->ID) ? $post->ID : 0;
+        }
+
+        // Undetectable? The page is not a single one nor the home page
+        // It's likely an archive, category page (WooCommerce), 404 page etc.
+        if (! $this->currentPostId && ! Misc::isHomePage()) {
+            $this->isUpdateable = false;
+        }
+
+        return $this->currentPostId;
+    }
+
+    /**
+     * @return array|null|\WP_Post
+     */
+    public function getCurrentPost()
+    {
+        // Already set? Return it
+        if (! empty($this->currentPost)) {
+            return $this->currentPost;
+        }
+
+        // Not set? Create and return it
+        if (! $this->currentPost && $this->getCurrentPostId() > 0) {
+            $this->currentPost = get_post($this->getCurrentPostId());
+            return $this->currentPost;
+        }
+
+        // Empty
+        return $this->currentPost;
     }
 }

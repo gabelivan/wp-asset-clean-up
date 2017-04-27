@@ -12,7 +12,7 @@ if (! isset($data)) {
 <?php
 if ($data['show_on_front'] === 'page') {
     ?>
-    <p><?php _e('In "Settings" -> "Reading" you have selected a static page for "Front page displays" setting. To manage the assets (.CSS &amp; .JS) that will NOT LOAD, use the link(s) below:', WPACU_PLUGIN_NAME); ?></p>
+    <p><?php _e('In "Settings" -&gt; "Reading" you have selected a static page for "Front page displays" setting. To manage the assets (.CSS &amp; .JS) that will NOT LOAD, use the link(s) below:', WPACU_PLUGIN_NAME); ?></p>
     <div>
         <ul>
             <?php
@@ -61,5 +61,11 @@ if ($data['show_on_front'] === 'page') {
         <input type="hidden" name="<?php echo $data['nonce_name']; ?>" value="<?php echo $data['nonce_value']; ?>" />
         <p class="submit"><input type="submit" name="submit" id="submit" class="hidden button button-primary" value="<?php esc_attr_e('Update', WPACU_PLUGIN_NAME); ?>"></p>
     </form>
+<?php
+} else {
+    ?>
+    <p>It looks like in "Settings" -&gt; "Reading" (/wp-admin/options-reading.php), you have neither of the following options checked: "Your latest posts" and "A static page (select below)".</p>
+    <p>Your theme or a plugin could interfere with it. Consider enabling "Manage in the Front-end?" in plugin's settings (WP Asset CleanUp -&gt; Settings). This should show the list of all assets at the bottom of your home page on front-end view (only if you're logged in).</p>
+    <p>If you already tried the suggested option and still can't make it work, <a href="https://wordpress.org/support/plugin/wp-asset-clean-up">please open a ticket</a> on the plugin's support page.</p>
 <?php
 }

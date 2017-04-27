@@ -42,7 +42,7 @@ class HomePage
             }
         } elseif ($this->data['show_on_front'] === 'posts') {
             // Your latest posts
-            $postUrl = get_option('siteurl');
+            $postUrl = get_site_url();
 
             if (substr($postUrl, -1) != '/') {
                 $postUrl .= '/';

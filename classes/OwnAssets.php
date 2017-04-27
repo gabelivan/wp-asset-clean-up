@@ -126,9 +126,11 @@ class OwnAssets
             'wpacu_object',
             array(
                 'plugin_name' => WPACU_PLUGIN_NAME,
-                'ajax_url' => admin_url('admin-ajax.php'),
-                'post_id' => $postId,
-                'post_url' => $postUrl
+                'start_del'   => Main::START_DEL,
+                'end_del'     => Main::END_DEL,
+                'ajax_url'    => admin_url('admin-ajax.php'),
+                'post_id'     => $postId,
+                'post_url'    => $postUrl
             )
         );
 

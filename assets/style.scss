@@ -201,6 +201,10 @@ ul.wpacu_asset_options {
   padding: 10px 24px !important;
   text-decoration: none !important;
   text-shadow: 0 1px 0 #154682 !important;
+
+  height: auto !important;
+  line-height: normal !important;
+
   &:hover {
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #0061a7), color-stop(1, #007dc1)) !important;
     background: -moz-linear-gradient(top, #0061a7 5%, #007dc1 100%) !important;

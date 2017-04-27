@@ -3,8 +3,8 @@ Contributors: gabelivan
 Tags: speed, pagespeed, dequeue style, dequeue script, unload style, unload script, fast
 Donate link: https://www.gabelivan.com/donate/
 Requires at least: 4.0
-Tested up to: 4.7.1
-Stable tag: 1.2.4.3
+Tested up to: 4.7.4
+Stable tag: 1.2.4.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -92,6 +92,9 @@ If that's the case, then it's advisable to consult with a developer (ideally the
 4. Scripts (.JS) are selected for site-wide unload
 
 == Changelog ==
+= 1.2.4.4 =
+* Updated AJAX calls to work fine within the Dashboard even if mod_security Apache module is enabled as there were some problems on specific servers; Added "Unload on this page" text next to the first checkbox to explain its purpose better
+
 = 1.2.4.3 =
 * Bug Fix: PHP versions < 5.4 triggered errors
 
@@ -134,7 +137,7 @@ If that's the case, then it's advisable to consult with a developer (ideally the
 * Improved code to not show any PHP errors in case WP_DEBUG constant is set to 'true'
 
 = 1.1.4.2 =
-* Prevent JavaScript errors from showing in the background and interfere with the functionality of other plugins in case script.js is loaded in pages where the plugin is not needed
+* Prevent JavaScript errors from showing in the background and interfere with the functionality of other plugins in case script.min.js is loaded in pages where the plugin is not needed
 
 = 1.1.4.1 =
 * Prevent any calls to be made for non-published posts/pages as the list of assets is relevant only after the post is published and all assets (from plugins and the themes) are properly loaded on that post/page

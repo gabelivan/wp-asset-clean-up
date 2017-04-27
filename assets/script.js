@@ -10,8 +10,8 @@ jQuery(document).ready(function($) {
             var cbSelector = '.icheckbox_square-red', handle;
 
             $(cbSelector).iCheck({
-                checkboxClass: 'icheckbox_square-red',
-                increaseArea: '20%' // optional
+                checkboxClass: 'icheckbox_square-red'
+                //increaseArea: '-20%' // optional
             });
 
             $(cbSelector).on('ifChecked', function (event) {
@@ -152,16 +152,21 @@ jQuery(document).ready(function($) {
     // Get URL
     var data = wpacu_object.plugin_name + '_load=1';
 
-    jQuery.post(wpacu_object.post_url, data, function (contents) {
+    $.post(wpacu_object.post_url, data, function (contents) {
+        var wpacuList = contents.substring(
+            (contents.lastIndexOf(wpacu_object.start_del) + wpacu_object.start_del.length),
+            contents.lastIndexOf(wpacu_object.end_del)
+        );
+
         var data = {
             'action': wpacu_object.plugin_name + '_get_loaded_assets',
-            'contents': contents,
+            'wpacu_list': wpacuList,
             'post_id': wpacu_object.post_id,
             'post_url': wpacu_object.post_url
         };
 
-        jQuery.post(wpacu_object.ajax_url, data, function (response) {
-            if (response == '') {
+        $.post(wpacu_object.ajax_url, data, function (response) {
+            if (! response) {
                 return false;
             }
 

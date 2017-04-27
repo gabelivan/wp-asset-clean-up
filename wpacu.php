@@ -1,8 +1,8 @@
 <?php
 /*
  * Plugin Name: WP Asset CleanUp
- * Plugin URI: http://www.bitrepository.com/remove-unused-scripts-styles-wordpress-pages.html
- * Version: 1.2.4.3
+ * Plugin URI: https://wordpress.org/plugins/wp-asset-clean-up/
+ * Version: 1.2.4.4
  * Description: Prevent Chosen Scripts & Styles from loading in Posts/Pages that you don't need
  * Author: Gabriel Livan
  * Author URI: http://www.gabelivan.com/

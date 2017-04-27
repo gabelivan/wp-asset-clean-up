@@ -67,7 +67,6 @@ if (! empty($data['all']['styles'])) {
             }
             ?>
             <tr class="wpacu_asset_row <?php echo $class; ?>">
-                <td scope="row" class="wpacu_check check-column" valign="top"><input id="style_<?php echo $obj->handle; ?>" <?php if ($globalUnloaded) { echo 'disabled="disabled"'; } echo $checked; ?> name="<?php echo WPACU_PLUGIN_NAME; ?>[styles][]" class="icheckbox_square-red" type="checkbox" value="<?php echo $obj->handle; ?>" /></td>
                 <td valign="top" style="width: 100%;">
                     <p style="margin-top: 0px;">
                         <label for="style_<?php echo $obj->handle; ?>"><?php _e('Handle:', WPACU_PLUGIN_NAME); ?> <strong><span style="color: green;"><?php echo $obj->handle; ?></span></strong></label>
@@ -83,6 +82,13 @@ if (! empty($data['all']['styles'])) {
                         }
                         ?>
                     </p>
+
+                    <div>
+                        <ul class="wpacu_asset_options">
+                            <li>
+                                <label><input id="style_<?php echo $obj->handle; ?>" <?php if ($globalUnloaded) { echo 'disabled="disabled"'; } echo $checked; ?> name="<?php echo WPACU_PLUGIN_NAME; ?>[styles][]" class="icheckbox_square-red" type="checkbox" value="<?php echo $obj->handle; ?>" /> &nbsp;Unload on this page</label>
+                            </li>
+                    </div>
 
                     <div style="padding: 5px 10px; margin: 15px 0; background: white; border: 1px solid #eee; border-radius: 5px;">
                     <?php
@@ -205,7 +211,7 @@ if (! empty($data['all']['styles'])) {
                                     <?php if ($isLoadException) { ?> checked="checked" <?php } ?>
                                           name="wpacu_styles_load_it[]"
                                           value="<?php echo $obj->handle; ?>"/>
-                                Load it on this page (make exception<?php if (! $isGlobalRule) { echo ' * works only IF any of two rules above are selected'; } ?>)</label>
+                                Load it on this page (make exception<?php if (! $isGlobalRule) { echo ' * works only IF any of rules above is selected'; } ?>)</label>
                         </li>
                     </ul>
                     <?php
@@ -301,7 +307,6 @@ if (! empty($data['all']['scripts'])) {
             }
             ?>
             <tr class="wpacu_asset_row <?php echo $class; ?>">
-                <td scope="row" class="wpacu_check check-column" valign="top"><input id="script_<?php echo $obj->handle; ?>" <?php if ($globalUnloaded) { echo 'disabled="disabled"'; } echo $checked; ?> name="<?php echo WPACU_PLUGIN_NAME; ?>[scripts][]" class="icheckbox_square-red" type="checkbox" value="<?php echo $obj->handle; ?>" /></td>
                 <td valign="top" style="width: 100%;">
                     <p style="margin-top: 0px;">
                         <label for="script_<?php echo $obj->handle; ?>"> <?php _e('Handle:', WPACU_PLUGIN_NAME); ?> <strong><span style="color: green;"><?php echo $obj->handle; ?></span></strong></label>
@@ -328,8 +333,15 @@ if (! empty($data['all']['scripts'])) {
                     ?>
 
                     <div style="padding: 5px 10px; margin: 15px 0; background: white; border: 1px solid #eee; border-radius: 5px;">
-                    <ul class="wpacu_asset_options">
+                        <ul class="wpacu_asset_options">
+                            <li>
+                                <label><input id="script_<?php echo $obj->handle; ?>" <?php if ($globalUnloaded) { echo 'disabled="disabled"'; } echo $checked; ?> name="<?php echo WPACU_PLUGIN_NAME; ?>[scripts][]" class="icheckbox_square-red" type="checkbox" value="<?php echo $obj->handle; ?>" /> &nbsp;Unload on this page</label>
+                            </li>
+                        </ul>
+                    </div>
 
+                    <div style="padding: 5px 10px; margin: 15px 0; background: white; border: 1px solid #eee; border-radius: 5px;">
+                    <ul class="wpacu_asset_options">
                     <?php
                     // [START] UNLOAD EVERYWHERE
                     if ($globalUnloaded) {
@@ -441,7 +453,7 @@ if (! empty($data['all']['scripts'])) {
                                           name="wpacu_scripts_load_it[]"
                                     <?php if ($isLoadException) { ?> checked="checked" <?php } ?>
                                           value="<?php echo $obj->handle; ?>" />
-                                Load it on this page (make exception<?php if (! $isGlobalRule) { echo ' * works only IF any of two rules above are selected'; } ?>)</label>
+                                Load it on this page (make exception<?php if (! $isGlobalRule) { echo ' * works only IF any of rules above is selected'; } ?>)</label>
                         </li>
                     </ul>
                     <?php
