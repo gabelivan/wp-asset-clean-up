@@ -3,8 +3,8 @@ Contributors: gabelivan
 Tags: speed, pagespeed, dequeue style, dequeue script, unload style, unload script, fast
 Donate link: https://www.gabelivan.com/donate/
 Requires at least: 4.0
-Tested up to: 4.7.4
-Stable tag: 1.2.4.3
+Tested up to: 4.7.5
+Stable tag: 1.2.4.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -103,7 +103,10 @@ If that's the case, then it's advisable to consult with a developer (ideally the
 
 == Changelog ==
 = 1.2.4.4 =
-* Updated AJAX calls to work fine within the Dashboard even if mod_security Apache module is enabled as there were some problems on specific servers; Added "Unload on this page" text next to the first checkbox to explain its purpose better
+* Updated AJAX calls to work fine within the Dashboard even if mod_security Apache module is enabled as there were some problems on specific servers
+* Added "Unload on this page" text next to the first checkbox to explain its purpose better
+* Added "WP Remote Post" method to retrieve assets (in case the default "Direct" method doesn't work)
+* Enable/disable asset list loading within the Dashboard (in case one prefers to only have it within the front-end)
 
 = 1.2.4.3 =
 * Bug Fix: PHP versions < 5.4 triggered errors
