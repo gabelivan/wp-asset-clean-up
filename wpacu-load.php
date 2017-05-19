@@ -1,13 +1,8 @@
 <?php
 // Exit if accessed directly
-if (! defined('ABSPATH')) {
+if (! defined('WPACU_PLUGIN_CLASSES_PATH')) {
     exit;
 }
-
-define('WPACU_PLUGIN_NAME', 'wpassetcleanup');
-define('WPACU_PLUGIN_CLASSES_PATH', dirname(__FILE__).'/classes/');
-define('WPACU_PLUGIN_FILE', $pluginFile);
-define('WPACU_PLUGIN_URL', plugins_url('', WPACU_PLUGIN_FILE));
 
 // Autoload Classes
 function includeWpAssetCleanUpClassesAutoload($class)
@@ -44,7 +39,8 @@ $wpacuUpdate = new WpAssetCleanUp\Update;
 $wpacuUpdate->init();
 
 // Settings
-new WpAssetCleanUp\Settings;
+$wpacuSettings = new WpAssetCleanUp\Settings;
+$wpacuSettings->init();
 
 // HomePage
 new WpAssetCleanUp\HomePage;
@@ -54,3 +50,6 @@ new WpAssetCleanUp\Misc;
 
 // Menu
 new \WpAssetCleanUp\Menu;
+
+// Plugin (Various Hooks)
+new \WpAssetCleanUp\Plugin;

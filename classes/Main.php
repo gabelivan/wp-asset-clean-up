@@ -18,6 +18,13 @@ class Main
     const END_DEL = '@ END WPACU PLUGIN JSON @';
 
     /**
+     * @var string
+     * Can be managed in the Dashboard within the plugin's settings
+     * e.g. 'direct', 'wp_remote_post'
+     */
+    public static $domGetType = 'direct';
+
+    /**
      * @var array
      */
     public $assetsRemoved = array();
@@ -70,6 +77,11 @@ class Main
     /**
      * @var bool
      */
+    public $dashboardShow = false;
+
+    /**
+     * @var bool
+     */
     public $isFrontendView = false;
 
     /**
@@ -114,7 +126,19 @@ class Main
      */
     public function __construct()
     {
-        $this->frontendShow = (get_option(WPACU_PLUGIN_NAME.'_frontend_show'));
+        $wpacuSettings = new Settings();
+        $settings = $wpacuSettings->getAll();
+
+        $this->frontendShow = $settings['frontend_show'];
+        $this->dashboardShow = $settings['dashboard_show'];
+
+        if ($this->dashboardShow && $settings['dom_get_type'] != '') {
+            self::$domGetType = $settings['dom_get_type'];
+        }
+
+        if (array_key_exists(WPACU_PLUGIN_NAME.'_load', $_POST)) {
+            add_filter('w3tc_minify_enable', '__return_false');
+        }
 
         // Early Triggers
         add_action('wp', array($this, 'setVarsBeforeUpdate'), 8);
@@ -127,7 +151,7 @@ class Main
             }
 
             add_action('wp_head', array($this, 'saveFooterAssets'), 100000000);
-            add_action('wp_footer', array($this, 'printScriptsStyles'), 100000000);
+            add_action('wp_footer', array($this, 'printScriptsStyles'), PHP_INT_MAX);
         }
 
         // Front-end View - Unload the assets
@@ -145,13 +169,17 @@ class Main
             add_action('wp_print_footer_scripts', array($this, 'filterStyles'), 1);
         }
 
-        // Send an AJAX request to get the list of loaded scripts and styles and print it nicely
-        add_action(
-            'wp_ajax_'. WPACU_PLUGIN_NAME . '_get_loaded_assets',
-            array($this, 'ajaxGetJsonListCallback')
-        );
+        // Do not load the meta box nor do any AJAX calls
+        // if the asset management is not enabled for the Dashboard
+        if ($settings['dashboard_show'] == 1) {
+            // Send an AJAX request to get the list of loaded scripts and styles and print it nicely
+            add_action(
+                'wp_ajax_'. WPACU_PLUGIN_NAME . '_get_loaded_assets',
+                array($this, 'ajaxGetJsonListCallback')
+            );
 
-        add_action('add_meta_boxes', array($this, 'addMetaBox'));
+            add_action('add_meta_boxes', array($this, 'addMetaBox'));
+        }
     }
 
     /**
@@ -181,7 +209,7 @@ class Main
 
             $type = (Misc::isHomePage()) ? 'front_page' : 'post';
 
-            if (! empty($this->getCurrentPost())) {
+            if ($this->getCurrentPost()) {
                 $post = $this->getCurrentPost();
                 $this->postTypesUnloaded = $this->getPostTypeUnload($post->post_type);
             }
@@ -197,7 +225,7 @@ class Main
     {
         $obj = get_post_type_object($postType);
 
-        if ($obj->public > 0) {
+        if (isset($obj->public) && $obj->public > 0) {
             add_meta_box(
                 WPACU_PLUGIN_NAME.'_asset_list',
                 __('WP Asset CleanUp', WPACU_PLUGIN_NAME),
@@ -314,6 +342,8 @@ class Main
             }
         }
 
+	    $list = apply_filters('wpacu_filter_scripts', $list);
+
         if (empty($list)) {
             return;
         }
@@ -413,6 +443,8 @@ class Main
                 }
             }
         }
+
+        $list = apply_filters('wpacu_filter_styles', $list);
 
         if (empty($list)) {
             return;
@@ -568,17 +600,20 @@ class Main
      */
     public function printScriptsStyles()
     {
-        if (defined('DOING_AJAX') && DOING_AJAX) {
-            // Not for AJAX calls
+        // Not for WordPress AJAX calls
+        if (self::$domGetType === 'direct' && defined('DOING_AJAX') && DOING_AJAX) {
             return;
         }
 
         $isFrontEndView = $this->isFrontendView;
-        $isDashboardView = (!$isFrontEndView && isset($_POST[WPACU_PLUGIN_NAME.'_load']));
+        $isDashboardView = (!$isFrontEndView && array_key_exists(WPACU_PLUGIN_NAME.'_load', $_POST));
 
         if (!$isFrontEndView && !$isDashboardView) {
             return;
         }
+
+        // Prevent plugins from altering the DOM
+        add_filter('w3tc_minify_enable', '__return_false');
 
         // This is the list of the scripts an styles that were eventually loaded
         // We have also the list of the ones that were unloaded
@@ -635,6 +670,10 @@ class Main
                 WPACU_PLUGIN_NAME . '-icheck-square-red',
                 WPACU_PLUGIN_NAME . '-style'
             );
+
+            if (is_admin_bar_showing()) {
+                $skipStyles[] = 'dashicons';
+            }
 
             foreach ($wp_styles->done as $handle) {
                 if ($isFrontEndView && in_array($handle, $skipStyles)) {
@@ -724,7 +763,11 @@ class Main
 
         // Front-end View while admin is logged in
         if ($isFrontEndView) {
-            $data = array('is_updateable' => true);
+            $data = array(
+                'is_updateable' => true,
+                'post_type' => '',
+                'post_type_unloaded' => array()
+            );
 
             if ($this->isUpdateable) {
                 $data['current'] = $currentUnloaded;
@@ -763,14 +806,16 @@ class Main
                 $data['post_type_unloaded'] = $this->getPostTypeUnload($data['post_type']);
             }
 
-            $data['status'] = $this->status;
-
             $this->parseTemplate('settings-frontend', $data, true);
         } elseif ($isDashboardView) {
-            // AJAX call from the WordPress Dashboard
+            // AJAX call (not the classic WP one) from the WP Dashboard
             echo self::START_DEL
                 .base64_encode(json_encode($list)).
                 self::END_DEL;
+
+            // Do not allow further processes as cache plugins such as W3 Total Cache could alter the source code
+            // and we need the non-minified version of the DOM (e.g. to determine the position of the elements)
+            exit();
         }
     }
 
@@ -807,16 +852,41 @@ class Main
      */
     public function ajaxGetJsonListCallback()
     {
-        $wpacuList = isset($_POST['wpacu_list']) ? $_POST['wpacu_list'] : '';
         $postId = isset($_POST['post_id']) ? (int)$_POST['post_id'] : '';
         $postUrl = isset($_POST['post_url']) ? $_POST['post_url'] : '';
+
+        $wpacuList = $contents = '';
+
+        if (self::$domGetType === 'direct') {
+            $contents = isset($_POST['contents']) ? $_POST['contents'] : '';
+            $wpacuList = isset($_POST['wpacu_list']) ? $_POST['wpacu_list'] : '';
+        } elseif (self::$domGetType === 'wp_remote_post') {
+            $remotePost = wp_remote_post($postUrl, array(
+                'body' => array(
+                    WPACU_PLUGIN_NAME.'_load' => 1
+                )
+            ));
+
+            $contents = isset($remotePost['body']) ? $remotePost['body'] : '';
+
+            if ($contents) {
+                $wpacuList = Misc::extractBetween(
+                    $contents,
+                    self::START_DEL,
+                    self::END_DEL
+                );
+            }
+        }
 
         $json = base64_decode($wpacuList);
 
         $data = array();
 
         $data['all'] = (array)json_decode($json);
-        $data['contents'] = $wpacuList;
+
+        if ($contents != '') {
+            $data['contents'] = base64_decode($contents);
+        }
 
         $data = $this->alterAssetObj($data);
 
@@ -909,9 +979,16 @@ class Main
         if (! empty($data['all']['scripts'])) {
             $data['core_scripts_loaded'] = false;
 
+            $headPart = $bodyPart = '';
+
             if (isset($data['contents'])) {
+                // Extract 'HEAD' part
                 $headPart = Misc::extractBetween($data['contents'], '<head', '</head>');
-                $bodyPart = Misc::extractBetween($data['contents'], '<body', '</body>');
+
+                // Extract 'BODY' part
+                $contentsAltered = str_replace($headPart, '', $data['contents']);
+                $bodyDel = '<body'; // Get everything after $bodyDel
+                $bodyPart = substr($data['contents'], stripos($contentsAltered, $bodyDel) + strlen($bodyDel));
             }
 
             foreach ($data['all']['scripts'] as $key => $obj) {
@@ -1088,5 +1165,13 @@ class Main
 
         // Empty
         return $this->currentPost;
+    }
+
+    /**
+     * @return bool
+     */
+    public static function isSettingsPage()
+    {
+        return (array_key_exists('page', $_GET) && $_GET['page'] === WPACU_PLUGIN_NAME.'_settings');
     }
 }

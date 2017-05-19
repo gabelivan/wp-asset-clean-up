@@ -65,7 +65,7 @@ class Update
             );
         }
 
-        if (Misc::isHomePage()) {
+        if (Misc::isHomePage() && ! (isset($post->ID) && $post->ID > 0)) {
             $wpacuNoLoadAssets = isset($_POST[WPACU_PLUGIN_NAME])
                 ? $_POST[WPACU_PLUGIN_NAME] : array();
 

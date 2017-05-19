@@ -25,11 +25,11 @@ class Menu
 
         add_menu_page(
             __('WP Asset CleanUp', WPACU_PLUGIN_NAME),
-            __('WP Asset CleanUp', WPACU_PLUGIN_NAME),
+            __('WP Asset Clean Up', WPACU_PLUGIN_NAME),
             $capability,
             $menuSlug,
-            array('\WpAssetCleanUp\Settings', 'settingsPage'),
-            plugin_dir_url(WPACU_PLUGIN_FILE).'/assets/img/icon-clean-up.png'
+            array(new Settings, 'settingsPage'),
+            'dashicons-filter'
         );
 
         add_submenu_page(

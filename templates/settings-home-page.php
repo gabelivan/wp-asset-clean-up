@@ -10,6 +10,13 @@ if (! isset($data)) {
 <h2><?php _e('Home Page Scripts &amp; Styles Management', WPACU_PLUGIN_NAME); ?></h2>
 
 <?php
+if ($data['wpacu_settings']['dashboard_show'] != 1) {
+    ?>
+    <div class="error" style="padding: 10px;"><?php echo sprintf(__('As "Manage in the Dashboard?" is not enabled in "%sSettings%s", you can not manage the assets from the Dashboard.', WPACU_PLUGIN_NAME), '<a href="admin.php?page=wpassetcleanup_settings">', '</a>'); ?></div>
+    <?php
+    return;
+}
+
 if ($data['show_on_front'] === 'page') {
     ?>
     <p><?php _e('In "Settings" -&gt; "Reading" you have selected a static page for "Front page displays" setting. To manage the assets (.CSS &amp; .JS) that will NOT LOAD, use the link(s) below:', WPACU_PLUGIN_NAME); ?></p>

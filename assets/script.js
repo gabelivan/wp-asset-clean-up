@@ -149,18 +149,49 @@ jQuery(document).ready(function($) {
         return false; // stop if we are not on the right page (with asset list)
     }
 
-    // Get URL
-    var data = wpacu_object.plugin_name + '_load=1';
+    var data = {};
 
-    $.post(wpacu_object.post_url, data, function (contents) {
-        var wpacuList = contents.substring(
-            (contents.lastIndexOf(wpacu_object.start_del) + wpacu_object.start_del.length),
-            contents.lastIndexOf(wpacu_object.end_del)
-        );
+    if (wpacu_object.dom_get_type === 'direct') {
+        data[wpacu_object.plugin_name + '_load'] = 1;
 
-        var data = {
+        $.post(wpacu_object.post_url, data, function (contents) {
+            var wpacuList = contents.substring(
+                (contents.lastIndexOf(wpacu_object.start_del) + wpacu_object.start_del.length),
+                contents.lastIndexOf(wpacu_object.end_del)
+            );
+
+            var data = {
+                'action': wpacu_object.plugin_name + '_get_loaded_assets',
+                'wpacu_list': wpacuList,
+                'post_id': wpacu_object.post_id,
+                'post_url': wpacu_object.post_url
+            };
+
+            if ('btoa' in window) {
+                // Non-Latin Characters get stripped
+                // We only need the content related to the assets
+                data.contents = window.btoa(contents.replace(/[\u0250-\ue007]/g, ''));
+            }
+
+            //console.log(data);
+
+            $.post(wpacu_object.ajax_url, data, function (response) {
+                if (!response) {
+                    return false;
+                }
+
+                $('#wpacu_meta_box_content').html(response);
+
+                if ($('#wpacu_home_page_form').length > 0) {
+                    $('#submit').show();
+                }
+
+                WpAssetCleanUp.load();
+            });
+        });
+    } else if (wpacu_object.dom_get_type === 'wp_remote_post') {
+        data = {
             'action': wpacu_object.plugin_name + '_get_loaded_assets',
-            'wpacu_list': wpacuList,
             'post_id': wpacu_object.post_id,
             'post_url': wpacu_object.post_url
         };
@@ -178,6 +209,5 @@ jQuery(document).ready(function($) {
 
             WpAssetCleanUp.load();
         });
-    });
+    }
 });
-

@@ -4,7 +4,7 @@ Tags: speed, pagespeed, dequeue style, dequeue script, unload style, unload scri
 Donate link: https://www.gabelivan.com/donate/
 Requires at least: 4.0
 Tested up to: 4.7.4
-Stable tag: 1.2.4.4
+Stable tag: 1.2.4.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -46,9 +46,25 @@ NOTE: People that have tested the plugin are so far happy with it and I want to 
 
 5.3+
 
-= I've noticed scripts and styles that are loaded on the page, but they do not show in the "WP Asset CleanUp" list when editing the page. Why is that? =
+= Is this plugin a caching one?
 
-If that's the case, then those assets weren't loaded properly into WordPress by the theme/plugin author as they were likely hardcoded and not enqueued the WordPress way. Here's a tutorial that will help you understand better the enqueuing process: http://www.wpbeginner.com/wp-tutorials/how-to-properly-add-javascripts-and-styles-in-wordpress/
+No, WP Asset CleanUp does not do any caching. It just unloads .css and .js when needed. This combined with an existing caching plugin will make your website pages load faster and get a better score in speed checking tools such as GTMetrix.
+
+= Has this plugin been tested with other caching / speed booster plugins?
+
+Yes, this plugin was tested with W3 Total Cache, WP Rocket and Autoptimize and should work with any caching plugin as any page should be cached only after the page (HTML Source) was rendered and all the enqueueing / dequeueing was already completed (from either the plugins or the theme).
+
+= I've noticed scripts and styles that are loaded on the page, but they do not show in the "WP Asset CleanUp" list when editing the page or no assets are showing at all. Why is that? =
+
+There are a few known reasons why you might see different or no assets loading for management:
+
+- Those assets weren't loaded properly into WordPress by the theme/plugin author as they were likely hardcoded and not enqueued the WordPress way. Here's a tutorial that will help you understand better the enqueuing process: http://www.wpbeginner.com/wp-tutorials/how-to-properly-add-javascripts-and-styles-in-wordpress/
+
+- You're using a cache plugin that is caching pages even when you're logged in which is something I don't recommend as you might have conflicts with other plugins as well (e.g. in W3 Total Cache, you can enable/disable this) or that plugin is caching pages even when a POST request is made to them (which is not a good practice as there are many situations in which a page should not be cached). That could happen if you're using "WP Remote POST" method (from version 1.2.4.4) of retrieving the assets in the Dashboard.
+
+- You might have other functions or plugins (e.g. Plugin Organizer) that are loading prior to WP Asset CleanUp. Note that Plugin Organizer has a file that is in “mu-plugins” which will load prior to any plugin you have in “plugins”, thus, if you have disabled specific plugins through “Plugin Organizer” in some pages, their assets will obviously not show in the assets list as they are not loaded at all in the first place.
+
+If none of these apply to you and you just don't see assets that should definitely show there, please open a support ticket.
 
 = jQuery and jQuery Migrate are often loading on pages/post. Are they always needed? =
 
@@ -68,18 +84,12 @@ The plugin makes AJAX calls to retrieve the data from the front-end page with 10
 
 - There could be a conflict between plugins or your theme and something is interfering with the script that is retrieving the assets
 
-- You are loading the WordPress Dashboard through HTTPS, but you are forcing the front-end to load via HTTP.
+- You are loading the WordPress Dashboard through HTTPS, but you are forcing the front-end to load via HTTP. Although WP Asset CleanUp auto-corrects the retrieval URL (e.g. if you're logged in the Dashboard securely via HTTPS, it will attempt to fetch the assets through HTTPS too), there could be cases where another plugin or .htaccess forces a HTTP connection only for the public view. Due to Same Origin Policy (read more here: https://developer.mozilla.org/En/Same_origin_policy_for_JavaScript), you can't make plain HTTP AJAX calls from HTTPS connections. If that's the case, try to enable "WP Remote POST" as a retrieval method in the plugin's settings if you want to manage the assets in the Dashboard.
 
 In this case, it's advisable to enable "Manage in the Front-end?" in "Settings" of "WP Asset CleanUp", thus making the list to show at the bottom of the posts, pages and front-page only for the logged in users with admin privileges.
 
 Although I've written the code to ensure maximum compatibility, there are factors which are not up to the quality of the plugin that could interfere with it.
 In case the assets are not loading for you, please write me on the forum and I will be happy to assist you!
-
-= In some pages, I do not see styles and scripts in the "WP Asset CleanUp" List =
-
-If that's the case, you might have other functions or plugins (e.g. Plugin Organizer) that are loading prior to WP Asset CleanUp.
-
-Note that Plugin Organizer has a file that is in "mu-plugins" which will load prior to any plugin you have in "plugins", thus, if you have disabled specific plugins through "Plugin Organizer" in some pages, their assets will obviously not show in the assets list as they are not loaded at all in the first place.
 
 = I do not know or I'm not sure which assets to unload on my pages. What should I do? =
 

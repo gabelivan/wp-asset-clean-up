@@ -70,6 +70,9 @@ class HomePage
 
         $this->data['nonce_value'] = wp_create_nonce($this->data['nonce_name']);
 
+        $wpacuSettings = new Settings;
+        $this->data['wpacu_settings'] = $wpacuSettings->getAll();
+
         Main::instance()->parseTemplate('settings-home-page', $this->data, true);
     }
 }

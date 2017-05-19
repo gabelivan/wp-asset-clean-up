@@ -21,7 +21,10 @@ class OwnAssets
     public function __construct()
     {
         add_action('admin_enqueue_scripts', array($this, 'stylesAndScriptsForAdmin'));
-        add_action('wp_enqueue_scripts', array($this, 'stylesAndScriptsForPublic'));
+
+        if (Main::instance()->frontendShow && (! isset($_POST[WPACU_PLUGIN_NAME.'_load']))) {
+            add_action('wp_enqueue_scripts', array($this, 'stylesAndScriptsForPublic'));
+        }
     }
 
     /**
@@ -30,6 +33,10 @@ class OwnAssets
     public function stylesAndScriptsForAdmin()
     {
         global $post;
+
+        if (! current_user_can('manage_options')) {
+            return;
+        }
 
         $page = (isset($_GET['page'])) ? $_GET['page'] : '';
         $getPostId = (isset($_GET['post'])) ? (int)$_GET['post'] : '';
@@ -44,7 +51,7 @@ class OwnAssets
             $this->loadPluginAssets = true;
         }
 
-        if (in_array($page, array(WPACU_PLUGIN_NAME.'_home_page', WPACU_PLUGIN_NAME.'_globals'))) {
+        if (in_array($page, array(WPACU_PLUGIN_NAME.'_settings', WPACU_PLUGIN_NAME.'_home_page', WPACU_PLUGIN_NAME.'_globals'))) {
             $this->loadPluginAssets = true;
         }
 
@@ -62,6 +69,10 @@ class OwnAssets
      */
     public function stylesAndScriptsForPublic()
     {
+        if (! current_user_can('manage_options')) {
+            return;
+        }
+
         $this->enqueuePublicStyles();
         $this->enqueuePublicScripts();
     }
@@ -71,7 +82,8 @@ class OwnAssets
      */
     private function enqueueAdminStyles()
     {
-        wp_enqueue_style(WPACU_PLUGIN_NAME . '-style', plugins_url('/assets/style.min.css', WPACU_PLUGIN_FILE));
+        $styleRelPath = '/assets/style.min.css';
+        wp_enqueue_style(WPACU_PLUGIN_NAME . '-style', plugins_url($styleRelPath, WPACU_PLUGIN_FILE), array(), $this->_assetVer($styleRelPath));
         wp_enqueue_style(WPACU_PLUGIN_NAME . '-icheck-square-red', plugins_url('/assets/icheck/skins/square/red.css', WPACU_PLUGIN_FILE));
     }
 
@@ -114,23 +126,29 @@ class OwnAssets
             }
         }
 
-        wp_register_script(WPACU_PLUGIN_NAME . '-script', plugins_url('/assets/script.min.js', WPACU_PLUGIN_FILE), array('jquery'), '1.1');
+        $scriptRelPath = '/assets/script.min.js';
+
+        wp_register_script(
+            WPACU_PLUGIN_NAME . '-script',
+            plugins_url($scriptRelPath, WPACU_PLUGIN_FILE),
+            array('jquery'),
+            $this->_assetVer($scriptRelPath)
+        );
 
         // It can also be the front page URL
         $postUrl = Misc::getPostUrl($postId);
-
-        $this->fetchUrl = $postUrl;
 
         wp_localize_script(
             WPACU_PLUGIN_NAME . '-script',
             'wpacu_object',
             array(
-                'plugin_name' => WPACU_PLUGIN_NAME,
-                'start_del'   => Main::START_DEL,
-                'end_del'     => Main::END_DEL,
-                'ajax_url'    => admin_url('admin-ajax.php'),
-                'post_id'     => $postId,
-                'post_url'    => $postUrl
+                'plugin_name'  => WPACU_PLUGIN_NAME,
+                'dom_get_type' => Main::$domGetType,
+                'start_del'    => Main::START_DEL,
+                'end_del'      => Main::END_DEL,
+                'ajax_url'     => admin_url('admin-ajax.php'),
+                'post_id'      => $postId,
+                'post_url'     => $postUrl
             )
         );
 
@@ -143,10 +161,9 @@ class OwnAssets
      */
     private function enqueuePublicStyles()
     {
-        if (Main::instance()->frontendShow && current_user_can('manage_options') && !isset($_POST[WPACU_PLUGIN_NAME.'_load'])) {
-            wp_enqueue_style(WPACU_PLUGIN_NAME . '-style', plugins_url('/assets/style.min.css', WPACU_PLUGIN_FILE));
-            wp_enqueue_style(WPACU_PLUGIN_NAME . '-icheck-square-red', plugins_url('/assets/icheck/skins/square/red.css', WPACU_PLUGIN_FILE));
-        }
+        $styleRelPath = '/assets/style.min.css';
+        wp_enqueue_style(WPACU_PLUGIN_NAME . '-style', plugins_url($styleRelPath, WPACU_PLUGIN_FILE), array(), $this->_assetVer($styleRelPath));
+        wp_enqueue_style(WPACU_PLUGIN_NAME . '-icheck-square-red', plugins_url('/assets/icheck/skins/square/red.css', WPACU_PLUGIN_FILE));
     }
 
     /**
@@ -154,9 +171,23 @@ class OwnAssets
      */
     public function enqueuePublicScripts()
     {
-        if (Main::instance()->frontendShow && current_user_can('manage_options') && !isset($_POST[WPACU_PLUGIN_NAME.'_load'])) {
-            wp_enqueue_script(WPACU_PLUGIN_NAME . '-icheck', plugins_url('/assets/icheck/icheck.min.js', WPACU_PLUGIN_FILE), array('jquery'));
-            wp_enqueue_script(WPACU_PLUGIN_NAME . '-script', plugins_url('/assets/script.min.js', WPACU_PLUGIN_FILE), array('jquery'), '1.1');
+        $scriptRelPath = '/assets/script.min.js';
+        wp_enqueue_script(WPACU_PLUGIN_NAME . '-icheck', plugins_url('/assets/icheck/icheck.min.js', WPACU_PLUGIN_FILE), array('jquery'));
+        wp_enqueue_script(WPACU_PLUGIN_NAME . '-script', plugins_url($scriptRelPath, WPACU_PLUGIN_FILE), array('jquery'), $this->_assetVer($scriptRelPath));
+    }
+
+    /**
+     * @param $relativePath
+     * @return bool|false|int|string
+     */
+    private function _assetVer($relativePath)
+    {
+        $assetVer = @filemtime(dirname(WPACU_PLUGIN_FILE) . $relativePath);
+
+        if (! $assetVer) {
+            $assetVer = date('dmYHi');
         }
+
+        return $assetVer;
     }
 }

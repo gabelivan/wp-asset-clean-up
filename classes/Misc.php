@@ -73,10 +73,12 @@ class Misc
         // Was the home page detected?
         if (self::isHomePage()) {
             if (get_site_url() != get_home_url()) {
-                return get_home_url();
+                $postUrl = get_home_url();
             } else {
-                return get_site_url();
+                $postUrl = get_site_url();
             }
+
+            return self::_filterPostUrl($postUrl);
         }
 
         if ($postId > 0) {
@@ -89,12 +91,19 @@ class Misc
             }
         }
 
+        return self::_filterPostUrl($postUrl);
+    }
+
+    /**
+     * @param $postUrl
+     * @return mixed
+     */
+    private static function _filterPostUrl($postUrl)
+    {
         // If we are in the Dashboard on a HTTPS connection,
         // then we will make the AJAX call over HTTPS as well for the front-end
         // to avoid blocking
-        $https = Misc::isHttpsSecure();
-
-        if ($https && strpos($postUrl, 'http://') === 0) {
+        if (Misc::isHttpsSecure() && strpos($postUrl, 'http://') === 0) {
             $postUrl = str_ireplace('http://', 'https://', $postUrl);
         }
 

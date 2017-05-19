@@ -29,7 +29,7 @@ if (! empty($data['all']['styles'])) {
         <div class="wpacu_note wpacu_warning"><em><?php
                 echo sprintf(
                     __('Assets that are marked with %s are part of WordPress core files. Be careful if you decide to unload them!', WPACU_PLUGIN_NAME),
-                    '<img src="'.WPACU_PLUGIN_URL.'/assets/img/icon-warning.png" width="20" height="20" alt="" align="top" />'
+                    '<span class="dashicons dashicons-warning"></span>'
                 );
                 ?>
             </em></div><br />
@@ -73,11 +73,7 @@ if (! empty($data['all']['styles'])) {
                         <?php
                         if (isset($obj->wp) && $obj->wp) {
                             ?>
-                            <img src="<?php echo WPACU_PLUGIN_URL; ?>/assets/img/icon-warning.png"
-                                 width="20"
-                                 height="20"
-                                 alt=""
-                                 align="top" />
+                            <span class="dashicons dashicons-warning"></span>
                             <?php
                         }
                         ?>
@@ -269,7 +265,7 @@ if (! empty($data['all']['scripts'])) {
     <div class="wpacu_note wpacu_warning"><em><?php
         echo sprintf(
             __('Assets that are marked with %s are part of WordPress core files. Be careful if you decide to unload them!', WPACU_PLUGIN_NAME),
-            '<img src="'.WPACU_PLUGIN_URL.'/assets/img/icon-warning.png" width="20" height="20" alt="" align="top" />'
+            '<span class="dashicons dashicons-warning"></span>'
         );
         ?>
     </em></div><br />
@@ -313,11 +309,7 @@ if (! empty($data['all']['scripts'])) {
                         <?php
                         if (isset($obj->wp) && $obj->wp) {
                             ?>
-                            <img src="<?php echo WPACU_PLUGIN_URL; ?>/assets/img/icon-warning.png"
-                                 width="20"
-                                 height="20"
-                                 alt=""
-                                 align="top" />
+                            <span class="dashicons dashicons-warning"></span>
                             <?php
                         }
                         ?>
