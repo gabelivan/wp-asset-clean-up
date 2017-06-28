@@ -31,60 +31,60 @@ jQuery(document).ready(function($) {
                     //$(this).closest('tr').addClass('wpacu_not_load');
 
                     /*
-                    if ($(this).hasClass('wpacu_global_style')) {
-                        $('#style_' + handle).iCheck('check').iCheck('disable');
-                    } else if($(this).hasClass('wpacu_global_script')) {
-                        $('#script_' + handle).iCheck('check').iCheck('disable');
-                    }
-                    */
+                     if ($(this).hasClass('wpacu_global_style')) {
+                     $('#style_' + handle).iCheck('check').iCheck('disable');
+                     } else if($(this).hasClass('wpacu_global_script')) {
+                     $('#script_' + handle).iCheck('check').iCheck('disable');
+                     }
+                     */
                 } else {
                     $(this).parent('label').removeClass('wpacu_global_checked');
                     //$(this).closest('tr').removeClass('wpacu_not_load');
 
                     /*
-                    if ($(this).hasClass('wpacu_global_style')) {
-                        $('#style_' + handle).iCheck('uncheck').iCheck('enable');
-                    } else if($(this).hasClass('wpacu_global_script')) {
-                        $('#script_' + handle).iCheck('uncheck').iCheck('enable');
-                    }
-                    */
+                     if ($(this).hasClass('wpacu_global_style')) {
+                     $('#style_' + handle).iCheck('uncheck').iCheck('enable');
+                     } else if($(this).hasClass('wpacu_global_script')) {
+                     $('#script_' + handle).iCheck('uncheck').iCheck('enable');
+                     }
+                     */
 
                     /*
-                    // Un-check make exception as it is not relevant
-                    // if unload everywhere is selected
-                    $('#wpacu_style_load_it_' + handle)
-                        .prop('checked', false)
-                        .parent('label').removeClass('wpacu_global_unload_exception');
-                    */
+                     // Un-check make exception as it is not relevant
+                     // if unload everywhere is selected
+                     $('#wpacu_style_load_it_' + handle)
+                     .prop('checked', false)
+                     .parent('label').removeClass('wpacu_global_unload_exception');
+                     */
                 }
             });
 
             /*
-            // Asset Global Options
-            $('.wpacu_global_option').click(function() {
-                var handle = $(this).attr('data-handle'), handleType;
+             // Asset Global Options
+             $('.wpacu_global_option').click(function() {
+             var handle = $(this).attr('data-handle'), handleType;
 
-                if ($(this).hasClass('wpacu_style')) {
-                    handleType = 'style';
-                } else if ($(this).hasClass('wpacu_script')) {
-                    handleType = 'script';
-                }
+             if ($(this).hasClass('wpacu_style')) {
+             handleType = 'style';
+             } else if ($(this).hasClass('wpacu_script')) {
+             handleType = 'script';
+             }
 
-                if ($(this).val() == 'remove') {
-                    $(this).closest('tr').removeClass('wpacu_not_load');
-                    $('#wpacu_load_it_option_'+ handleType +'_'+ handle).hide();
-                }
+             if ($(this).val() == 'remove') {
+             $(this).closest('tr').removeClass('wpacu_not_load');
+             $('#wpacu_load_it_option_'+ handleType +'_'+ handle).hide();
+             }
 
-                if ($(this).val() == 'default'
-                    && !$('#wpacu_'+ handleType +'_load_it_'+ handle).prop('checked')) {
-                    $(this).closest('tr').addClass('wpacu_not_load');
-                }
+             if ($(this).val() == 'default'
+             && !$('#wpacu_'+ handleType +'_load_it_'+ handle).prop('checked')) {
+             $(this).closest('tr').addClass('wpacu_not_load');
+             }
 
-                if ($(this).val() == 'default') {
-                    $('#wpacu_load_it_option_'+ handleType + '_' + handle).show();
-                }
-            });
-            */
+             if ($(this).val() == 'default') {
+             $('#wpacu_load_it_option_'+ handleType + '_' + handle).show();
+             }
+             });
+             */
 
             $('.wpacu_post_type_unload').click(function() {
                 if ($(this).prop('checked')) {
@@ -96,21 +96,35 @@ jQuery(document).ready(function($) {
 
             // Load it checkbox
             $('.wpacu_load_it_option').click(function() {
-                /*
-                var handle = $(this).attr('data-handle'), wpacu_input_name;
+                var handle = $(this).attr('data-handle');
 
-                if ($(this).hasClass('wpacu_style')) {
-                    wpacu_input_name = 'wpacu_options_styles['+ handle +']';
-                } else if ($(this).hasClass('wpacu_script')) {
-                    wpacu_input_name = 'wpacu_options_scripts['+ handle +']';
-                }
-                */
+                /*
+                 var handle = $(this).attr('data-handle'), wpacu_input_name;
+
+                 if ($(this).hasClass('wpacu_style')) {
+                 wpacu_input_name = 'wpacu_options_styles['+ handle +']';
+                 } else if ($(this).hasClass('wpacu_script')) {
+                 wpacu_input_name = 'wpacu_options_scripts['+ handle +']';
+                 }
+                 */
 
                 if ($(this).prop('checked')) {
                     $(this).parent('label').addClass('wpacu_global_unload_exception');
+
+                    // Uncheck "Unload on this page" as it's not relevant anymore
+                    var asset_type = '';
+
+                    if ($(this).hasClass('wpacu_style')) {
+                        asset_type = 'style';
+                    } else if ($(this).hasClass('wpacu_script')) {
+                        asset_type = 'script';
+                    }
+
+                    $('#' + asset_type + '_' + handle).iCheck('uncheck');
+
                     //$(this).closest('tr').removeClass('wpacu_not_load');
-                ///} else if ($('input[name="'+ wpacu_input_name +'"]:checked').val() == 'default') {
-                //    $(this).parent('label').removeClass('wpacu_global_unload_exception');
+                    ///} else if ($('input[name="'+ wpacu_input_name +'"]:checked').val() == 'default') {
+                    //    $(this).parent('label').removeClass('wpacu_global_unload_exception');
                     //$(this).closest('tr').addClass('wpacu_not_load');
                 } else {
                     $(this).parent('label').removeClass('wpacu_global_unload_exception');
@@ -170,7 +184,10 @@ jQuery(document).ready(function($) {
             if ('btoa' in window) {
                 // Non-Latin Characters get stripped
                 // We only need the content related to the assets
-                data.contents = window.btoa(contents.replace(/[\u0250-\ue007]/g, ''));
+                contents = contents.replace(/[\u0250-\ue007]/g, '');
+                contents = contents.replace(/[^\x00-\x7F]/g, '');
+
+                data.contents = window.btoa(contents);
             }
 
             //console.log(data);

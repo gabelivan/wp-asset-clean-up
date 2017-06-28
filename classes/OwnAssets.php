@@ -51,7 +51,7 @@ class OwnAssets
             $this->loadPluginAssets = true;
         }
 
-        if (in_array($page, array(WPACU_PLUGIN_NAME.'_settings', WPACU_PLUGIN_NAME.'_home_page', WPACU_PLUGIN_NAME.'_globals'))) {
+        if (in_array($page, array(WPACU_PLUGIN_NAME.'_settings', WPACU_PLUGIN_NAME.'_home_page', WPACU_PLUGIN_NAME.'_bulk_unloads', WPACU_PLUGIN_NAME.'_get_help'))) {
             $this->loadPluginAssets = true;
         }
 
@@ -189,5 +189,20 @@ class OwnAssets
         }
 
         return $assetVer;
+    }
+
+    public function codeablePostProject()
+    {
+        ?>
+        <script>
+            (function(c,o,d,e,a,b,l){c['CodeableObject']=a;c[a]=c[a]||function(){
+                    (c[a].q=c[a].q||[]).push(arguments)},c[a].l=1*new Date();b=o.createElement(d),
+                l=o.getElementsByTagName(d)[0];b.async=1;b.src=e;l.parentNode.insertBefore(b,l)
+            })(window,document,'script','https://referoo.co/assets/form.js','cdbl');
+
+            cdbl('shortcode', '0JTXB');
+            cdbl('render', 'wpacu-get-quote');
+        </script>
+        <?php
     }
 }

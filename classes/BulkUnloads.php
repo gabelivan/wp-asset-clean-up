@@ -2,10 +2,11 @@
 namespace WpAssetCleanUp;
 
 /**
- * Class GlobalRules
+ *
+ * Class BulkUnloads
  * @package WpAssetCleanUp
  */
-class GlobalRules
+class BulkUnloads
 {
     /**
      * @var string
@@ -59,7 +60,7 @@ class GlobalRules
     /**
      *
      */
-    public function page()
+    public function pageBulkUnloads()
     {
         $this->data['for'] = $this->wpacuFor;
 
@@ -68,7 +69,7 @@ class GlobalRules
 
             // Get All Post Types
             $postTypes = get_post_types(array('public' => true));
-            $this->data['post_types_list'] = $postTypes;
+            $this->data['post_types_list'] = $this->filterPostTypesList($postTypes);
         }
 
         $this->data['values'] = $this->getCount();
@@ -76,7 +77,23 @@ class GlobalRules
         $this->data['nonce_name'] = Update::NONCE_FIELD_NAME;
         $this->data['nonce_action'] = Update::NONCE_ACTION_NAME;
 
-        Main::instance()->parseTemplate('settings-globals', $this->data, true);
+        Main::instance()->parseTemplate('settings-bulk-unloads', $this->data, true);
+    }
+
+    /**
+     * @param $postTypes
+     *
+     * @return mixed
+     */
+    public function filterPostTypesList($postTypes)
+    {
+        foreach ($postTypes as $postTypeKey => $postTypeValue) {
+            if ($postTypeKey === 'product' && Misc::isWooCommerceActive()) {
+                $postTypes[$postTypeKey] = 'product &#8594; WooCommerce';
+            }
+        }
+
+        return $postTypes;
     }
 
     /**

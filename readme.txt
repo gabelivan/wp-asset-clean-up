@@ -3,8 +3,8 @@ Contributors: gabelivan
 Tags: speed, pagespeed, dequeue style, dequeue script, unload style, unload script, fast
 Donate link: https://www.gabelivan.com/donate/
 Requires at least: 4.0
-Tested up to: 4.7.5
-Stable tag: 1.2.4.4
+Tested up to: 4.7.8
+Stable tag: 1.2.5.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -102,6 +102,13 @@ If that's the case, then it's advisable to consult with a developer (ideally the
 4. Scripts (.JS) are selected for site-wide unload
 
 == Changelog ==
+= 1.2.5.1 =
+* Bug Fix: Better accuracy for determining the current post ID and whether the page is the home page
+
+= 1.2.5 =
+* Bug Fix: Remove JavaScript error from window.btoa() in case the page contains non-latin characters
+* Added "Get Help" page within the plugin's menu to anyone interested in hiring me or any of my colleagues for professional help related to the plugin or any other WordPress task
+
 = 1.2.4.4 =
 * Updated AJAX calls to work fine within the Dashboard even if mod_security Apache module is enabled as there were some problems on specific servers
 * Added "Unload on this page" text next to the first checkbox to explain its purpose better

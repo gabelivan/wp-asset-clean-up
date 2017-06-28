@@ -806,6 +806,9 @@ class Main
                 $data['post_type_unloaded'] = $this->getPostTypeUnload($data['post_type']);
             }
 
+            $data['total_styles']  = (! empty($data['all']['styles'])) ? count($data['all']['styles']) : false;
+            $data['total_scripts'] = (! empty($data['all']['scripts'])) ? count($data['all']['scripts']) : false;
+
             $this->parseTemplate('settings-frontend', $data, true);
         } elseif ($isDashboardView) {
             // AJAX call (not the classic WP one) from the WP Dashboard
@@ -829,7 +832,11 @@ class Main
     {
         define('WPACU_TPL_LOADED', true);
 
-        $templateFile = dirname(__DIR__) . '/templates/' . $name . '.php';
+        $templateFile = apply_filters(
+            'wpacu_template_file', // tag
+            dirname(__DIR__) . '/templates/' . $name . '.php', // value
+            $name // extra argument
+        );
 
         if (! file_exists($templateFile)) {
             wp_die('Template '.$name.' not found.');
@@ -884,6 +891,7 @@ class Main
 
         $data['all'] = (array)json_decode($json);
 
+        // This value is needed to determine the location of an asset (HEAD OR BODY)
         if ($contents != '') {
             $data['contents'] = base64_decode($contents);
         }
@@ -920,6 +928,9 @@ class Main
         $type = ($postId == 0) ? 'front_page' : 'post';
 
         $data['load_exceptions'] = $this->getLoadExceptions($type, $postId);
+
+        $data['total_styles']  = (! empty($data['all']['styles'])) ? count($data['all']['styles']) : false;
+        $data['total_scripts'] = (! empty($data['all']['scripts'])) ? count($data['all']['scripts']) : false;
 
         $this->parseTemplate('meta-box-loaded', $data, true);
 
@@ -1071,9 +1082,11 @@ class Main
             $postId = $this->getCurrentPostId();
         }
 
+        $isInAdminPageViaAjax = (is_admin() && defined('DOING_AJAX') && DOING_AJAX);
+
         if (! $this->assetsRemoved) {
             // For Home Page (latest blog posts)
-            if ($postId < 1) {
+            if ($postId < 1 && ($isInAdminPageViaAjax || Misc::isHomePage())) {
                 $this->assetsRemoved = get_option(WPACU_PLUGIN_NAME . '_front_page_no_load');
                 return $this->assetsRemoved;
             } elseif ($postId > 0) {
@@ -1110,7 +1123,8 @@ class Main
         }
 
         // Are we on the `Shop` page from WooCommerce?
-        $wooCommerceShopPageId = get_option('woocommerce_shop_page_id');
+        // Only check option if function `is_shop` exists
+        $wooCommerceShopPageId = function_exists('is_shop') ? get_option('woocommerce_shop_page_id') : 0;
 
         if (function_exists('is_shop') && is_shop()) {
             $this->currentPostId = $wooCommerceShopPageId;
@@ -1120,25 +1134,25 @@ class Main
             }
         } else {
             if ($wooCommerceShopPageId > 0 && Misc::isHomePage()) {
-                $siteUrl = get_site_url();
+                if (strpos(get_site_url(), '://') !== false) {
+                    list($siteUrlAfterProtocol) = explode('://', get_site_url());
+                    $currentPageUrlAfterProtocol = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-                list($url) = explode('?', get_site_url(), 2);
-                list($requestUriNoParams) = explode('?', $_SERVER['REQUEST_URI'], 2);
-                $parts = parse_url($url);
-                $currentPageUrl = substr($url, 0, -strlen($parts['path'])) . $requestUriNoParams;
-
-                if ($siteUrl != $currentPageUrl && (strpos($currentPageUrl, '/shop') !== false)) {
-                    $this->vars['woo_url_not_match'] = true;
+                    if ($siteUrlAfterProtocol != $currentPageUrlAfterProtocol && (strpos($siteUrlAfterProtocol,
+                                '/shop') !== false)
+                    ) {
+                        $this->vars['woo_url_not_match'] = true;
+                    }
                 }
             }
         }
 
-        if (is_singular() && (! $this->currentPostId)) {
+        if (is_singular() && ($this->currentPostId < 1)) {
             global $post;
             $this->currentPostId = isset($post->ID) ? $post->ID : 0;
         }
 
-        // Undetectable? The page is not a single one nor the home page
+        // Undetectable? The page is not a singular one nor the home page
         // It's likely an archive, category page (WooCommerce), 404 page etc.
         if (! $this->currentPostId && ! Misc::isHomePage()) {
             $this->isUpdateable = false;

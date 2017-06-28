@@ -35,7 +35,11 @@ class Update
      */
     public function frontendUpdate()
     {
-        $post = get_post(Main::instance()->currentPostId);
+        $postId = 0;
+
+        if (Main::instance()->currentPostId > 0) {
+            $postId = Main::instance()->currentPostId;
+        }
 
         // Check nonce
         $nonceName = self::NONCE_FIELD_NAME;
@@ -54,7 +58,7 @@ class Update
         }
 
         if (! wp_verify_nonce($_POST[$nonceName], $nonceAction)) {
-            $postUrlAnchor = get_permalink($post->ID).'#wpacu_wrap_assets';
+            $postUrlAnchor = get_permalink($postId).'#wpacu_wrap_assets';
             wp_die(
                 sprintf(
                     __('The nonce expired or is not correct, thus the request was not processed. %sPlease retry%s.', WPACU_PLUGIN_NAME),
@@ -65,12 +69,13 @@ class Update
             );
         }
 
-        if (Misc::isHomePage() && ! (isset($post->ID) && $post->ID > 0)) {
+        if (Misc::isHomePage() && ! ($postId > 0)) {
             $wpacuNoLoadAssets = isset($_POST[WPACU_PLUGIN_NAME])
                 ? $_POST[WPACU_PLUGIN_NAME] : array();
 
             $this->updateFrontPage($wpacuNoLoadAssets);
-        } else {
+        } elseif ($postId > 0) {
+            $post = get_post($postId);
             $this->savePost($post->ID, $post);
         }
     }

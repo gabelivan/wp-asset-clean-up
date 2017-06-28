@@ -7,11 +7,17 @@ if (! isset($data)) {
 }
 ?>
 <h1><?php _e('WP Asset CleanUp', WPACU_PLUGIN_NAME); ?></h1>
-<h2><?php _e('Global Rules', WPACU_PLUGIN_NAME); ?></h2>
+<h2><?php _e('Bulk Unloads', WPACU_PLUGIN_NAME); ?></h2>
+
+<p>If <u>any of the options below are used</u>, then the assets will be shown here. Although, you can manage them when editing a page/post, this page will make things easier by seeing all the bulk unloads:</p>
+<ul>
+    <li>&#8594; Unload everywhere</li>
+    <li>&#8594; Unload on All Pages of <em>[post type here]</em> post type</li>
+</ul>
 
 <nav class="nav-tab-wrapper">
-    <a href="admin.php?page=wpassetcleanup_globals" class="nav-tab <?php if ($data['for'] === 'everywhere') { ?>nav-tab-active<?php } ?>">Everywhere</a>
-    <a href="admin.php?page=wpassetcleanup_globals&wpacu_for=post_types" class="nav-tab <?php if ($data['for'] === 'post_types') { ?>nav-tab-active<?php } ?>">Post Types</a>
+    <a href="admin.php?page=wpassetcleanup_bulk_unloads" class="nav-tab <?php if ($data['for'] === 'everywhere') { ?>nav-tab-active<?php } ?>">Everywhere</a>
+    <a href="admin.php?page=wpassetcleanup_bulk_unloads&wpacu_for=post_types" class="nav-tab <?php if ($data['for'] === 'post_types') { ?>nav-tab-active<?php } ?>">Post Types</a>
 </nav>
 
 <div class="clear"></div>
@@ -21,13 +27,13 @@ if ($data['for'] === 'post_types') {
     ?>
     <div style="margin: 15px 0;">
         <form id="wpacu_post_type_form" method="get" action="admin.php">
-            <input type="hidden" name="page" value="wpassetcleanup_globals" />
+            <input type="hidden" name="page" value="wpassetcleanup_bulk_unloads" />
             <input type="hidden" name="wpacu_for" value="post_types" />
 
             <div style="margin: 0 0 10px 0;">Select the page or post type (including custom ones) for which you want to see the unloaded scripts &amp; styles:</div>
             <select id="wpacu_post_type_select" name="wpacu_post_type">
-                <?php foreach ($data['post_types_list'] as $postType) { ?>
-                <option <?php if ($data['post_type'] === $postType) { echo 'selected="selected"'; } ?> value="<?php echo $postType; ?>"><?php echo $postType; ?></option>
+                <?php foreach ($data['post_types_list'] as $postTypeKey => $postTypeValue) { ?>
+                <option <?php if ($data['post_type'] === $postTypeKey) { echo 'selected="selected"'; } ?> value="<?php echo $postTypeKey; ?>"><?php echo $postTypeValue; ?></option>
                 <?php } ?>
             </select>
         </form>
@@ -84,7 +90,7 @@ if ($data['for'] === 'everywhere') {
             <?php
         } else {
             ?>
-            <p>There are no global unloaded styles for your selection.</p>
+            <p>There are no bulk unloaded styles for your selection.</p>
             <?php
         }
         ?>

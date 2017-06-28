@@ -17,7 +17,17 @@ if (! isset($data)) {
  * --------------------
  */
 ?>
+
 <h3><?php _e('Styles (.css files)', WPACU_PLUGIN_NAME); ?></h3>
+
+<?php
+if ($data['total_styles']) {
+?>
+<h4>&#10141; Total enqueued files: <strong><?php echo $data['total_styles']; ?></strong></h4>
+<?php
+}
+?>
+
 <?php
 if (! empty($data['all']['styles'])) {
     ?>
@@ -65,10 +75,12 @@ if (! empty($data['all']['styles'])) {
                     $class .= ' wpacu_not_load';
                 }
             }
+
+            $class .= ' style_'.$obj->handle;
             ?>
             <tr class="wpacu_asset_row <?php echo $class; ?>">
                 <td valign="top" style="width: 100%;">
-                    <p style="margin-top: 0px;">
+                    <p style="margin-top: 0;">
                         <label for="style_<?php echo $obj->handle; ?>"><?php _e('Handle:', WPACU_PLUGIN_NAME); ?> <strong><span style="color: green;"><?php echo $obj->handle; ?></span></strong></label>
                         <?php
                         if (isset($obj->wp) && $obj->wp) {
@@ -254,6 +266,15 @@ if (! empty($data['all']['styles'])) {
  */
 ?>
 <h3><?php _e('Scripts (.js files)', WPACU_PLUGIN_NAME); ?></h3>
+
+<?php
+if ($data['total_scripts']) {
+?>
+<h4>&#10141; Total enqueued files: <strong><?php echo $data['total_scripts']; ?></strong></h4>
+<?php
+}
+?>
+
 <?php
 if (! empty($data['all']['scripts'])) {
     ?>
@@ -301,10 +322,12 @@ if (! empty($data['all']['scripts'])) {
                     $class .= ' wpacu_not_load';
                 }
             }
+
+            $class .= ' script_'.$obj->handle;
             ?>
             <tr class="wpacu_asset_row <?php echo $class; ?>">
                 <td valign="top" style="width: 100%;">
-                    <p style="margin-top: 0px;">
+                    <p style="margin-top: 0;">
                         <label for="script_<?php echo $obj->handle; ?>"> <?php _e('Handle:', WPACU_PLUGIN_NAME); ?> <strong><span style="color: green;"><?php echo $obj->handle; ?></span></strong></label>
                         <?php
                         if (isset($obj->wp) && $obj->wp) {
