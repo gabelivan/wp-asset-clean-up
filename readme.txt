@@ -1,4 +1,4 @@
-=== WP Asset CleanUp ===
+=== WP Asset CleanUp (Page Speed Optimizer) ===
 Contributors: gabelivan
 Tags: speed, pagespeed, dequeue style, dequeue script, unload style, unload script, fast
 Donate link: https://www.gabelivan.com/donate/
@@ -8,10 +8,10 @@ Stable tag: 1.2.5.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
-Make your website load FASTER by preventing specific scripts (.JS) & styles (.CSS) from loading on pages/posts and home page
+Make your website load FASTER by preventing specific scripts (.JS) & styles (.CSS) from loading on pages/posts and home page. Works best in addition to a cache plugin!
 
 == Description ==
-* Make your web pages load FASTER with "WP Asset CleanUp"
+* Make your web pages load FASTER with "WP Asset CleanUp (Page Speed Optimizer)"
 * Faster page load = Happier Visitors = More Conversions
 
 There are often times when you are using a theme and a number of plugins which are enabled and run on the same page. However, you don't need to use all of them and to improve the speed of your website and make the HTML source code cleaner (convenient for debugging purposes), it's better to prevent those styles and scripts from loading.

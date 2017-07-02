@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: WP Asset CleanUp
+ * Plugin Name: WP Asset CleanUp (Page Speed Optimizer)
  * Plugin URI: https://wordpress.org/plugins/wp-asset-clean-up/
  * Version: 1.2.5.1
  * Description: Prevent Chosen Scripts & Styles from loading in Posts/Pages that you don't need
