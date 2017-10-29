@@ -104,6 +104,8 @@ class Main
      */
     public $postTypesUnloaded = array();
 
+    public $settings = array();
+
     /**
      * @var Main|null
      */
@@ -126,14 +128,14 @@ class Main
      */
     public function __construct()
     {
-        $wpacuSettings = new Settings();
-        $settings = $wpacuSettings->getAll();
+        $wpacuSettingsClass = new Settings();
+        $this->settings = $wpacuSettingsClass->getAll();
 
-        $this->frontendShow = $settings['frontend_show'];
-        $this->dashboardShow = $settings['dashboard_show'];
+        $this->frontendShow = $this->settings['frontend_show'];
+        $this->dashboardShow = $this->settings['dashboard_show'];
 
-        if ($this->dashboardShow && $settings['dom_get_type'] != '') {
-            self::$domGetType = $settings['dom_get_type'];
+        if ($this->dashboardShow && $this->settings['dom_get_type'] != '') {
+            self::$domGetType = $this->settings['dom_get_type'];
         }
 
         if (array_key_exists(WPACU_PLUGIN_NAME.'_load', $_POST)) {
@@ -171,7 +173,7 @@ class Main
 
         // Do not load the meta box nor do any AJAX calls
         // if the asset management is not enabled for the Dashboard
-        if ($settings['dashboard_show'] == 1) {
+        if ($this->settings['dashboard_show'] == 1) {
             // Send an AJAX request to get the list of loaded scripts and styles and print it nicely
             add_action(
                 'wp_ajax_'. WPACU_PLUGIN_NAME . '_get_loaded_assets',

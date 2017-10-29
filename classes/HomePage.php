@@ -24,7 +24,7 @@ class HomePage
 
         // Only continue if we are on the plugin's homepage edit mode
         if (! $isHomePageEdit) {
-            return '';
+            return;
         }
 
         if ($this->data['show_on_front'] === 'page') {
@@ -40,7 +40,7 @@ class HomePage
             if ($this->data['page_for_posts']) {
                 $this->data['page_for_posts_title'] = get_the_title($this->data['page_for_posts']);
             }
-        } elseif ($this->data['show_on_front'] === 'posts') {
+        } else {
             // Your latest posts
             $postUrl = get_site_url();
 

@@ -182,12 +182,16 @@ jQuery(document).ready(function($) {
             };
 
             if ('btoa' in window) {
-                // Non-Latin Characters get stripped
-                // We only need the content related to the assets
-                contents = contents.replace(/[\u0250-\ue007]/g, '');
-                contents = contents.replace(/[^\x00-\x7F]/g, '');
+                try {
+                    // Non-Latin Characters get stripped
+                    // We only need the content related to the assets
+                    contents = contents.replace(/[\u0250-\ue007]/g, '');
+                    contents = contents.replace(/[^\x00-\x7F]/g, '');
 
-                data.contents = window.btoa(contents);
+                    data.contents = window.btoa(contents);
+                } catch(err) {
+                    data.contents = '';
+                }
             }
 
             //console.log(data);

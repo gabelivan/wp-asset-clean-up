@@ -4,7 +4,7 @@ Tags: speed, pagespeed, dequeue style, dequeue script, unload style, unload scri
 Donate link: https://www.gabelivan.com/donate/
 Requires at least: 4.0
 Tested up to: 4.7.8
-Stable tag: 1.2.5.1
+Stable tag: 1.2.5.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -102,6 +102,9 @@ If that's the case, then it's advisable to consult with a developer (ideally the
 4. Scripts (.JS) are selected for site-wide unload
 
 == Changelog ==
+= 1.2.5.2 =
+* Bug Fix: Unload on All Pages of [post_type_here] post type wasn't keeping previous records when choosing new values to unload
+
 = 1.2.5.1 =
 * Bug Fix: Better accuracy for determining the current post ID and whether the page is the home page
 

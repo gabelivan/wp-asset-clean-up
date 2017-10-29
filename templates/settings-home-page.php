@@ -45,12 +45,12 @@ if ($data['show_on_front'] === 'page') {
     </div>
     <p><?php echo sprintf(__('To read more about creating a static front page in WordPress, %scheck the Codex%s.', WPACU_PLUGIN_NAME), '<a href="https://codex.wordpress.org/Creating_a_Static_Front_Page">', '</a>'); ?></p>
     <?php
-} elseif ($data['show_on_front'] == 'posts') {
+} else {
 ?>
     <form id="wpacu_home_page_form" method="post" action="">
         <p><?php echo sprintf(__('Your front (home) page URL is <strong>%s</strong>'), $data['site_url']); ?></p>
 
-        <p><?php _e('Here you can manage the assets that are not loading for the home page. It is only applicable if "Front page displays" is set to "Your latest posts" (in "Settings" -&gt; "Reading"). When you edit a page/post (e.g. "Posts" -&gt; "All Posts", "Pages" -&gt; "All Pages" etc.), you will see the list inside a meta box.', WPACU_PLUGIN_NAME); ?></p>
+        <p><?php _e('Here you can unload assets that are loading on the home page. "Front page displays" (from "Settings" - "Reading") is set to either "Your latest posts" (in "Settings" -&gt; "Reading") OR a special layout (from a theme or plugin) was enabled. When you edit a page/post (e.g. "Posts" -&gt; "All Posts", "Pages" -&gt; "All Pages" etc.), you will see the list inside a meta box.', WPACU_PLUGIN_NAME); ?></p>
 
         <p>The plugin uses <a target="_blank" href="https://codex.wordpress.org/Function_Reference/is_front_page">is_front_page()</a> and <a href="https://codex.wordpress.org/Conditional_Tags#The_Main_Page">is_home()</a> WordPress functions to check if the visitor is on the home page. Note that the setting will also apply to pages such as <code>/page/2</code> <code>page/3</code> etc. in case the latest blog posts are paginated.</p>
 
@@ -68,11 +68,5 @@ if ($data['show_on_front'] === 'page') {
         <input type="hidden" name="<?php echo $data['nonce_name']; ?>" value="<?php echo $data['nonce_value']; ?>" />
         <p class="submit"><input type="submit" name="submit" id="submit" class="hidden button button-primary" value="<?php esc_attr_e('Update', WPACU_PLUGIN_NAME); ?>"></p>
     </form>
-<?php
-} else {
-    ?>
-    <p>It looks like in "Settings" -&gt; "Reading" (/wp-admin/options-reading.php), you have neither of the following options checked: "Your latest posts" and "A static page (select below)".</p>
-    <p>Your theme or a plugin could interfere with it. Consider enabling "Manage in the Front-end?" in plugin's settings (WP Asset CleanUp -&gt; Settings). This should show the list of all assets at the bottom of your home page on front-end view (only if you're logged in).</p>
-    <p>If you already tried the suggested option and still can't make it work, <a href="https://wordpress.org/support/plugin/wp-asset-clean-up">please open a ticket</a> on the plugin's support page.</p>
 <?php
 }

@@ -442,7 +442,11 @@ class Update
 
                 if ($bulkType === 'post_type') {
                     foreach ($values as $postType => $handles) {
-                        $existingList[$assetType]['post_type'][$postType] = array_unique($handles);
+                    	foreach (array_unique($handles) as $handle) {
+		                    $existingList[ $assetType ]['post_type'][ $postType ][] = $handle;
+	                    }
+
+	                    $existingList[ $assetType ]['post_type'][ $postType ] = array_unique($existingList[ $assetType ]['post_type'][ $postType ]);
                     }
                 }
             }
