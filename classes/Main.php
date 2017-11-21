@@ -24,10 +24,10 @@ class Main
      */
     public static $domGetType = 'direct';
 
-    /**
-     * @var array
-     */
-    public $assetsRemoved = array();
+	/**
+	 * @var string
+	 */
+	public $assetsRemoved = '';
 
     /**
      * @var array
@@ -104,7 +104,10 @@ class Main
      */
     public $postTypesUnloaded = array();
 
-    public $settings = array();
+	/**
+	 * @var array
+	 */
+	public $settings = array();
 
     /**
      * @var Main|null
@@ -294,16 +297,7 @@ class Main
             // Post, Page or Front-page?
             $toRemove = $this->getAssetsUnloaded();
 
-            // if null or array (string has to be returned)
-            if (! $toRemove || is_array($toRemove)) {
-                return;
-            }
-
             $jsonList = @json_decode($toRemove);
-
-            if (json_last_error()) {
-                return;
-            }
 
             $list = array();
 
@@ -396,16 +390,7 @@ class Main
             // Post, Page or Front-page
             $toRemove = $this->getAssetsUnloaded();
 
-            // if null or array (string has to be returned)
-            if (! $toRemove || is_array($toRemove)) {
-                return;
-            }
-
             $jsonList = @json_decode($toRemove);
-
-            if (json_last_error()) {
-                return;
-            }
 
             $list = array();
 
@@ -1075,7 +1060,7 @@ class Main
 
     /**
      * @param int $postId
-     * @return array|mixed|string
+     * @return string (The returned value must be a JSON one)
      */
     public function getAssetsUnloaded($postId = 0)
     {
@@ -1086,18 +1071,20 @@ class Main
 
         $isInAdminPageViaAjax = (is_admin() && defined('DOING_AJAX') && DOING_AJAX);
 
-        if (! $this->assetsRemoved) {
+        if (empty($this->assetsRemoved)) {
             // For Home Page (latest blog posts)
             if ($postId < 1 && ($isInAdminPageViaAjax || Misc::isHomePage())) {
                 $this->assetsRemoved = get_option(WPACU_PLUGIN_NAME . '_front_page_no_load');
-                return $this->assetsRemoved;
             } elseif ($postId > 0) {
                 $this->assetsRemoved = get_post_meta($postId, '_' . WPACU_PLUGIN_NAME . '_no_load', true);
             }
 
-            if ($this->assetsRemoved == '') {
-                $this->assetsRemoved = json_encode(array('styles' => array(), 'scripts' => array()));
-            }
+	        @json_decode($this->assetsRemoved);
+
+	        if (! (json_last_error() === JSON_ERROR_NONE) || empty($this->assetsRemoved)) {
+	        	// Reset value to a JSON formatted one
+		        $this->assetsRemoved = json_encode(array('styles' => array(), 'scripts' => array()));
+	        }
         }
 
         return $this->assetsRemoved;

@@ -3,8 +3,8 @@ Contributors: gabelivan
 Tags: speed, pagespeed, dequeue style, dequeue script, unload style, unload script, fast
 Donate link: https://www.gabelivan.com/donate/
 Requires at least: 4.0
-Tested up to: 4.7.8
-Stable tag: 1.2.5.2
+Tested up to: 4.9
+Stable tag: 1.2.5.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -102,6 +102,9 @@ If that's the case, then it's advisable to consult with a developer (ideally the
 4. Scripts (.JS) are selected for site-wide unload
 
 == Changelog ==
+= 1.2.5.3 =
+* Bug Fix: PHP Warning when array was passed to json_decode(), instead of string
+
 = 1.2.5.2 =
 * Bug Fix: Unload on All Pages of [post_type_here] post type wasn't keeping previous records when choosing new values to unload
 
