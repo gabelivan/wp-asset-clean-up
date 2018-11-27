@@ -17,10 +17,10 @@ class HomePage
      */
     public function __construct()
     {
-        $this->data['nonce_name'] = WPACU_PLUGIN_NAME.'_settings';
+        $this->data['nonce_name']    = WPACU_PLUGIN_NAME.'_settings';
         $this->data['show_on_front'] = Misc::getShowOnFront();
 
-        $isHomePageEdit = (isset($_GET['page']) && $_GET['page'] == WPACU_PLUGIN_NAME.'_home_page');
+        $isHomePageEdit = (Misc::getVar('get', 'page') === WPACU_PLUGIN_NAME.'_home_page');
 
         // Only continue if we are on the plugin's homepage edit mode
         if (! $isHomePageEdit) {
@@ -44,7 +44,7 @@ class HomePage
             // Your latest posts
             $postUrl = get_site_url();
 
-            if (substr($postUrl, -1) != '/') {
+            if (substr($postUrl, -1) !== '/') {
                 $postUrl .= '/';
             }
 
@@ -57,12 +57,11 @@ class HomePage
      */
     public function page()
     {
-        $wpacuNoLoadAssets = isset($_POST[WPACU_PLUGIN_NAME])
-            ? $_POST[WPACU_PLUGIN_NAME] : array();
+        $wpacuNoLoadAssets = Misc::getVar('post', WPACU_PLUGIN_NAME, array());
 
-        $noncePost = isset($_POST[$this->data['nonce_name']])
-            ? $_POST[$this->data['nonce_name']] : '';
-        
+        $noncePost = Misc::getVar('post', $this->data['nonce_name']);
+
+	    // Could Be an Empty Array as Well so just is_array() is enough to use
         if (is_array($wpacuNoLoadAssets) && wp_verify_nonce($noncePost, $this->data['nonce_name'])) {
             $wpacuUpdate = new Update;
             $wpacuUpdate->updateFrontPage($wpacuNoLoadAssets);
@@ -73,6 +72,6 @@ class HomePage
         $wpacuSettings = new Settings;
         $this->data['wpacu_settings'] = $wpacuSettings->getAll();
 
-        Main::instance()->parseTemplate('settings-home-page', $this->data, true);
+        Main::instance()->parseTemplate('admin-page-settings-homepage', $this->data, true);
     }
 }

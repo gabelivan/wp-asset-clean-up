@@ -32,7 +32,8 @@ spl_autoload_register('includeWpAssetCleanUpClassesAutoload');
 WpAssetCleanUp\Main::instance();
 
 // Plugin's Assets (used only when you're logged in)
-new \WpAssetCleanUp\OwnAssets;
+$wpacuOwnAssets = new \WpAssetCleanUp\OwnAssets;
+$wpacuOwnAssets->init();
 
 // Add / Update / Remove Settings
 $wpacuUpdate = new WpAssetCleanUp\Update;
@@ -53,3 +54,6 @@ new \WpAssetCleanUp\Menu;
 
 // Plugin (Various Hooks)
 new \WpAssetCleanUp\Plugin;
+
+// Admin Bar (Top Area of the website when user is logged in)
+new \WpAssetCleanUp\AdminBar();

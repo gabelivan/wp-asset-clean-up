@@ -6,514 +6,132 @@
 if (! isset($data)) {
     exit;
 }
-?>
-<div class="wpacu_verified">
-    <strong>Verified Page:</strong> <a target="_blank" href="<?php echo $data['fetch_url']; ?>"><span><?php echo $data['fetch_url']; ?></span></a>
-</div>
-<?php
-/*
- * --------------------
- * [START] STYLES LIST
- * --------------------
- */
-?>
 
-<h3><?php _e('Styles (.css files)', WPACU_PLUGIN_NAME); ?></h3>
+$metaBoxLoadedFine = (! (isset($data['is_dashboard_view']) && $data['is_dashboard_view']
+                && isset($data['wp_remote_post']) && !empty($data['wp_remote_post'])));
 
-<?php
-if ($data['total_styles']) {
-?>
-<h4>&#10141; Total enqueued files: <strong><?php echo $data['total_styles']; ?></strong></h4>
-<?php
-}
-?>
-
-<?php
-if (! empty($data['all']['styles'])) {
+if (! $metaBoxLoadedFine) {
+    // Errors for "WP Remove Post"? Print them out
     ?>
-    <p><?php echo sprintf(__('The following styles are loading on this page. Please select the ones that are %sNOT NEEDED%s. If you are not sure which ones to unload, it is better to leave them enabled (unchecked) and consult with a developer about unloading the assets.', WPACU_PLUGIN_NAME), '<span style="color: #CC0000;"><strong>', '</strong></span>'); ?></p>
-    <p><?php echo __('"Load in on this page (make exception)" will take effect when a bulk unload rule is used. Otherwise, the asset will load anyway unless you select it for unload.', WPACU_PLUGIN_NAME); ?></p>
+    <div class="ajax-wp-remote-post-call-error-area">
+        <p><span class="dashicons dashicons-warning"></span> It looks like "WP Remote Post" method for retrieving assets via the Dashboard is not working in this environment.</p>
+        <p>Since the server (from its IP) is making the call, it will not "behave" in the same way as the "Direct" method, which could bypass for instance any authentication request (you might use a staging website that is protected by login credentials).</p>
+        <p>Consider using "Direct" method. If that doesn't work either, use the "Manage in the Front-end" option (which should always work in any instance) and submit a ticket regarding the problem you're having. Here's the output received by the call:</p>
+
+        <table class="table-data">
+            <tr>
+                <td><strong>CODE:</strong></td>
+                <td><?php echo $data['wp_remote_post']['response']['code']; ?></td>
+            </tr>
+
+            <tr>
+                <td><strong>MESSAGE:</strong></td>
+                <td><?php echo $data['wp_remote_post']['response']['message']; ?></td>
+            </tr>
+
+            <tr>
+                <td><strong>OUTPUT:</strong></td>
+                <td><?php echo $data['wp_remote_post']['body']; ?></td>
+            </tr>
+        </table>
+    </div>
     <?php
-    if ($data['core_styles_loaded']) {
-        ?>
-        <div class="wpacu_note wpacu_warning"><em><?php
-                echo sprintf(
-                    __('Assets that are marked with %s are part of WordPress core files. Be careful if you decide to unload them!', WPACU_PLUGIN_NAME),
-                    '<span class="dashicons dashicons-warning"></span>'
-                );
-                ?>
-            </em></div><br />
-        <?php
+
+    exit;
+}
+
+if (\WpAssetCleanUp\Misc::isHomePage()) {
+    ?>
+    <p><strong><span style="color: #0f6cab;" class="dashicons dashicons-admin-home"></span> You are currently viewing the home page.</strong></p>
+	<?php
+}
+
+elseif (\WpAssetCleanUp\Misc::isBlogPage()) {
+    ?>
+    <p><strong><span style="color: #0f6cab;" class="dashicons dashicons-admin-post"></span> You are currently viewing the page that shows your latest posts.</strong></p>
+	<?php
+}
+
+elseif ($data['bulk_unloaded_type'] === 'post_type') {
+	$isWooPage = $iconShown = false;
+
+	if (function_exists('is_woocommerce')
+        && (is_woocommerce() || is_cart() || is_product_tag() || is_product_category() || is_checkout())
+    ) {
+        $isWooPage = true;
+        $iconShown = WPACU_PLUGIN_URL . '/assets/icons/woocommerce-icon-logo.svg';
+    }
+
+    if (! $iconShown) {
+	    switch ( $data['post_type'] ) {
+		    case 'post':
+			    $dashIconPart = 'post';
+			    break;
+		    case 'page':
+			    $dashIconPart = 'page';
+			    break;
+		    case 'attachment':
+			    $dashIconPart = 'media';
+			    break;
+		    default:
+			    $dashIconPart = 'post';
+	    }
     }
     ?>
-
-    <table class="wp-asset-clean-up wp-list-table widefat wpacu_widefat fixed striped wpacu_striped">
-        <tbody>
-        <?php
-        foreach ($data['all']['styles'] as $obj) {
-            $active = (isset($data['current']['styles']) && in_array($obj->handle, $data['current']['styles']));
-
-            $class = ($active) ? 'wpacu_not_load' : '';
-            $checked = ($active) ? 'checked="checked"' : '';
-
-            $globalUnloaded = $postTypeUnloaded = $isLoadException = $isGlobalRule = false;
-
-            // Mark it as unloaded - Everywhere
-            if (in_array($obj->handle, $data['global_unload']['styles'])) {
-                $globalUnloaded = $isGlobalRule = true;
-            }
-
-            // Mark it as unloaded - for the Current Post Type
-            if (isset($data['post_type_unloaded']['styles']) && in_array($obj->handle, $data['post_type_unloaded']['styles'])) {
-                $postTypeUnloaded = $isGlobalRule = true;
-            }
-
-            if ($isGlobalRule) {
-                if (in_array($obj->handle, $data['load_exceptions']['styles'])) {
-                    $isLoadException = true;
-                } else {
-                    $class .= ' wpacu_not_load';
-                }
-            }
-
-            $class .= ' style_'.$obj->handle;
-            ?>
-            <tr class="wpacu_asset_row <?php echo $class; ?>">
-                <td valign="top" style="width: 100%;">
-                    <p style="margin-top: 0;">
-                        <label for="style_<?php echo $obj->handle; ?>"><?php _e('Handle:', WPACU_PLUGIN_NAME); ?> <strong><span style="color: green;"><?php echo $obj->handle; ?></span></strong></label>
-                        <?php
-                        if (isset($obj->wp) && $obj->wp) {
-                            ?>
-                            <span class="dashicons dashicons-warning"></span>
-                            <?php
-                        }
-                        ?>
-                    </p>
-
-                    <div>
-                        <ul class="wpacu_asset_options">
-                            <li>
-                                <label><input id="style_<?php echo $obj->handle; ?>" <?php if ($globalUnloaded) { echo 'disabled="disabled"'; } echo $checked; ?> name="<?php echo WPACU_PLUGIN_NAME; ?>[styles][]" class="icheckbox_square-red" type="checkbox" value="<?php echo $obj->handle; ?>" /> &nbsp;Unload on this page</label>
-                            </li>
-                    </div>
-
-                    <div style="padding: 5px 10px; margin: 15px 0; background: white; border: 1px solid #eee; border-radius: 5px;">
-                    <?php
-                    // Unloaded Everywhere
-                    if ($globalUnloaded) {
-                    ?>
-                        <p><strong style="color: #d54e21;">This asset is unloaded everywhere</strong></p>
-                        <div class="clear"></div>
-                        <?php
-                    }
-                    ?>
-
-                    <ul class="wpacu_asset_options">
-                    <?php
-                    // [START] UNLOAD EVERYWHERE
-                    if ($globalUnloaded) {
-                    ?>
-                            <li>
-                                <label><input data-handle="<?php echo $obj->handle; ?>"
-                                          class="wpacu_global_option wpacu_style"
-                                          type="radio"
-                                          name="wpacu_options_styles[<?php echo $obj->handle; ?>]"
-                                          checked="checked"
-                                          value="default" />
-                                Keep the unload global rule</label>
-                            </li>
-
-                            <li>
-                                <label><input data-handle="<?php echo $obj->handle; ?>"
-                                          class="wpacu_global_option wpacu_style"
-                                          type="radio"
-                                          name="wpacu_options_styles[<?php echo $obj->handle; ?>]"
-                                          value="remove" />
-                                Remove global unload rule</label>
-                            </li>
-                    <?php
-                    } else {
-                        ?>
-                            <li>
-                                <label><input data-handle="<?php echo $obj->handle; ?>"
-                                              class="wpacu_global_unload wpacu_global_style"
-                                              id="wpacu_global_unload_style_<?php echo $obj->handle; ?>" type="checkbox"
-                                              name="wpacu_global_unload_styles[]" value="<?php echo $obj->handle; ?>"/>
-                                    Unload Everywhere</label>
-                            </li>
-                        <?php
-                    }
-                    // [END] UNLOAD EVERYWHERE
-                    ?>
-                        </ul>
-                    </div>
-
-                    <?php if ($data['post_type']) { ?>
-                    <div style="padding: 5px 10px; margin: 15px 0; background: white; border: 1px solid #eee; border-radius: 5px;">
-                    <?php } ?>
-
-                    <?php
-                    // Unloaded On All Pages Belonging to the page's Post Type
-                    if ($postTypeUnloaded) {
-                        ?>
-                        <p><strong style="color: #d54e21;">This asset is unloaded on all <u><?php echo $data['post_type']; ?></u> post types.</strong></p>
-                        <div class="clear"></div>
-                        <?php
-                    }
-                    ?>
-
-                    <ul class="wpacu_asset_options">
-                    <?php
-                    if ($data['post_type']) {
-                        // [START] ALL PAGES HAVING THE SAME POST TYPE
-                        if ($postTypeUnloaded) {
-                            ?>
-                            <li>
-                                <label><input data-handle="<?php echo $obj->handle; ?>"
-                                              class="wpacu_bulk_option wpacu_style"
-                                              type="radio"
-                                              name="wpacu_options_post_type_styles[<?php echo $obj->handle; ?>]"
-                                              checked="checked"
-                                              value="default"/>
-                                    Keep rule</label>
-                            </li>
-
-                            <li>
-                                <label><input data-handle="<?php echo $obj->handle; ?>"
-                                              class="wpacu_bulk_option wpacu_style"
-                                              type="radio"
-                                              name="wpacu_options_post_type_styles[<?php echo $obj->handle; ?>]"
-                                              value="remove"/>
-                                    Remove rule</label>
-                            </li>
-                            <?php
-                        } else {
-                            ?>
-                            <li>
-                                <label><input data-handle="<?php echo $obj->handle; ?>"
-                                              class="wpacu_post_type_unload wpacu_post_type_style"
-                                              id="wpacu_bulk_unload_post_type_style_<?php echo $obj->handle; ?>"
-                                              type="checkbox"
-                                              name="wpacu_bulk_unload_styles[post_type][<?php echo $data['post_type']; ?>][]"
-                                              value="<?php echo $obj->handle; ?>"/>
-                                    Unload on All Pages of <strong><?php echo $data['post_type']; ?></strong> post type</label>
-                            </li>
-                            <?php
-                        }
-                    }
-                    // [END] ALL PAGES HAVING THE SAME POST TYPE
-                    ?>
-                        </ul>
-
-                    <?php if ($data['post_type']) { ?>
-                    </div>
-                    <?php } ?>
-
-                    <ul class="wpacu_asset_options">
-                        <li id="wpacu_load_it_option_style_<?php echo $obj->handle; ?>">
-                            <label><input data-handle="<?php echo $obj->handle; ?>"
-                                          id="wpacu_style_load_it_<?php echo $obj->handle; ?>"
-                                          class="wpacu_load_it_option wpacu_style wpacu_load_exception"
-                                          type="checkbox"
-                                    <?php if ($isLoadException) { ?> checked="checked" <?php } ?>
-                                          name="wpacu_styles_load_it[]"
-                                          value="<?php echo $obj->handle; ?>"/>
-                                Load it on this page (make exception<?php if (! $isGlobalRule) { echo ' * works only IF any of rules above is selected'; } ?>)</label>
-                        </li>
-                    </ul>
-                    <?php
-                    if (isset($obj->src) && $obj->src != '') {
-                        ?>
-                        <p><?php _e('Source:', WPACU_PLUGIN_NAME); ?> <a target="_blank" href="<?php echo $obj->srcHref; ?>"><?php echo $obj->src; ?></a></p>
-                    <?php }
-
-                    if (! empty($obj->deps)) {
-                    ?>
-                    <p><?php echo __('Depends on:', WPACU_PLUGIN_NAME) . ' ' . implode(', ', $obj->deps); ?></p>
-                    <?php
-                    }
-
-                    if ($obj->ver) {
-                        ?>
-                        <p><?php _e('Version:', WPACU_PLUGIN_NAME); ?> <?php echo $obj->ver; ?></p>
-                        <?php
-                    }
-
-                    if (isset($obj->extra->data) && ! empty($obj->extra->data)) { ?>
-                        <p><?php _e('Inline:', WPACU_PLUGIN_NAME); ?> <em><?php echo $obj->extra->data; ?></em></p>
-                    <?php } ?>
-                </td>
-            </tr>
-            <?php
-        }
-        ?>
-        </tbody>
-    </table>
+    <p>
+	<?php if ($isWooPage) { ?>
+        <img src="<?php echo $iconShown; ?>" alt="" style="height: 40px !important; margin-top: -6px; margin-right: 5px;" align="middle" /> <strong>WooCommerce</strong>
+    <?php } ?>
+        <strong><?php if (! $iconShown) { ?><span style="color: #0f6cab;" class="dashicons dashicons-admin-<?php echo $dashIconPart; ?>"></span> <?php } ?> <u><?php echo $data['post_type']; ?></u> <?php if ($data['post_type'] !== 'post') {  echo 'post'; } ?> type.</strong></p>
     <?php
-} else {
-    echo __('It looks like there are no public .css files loaded or the ones visible do not follow <a href="https://codex.wordpress.org/Function_Reference/wp_enqueue_style">the WordPress way of enqueuing styles</a>.', WPACU_PLUGIN_NAME);
 }
-/* -------------------
- * [END] STYLES LIST
- * -------------------
- */
+
+if (! is_404()) {
+	?>
+    <div class="wpacu_verified">
+        <strong>Verified Page:</strong> <a target="_blank"
+                                           href="<?php echo $data['fetch_url']; ?>"><span><?php echo $data['fetch_url']; ?></span></a>
+    </div>
+	<?php
+}
+
+if (isset($data['page_template'])) {
+    ?>
+    <div>
+        <strong><?php if ($data['post_type'] === 'page') { echo 'Page'; } elseif ($data['post_type'] === 'post') { echo 'Post'; } ?>
+            Template:</strong>
+	    <?php
+	    if (isset($data['all_page_templates'][$data['page_template']])) { ?>
+            <u><?php echo $data['all_page_templates'][$data['page_template']]; ?></u>
+	    <?php } ?>
+
+        (<?php echo $data['page_template'];
+
+	    if (isset($data['page_template_path'])) {
+		    echo '&nbsp; &#10230; &nbsp;<em>'.$data['page_template_path'].'</em>';
+	    }
+	    ?>)
+    </div>
+<?php
+}
+
+include_once __DIR__.'/meta-box-loaded-assets/view-default.php';
 
 /*
- * ---------------------
- * [START] SCRIPTS LIST
- * ---------------------
- */
-?>
-<h3><?php _e('Scripts (.js files)', WPACU_PLUGIN_NAME); ?></h3>
+ Bug Fix: Make sure that savePost() from Update class is triggered ONLY if the meta box is loaded
+ Otherwise, an early form submit will erase any selected assets for unload by sending an empty $_POST[WPACU_PLUGIN_NAME] request
 
-<?php
-if ($data['total_scripts']) {
-?>
-<h4>&#10141; Total enqueued files: <strong><?php echo $data['total_scripts']; ?></strong></h4>
-<?php
+ NOTE: In case no assets are retrieved, then it's likely that for some reason, fetching the assets from the Dashboard
+ is not possible and the user will have to manage them in the front-end.
+ We'll make sure that no existing assets (managed in the front-end) are removed when the user updates the post/page from the Dashboard
+*/
+
+// Check it again
+if ($metaBoxLoadedFine) {
+	$metaBoxLoadedFine = ( ! ( empty( $data['all']['styles'] ) && empty( $data['all']['scripts'] ) ) );
 }
-?>
 
-<?php
-if (! empty($data['all']['scripts'])) {
+if ($metaBoxLoadedFine) {
     ?>
-    <p><?php echo sprintf(__('The following scripts are loading on this page. Please select the ones that are %sNOT NEEDED%s. If you are not sure which ones to unload, it is better to leave them enabled and consult with a developer about unloading the assets.', WPACU_PLUGIN_NAME), '<span style="color: #CC0000;"><strong>', '</strong></span>'); ?></p>
-    <p><?php echo __('"Load in on this page (make exception)" will take effect when a bulk unload rule is used. Otherwise, the asset will load anyway unless you select it for unload.', WPACU_PLUGIN_NAME); ?></p>
-    <?php
-    if ($data['core_scripts_loaded']) {
-    ?>
-    <div class="wpacu_note wpacu_warning"><em><?php
-        echo sprintf(
-            __('Assets that are marked with %s are part of WordPress core files. Be careful if you decide to unload them!', WPACU_PLUGIN_NAME),
-            '<span class="dashicons dashicons-warning"></span>'
-        );
-        ?>
-    </em></div><br />
-    <?php
-    }
-    ?>
-
-    <table class="wp-list-table widefat wpacu_widefat fixed striped wpacu_striped">
-        <tbody>
-        <?php
-        foreach ($data['all']['scripts'] as $obj) {
-            $active = (isset($data['current']['scripts']) && in_array($obj->handle, $data['current']['scripts']));
-
-            $class = ($active) ? 'wpacu_not_load' : '';
-            $checked = ($active) ? 'checked="checked"' : '';
-
-            $globalUnloaded = $postTypeUnloaded = $isLoadException = $isGlobalRule = false;
-
-            // Mark it as unloaded - Everywhere
-            if (in_array($obj->handle, $data['global_unload']['scripts']) && !$class) {
-                $globalUnloaded = $isGlobalRule = true;
-            }
-
-            // Mark it as unloaded - for the Current Post Type
-            if (isset($data['post_type_unloaded']['scripts']) && in_array($obj->handle, $data['post_type_unloaded']['scripts']) && !$class) {
-                $postTypeUnloaded = $isGlobalRule = true;
-            }
-
-            if ($isGlobalRule) {
-                if (in_array($obj->handle, $data['load_exceptions']['scripts'])) {
-                    $isLoadException = true;
-                } else {
-                    $class .= ' wpacu_not_load';
-                }
-            }
-
-            $class .= ' script_'.$obj->handle;
-            ?>
-            <tr class="wpacu_asset_row <?php echo $class; ?>">
-                <td valign="top" style="width: 100%;">
-                    <p style="margin-top: 0;">
-                        <label for="script_<?php echo $obj->handle; ?>"> <?php _e('Handle:', WPACU_PLUGIN_NAME); ?> <strong><span style="color: green;"><?php echo $obj->handle; ?></span></strong></label>
-                        <?php
-                        if (isset($obj->wp) && $obj->wp) {
-                            ?>
-                            <span class="dashicons dashicons-warning"></span>
-                            <?php
-                        }
-                        ?>
-                    </p>
-
-                    <?php
-                    // Unloaded Everywhere
-                    if ($globalUnloaded) {
-                    ?>
-                        <p><strong style="color: #d54e21;">This asset is unloaded everywhere</strong></p>
-                    <?php
-                    }
-                    ?>
-
-                    <div style="padding: 5px 10px; margin: 15px 0; background: white; border: 1px solid #eee; border-radius: 5px;">
-                        <ul class="wpacu_asset_options">
-                            <li>
-                                <label><input id="script_<?php echo $obj->handle; ?>" <?php if ($globalUnloaded) { echo 'disabled="disabled"'; } echo $checked; ?> name="<?php echo WPACU_PLUGIN_NAME; ?>[scripts][]" class="icheckbox_square-red" type="checkbox" value="<?php echo $obj->handle; ?>" /> &nbsp;Unload on this page</label>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div style="padding: 5px 10px; margin: 15px 0; background: white; border: 1px solid #eee; border-radius: 5px;">
-                    <ul class="wpacu_asset_options">
-                    <?php
-                    // [START] UNLOAD EVERYWHERE
-                    if ($globalUnloaded) {
-                    ?>
-                            <li>
-                            <label><input data-handle="<?php echo $obj->handle; ?>"
-                                          class="wpacu_bulk_option wpacu_script"
-                                          type="radio"
-                                          name="wpacu_options_scripts[<?php echo $obj->handle; ?>]"
-                                          checked="checked"
-                                          value="default" />
-                                Keep the unload global rule</label>
-                            </li>
-
-                            <li>
-                            <label><input data-handle="<?php echo $obj->handle; ?>"
-                                          class="wpacu_bulk_option wpacu_script"
-                                          type="radio"
-                                          name="wpacu_options_scripts[<?php echo $obj->handle; ?>]"
-                                          value="remove" />
-                                Remove global unload rule</label>
-                            </li>
-                        <?php
-                    } else {
-                        ?>
-                        <li>
-                            <label><input data-handle="<?php echo $obj->handle; ?>"
-                                          class="wpacu_global_unload wpacu_global_script"
-                                          id="wpacu_global_unload_script_<?php echo $obj->handle; ?>"
-                                          type="checkbox"
-                                          name="wpacu_global_unload_scripts[]"
-                                          value="<?php echo $obj->handle; ?>"/>
-                                Unload Everywhere</label>
-                        </li>
-                    <?php
-                    }
-                    // [END] UNLOAD EVERYWHERE
-                    ?>
-
-                        </ul>
-                        </div>
-
-                    <?php if ($data['post_type']) { ?>
-                    <div style="padding: 5px 10px; margin: 15px 0; background: white; border: 1px solid #eee; border-radius: 5px;">
-                    <?php } ?>
-
-                        <?php
-                        // Unloaded On All Pages Belonging to the page's Post Type
-                        if ($postTypeUnloaded) {
-                            ?>
-                            <p><strong style="color: #d54e21;">This asset is unloaded on all <u><?php echo $data['post_type']; ?></u> post types.</strong></p>
-                            <div class="clear"></div>
-                            <?php
-                        }
-                        ?>
-
-                        <ul class="wpacu_asset_options">
-                    <?php
-                    if ($data['post_type']) {
-                        // [START] ALL PAGES HAVING THE SAME POST TYPE
-                        if ($postTypeUnloaded) {
-                            ?>
-                            <li>
-                                <label><input data-handle="<?php echo $obj->handle; ?>"
-                                              class="wpacu_post_type_option wpacu_post_type_script"
-                                              type="radio"
-                                              name="wpacu_options_post_type_scripts[<?php echo $obj->handle; ?>]"
-                                              checked="checked"
-                                              value="default"/>
-                                    Keep rule</label>
-                            </li>
-
-                            <li>
-                                <label><input data-handle="<?php echo $obj->handle; ?>"
-                                              class="wpacu_post_type_option wpacu_post_type_script"
-                                              type="radio"
-                                              name="wpacu_options_post_type_scripts[<?php echo $obj->handle; ?>]"
-                                              value="remove"/>
-                                    Remove rule</label>
-                            </li>
-                            <?php
-                        } else {
-                            ?>
-                            <li>
-                                <label><input data-handle="<?php echo $obj->handle; ?>"
-                                              class="wpacu_post_type_unload wpacu_post_type_script"
-                                              id="wpacu_global_unload_post_type_script_<?php echo $obj->handle; ?>"
-                                              type="checkbox"
-                                              name="wpacu_bulk_unload_scripts[post_type][<?php echo $data['post_type']; ?>][]"
-                                              value="<?php echo $obj->handle; ?>"/>
-                                    Unload on All Pages of <strong><?php echo $data['post_type']; ?></strong> post type</label>
-                            </li>
-                            <?php
-                        }
-                    }
-                    // [END] ALL PAGES HAVING THE SAME POST TYPE
-                    ?>
-                            </ul>
-                    <?php if ($data['post_type']) { ?>
-                    </div>
-                    <?php } ?>
-
-                    <ul class="wpacu_asset_options">
-                        <li id="wpacu_load_it_option_script_<?php echo $obj->handle; ?>">
-                            <label><input data-handle="<?php echo $obj->handle; ?>"
-                                          id="wpacu_script_load_it_<?php echo $obj->handle; ?>"
-                                          class="wpacu_load_it_option wpacu_script wpacu_load_exception"
-                                          type="checkbox"
-                                          name="wpacu_scripts_load_it[]"
-                                    <?php if ($isLoadException) { ?> checked="checked" <?php } ?>
-                                          value="<?php echo $obj->handle; ?>" />
-                                Load it on this page (make exception<?php if (! $isGlobalRule) { echo ' * works only IF any of rules above is selected'; } ?>)</label>
-                        </li>
-                    </ul>
-                    <?php
-                    if (isset($obj->src) && $obj->src != '') {
-                    ?>
-                        <p><?php _e('Source:', WPACU_PLUGIN_NAME); ?> <a target="_blank" href="<?php echo $obj->srcHref; ?>"><?php echo $obj->src; ?></a></p>
-                    <?php } ?>
-
-                    <?php
-                    if (! empty($obj->deps)) {
-                        ?>
-                        <p><?php echo __('Depends on:', WPACU_PLUGIN_NAME) . ' ' . implode(', ', $obj->deps); ?></p>
-                        <?php
-                    }
-
-                    if (isset($obj->ver) && $obj->ver != '') {
-                    ?>
-                        <p><?php _e('Version:', WPACU_PLUGIN_NAME); ?> <?php echo $obj->ver; ?></p>
-                    <?php
-                    }
-
-                    if (isset($obj->extra->data) && ! empty($obj->extra->data)) { ?>
-                        <p><?php _e('Inline:', WPACU_PLUGIN_NAME); ?> <em><?php echo strip_tags($obj->extra->data); ?></em></p>
-                    <?php
-                    }
-
-                    if (isset($obj->position) && $obj->position != '') {
-                        ?>
-                        <p><?php _e('Position:', WPACU_PLUGIN_NAME); ?> <?php echo ($obj->position == 'head') ? 'HEAD' : 'BODY'; ?></p>
-                        <?php
-                    }
-                    ?>
-                    </td>
-            </tr>
-            <?php
-        }
-        ?>
-        </tbody>
-    </table>
-    <?php
-} else {
-    echo __('It looks like there are no public .js files loaded or the ones visible do not follow <a href="https://codex.wordpress.org/Function_Reference/wp_enqueue_script">the WordPress way of enqueuing scripts</a>.', WPACU_PLUGIN_NAME);
-}
-/*
- * -------------------
- * [END] SCRIPTS LIST
- * -------------------
- */
+    <input type="hidden" name="wpacu_unload_assets_area_loaded" value="1" />
+<?php } ?>

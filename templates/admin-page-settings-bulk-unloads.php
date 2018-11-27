@@ -5,24 +5,36 @@
 if (! isset($data)) {
     exit;
 }
-?>
-<h1><?php _e('WP Asset CleanUp', WPACU_PLUGIN_NAME); ?></h1>
-<h2><?php _e('Bulk Unloads', WPACU_PLUGIN_NAME); ?></h2>
 
-<p>If <u>any of the options below are used</u>, then the assets will be shown here. Although, you can manage them when editing a page/post, this page will make things easier by seeing all the bulk unloads:</p>
-<ul>
-    <li>&#8594; Unload everywhere</li>
-    <li>&#8594; Unload on All Pages of <em>[post type here]</em> post type</li>
-</ul>
+include_once '_top-area.php';
+
+// [wpacu_lite]
+$availableForPro = '<span class="tooltip">Available for Pro users<br />Click to upgrade!</span> <img style="opacity: 0.4;" width="20" height="20" src="'.WPACU_PLUGIN_URL.'/assets/icons/icon-lock.svg" valign="top" alt="" />';
+// [/wpacu_lite]
+?>
+
+<div class="wpacu-wrap">
+<h1><?php echo WPACU_PLUGIN_TITLE; ?></h1>
+<h2><?php _e('Bulk Unloaded', WPACU_PLUGIN_NAME); ?></h2>
+
+<p>If you have used rules such as <em>"Unload everywhere"</em> or <em>"Unload on All Pages of <strong>post</strong> post type"</em> etc., then the assets will be shown here. Although, you can manage them when editing a page, post etc., this page will make things easier by seeing all the bulk unloads:</p>
+<p>A bulk unload is considered anything that is applied once and it has effect on multiple pages of the same kind or site-wide such as "Unload everywhere".</p>
 
 <nav class="nav-tab-wrapper">
     <a href="admin.php?page=wpassetcleanup_bulk_unloads" class="nav-tab <?php if ($data['for'] === 'everywhere') { ?>nav-tab-active<?php } ?>">Everywhere</a>
     <a href="admin.php?page=wpassetcleanup_bulk_unloads&wpacu_for=post_types" class="nav-tab <?php if ($data['for'] === 'post_types') { ?>nav-tab-active<?php } ?>">Post Types</a>
+    <a href="<?php echo WPACU_PLUGIN_GO_PRO_URL; ?>?utm_source=plugin_bulk_unloaded&utm_medium=tab_link" target="_blank" class="nav-tab go-pro-link-no-style"><?php echo $availableForPro; ?> &nbsp;Taxonomies</a>
+    <a href="<?php echo WPACU_PLUGIN_GO_PRO_URL; ?>?utm_source=plugin_bulk_unloaded&utm_medium=tab_link" target="_blank" class="nav-tab go-pro-link-no-style"><?php echo $availableForPro; ?> &nbsp;Authors</a>
+    <a href="<?php echo WPACU_PLUGIN_GO_PRO_URL; ?>?utm_source=plugin_bulk_unloaded&utm_medium=tab_link" target="_blank" class="nav-tab go-pro-link-no-style"><?php echo $availableForPro; ?> &nbsp;Search Results</a>
+    <a href="<?php echo WPACU_PLUGIN_GO_PRO_URL; ?>?utm_source=plugin_bulk_unloaded&utm_medium=tab_link" target="_blank" class="nav-tab go-pro-link-no-style"><?php echo $availableForPro; ?> &nbsp;Dates</a>
+    <a href="<?php echo WPACU_PLUGIN_GO_PRO_URL; ?>?utm_source=plugin_bulk_unloaded&utm_medium=tab_link" target="_blank" class="nav-tab go-pro-link-no-style"><?php echo $availableForPro; ?> &nbsp;404 Not Found</a>
 </nav>
 
 <div class="clear"></div>
 
 <?php
+do_action('wpacu_admin_notices');
+
 if ($data['for'] === 'post_types') {
     ?>
     <div style="margin: 15px 0;">
@@ -90,7 +102,7 @@ if ($data['for'] === 'everywhere') {
             <?php
         } else {
             ?>
-            <p>There are no bulk unloaded styles for your selection.</p>
+            <p>There are no site-wide unloaded styles.</p>
             <?php
         }
         ?>
@@ -123,7 +135,7 @@ if ($data['for'] === 'everywhere') {
             <?php
         } else {
             ?>
-            <p>There are no unloaded scripts for your selection.</p>
+            <p>There are no site-wide unloaded scripts.</p>
             <?php
         }
         ?>
@@ -175,7 +187,7 @@ if ($data['for'] === 'everywhere') {
             <?php
         } else {
             ?>
-            <p>There are no unloaded styles for your selection.</p>
+            <p>There are no bulk unloaded styles for the <strong><?php echo $data['post_type']; ?></strong> post type.</p>
             <?php
         }
         ?>
@@ -208,7 +220,7 @@ if ($data['for'] === 'everywhere') {
             <?php
         } else {
             ?>
-            <p>There are no unloaded scripts for your selection.</p>
+            <p>There are no bulk unloaded scripts for the <strong><?php echo $data['post_type']; ?></strong> post type.</p>
             <?php
         }
         ?>
@@ -244,10 +256,11 @@ $noAssetsToRemove = (empty($data['values']['styles']) && empty($data['values']['
            value="<?php esc_attr_e('Update', WPACU_PLUGIN_NAME); ?>" />
     <?php
     if ($noAssetsToRemove) {
-        ?>
-        &nbsp;<small>Note: There are no unloaded assets (scripts &amp; styles) to be managed</small>
-        <?php
+    ?>
+        &nbsp;<small>Note: As there are no unloaded assets (scripts &amp; styles) to be managed, the button is disabled.</small>
+    <?php
     }
     ?>
 </p>
 </form>
+</div>
