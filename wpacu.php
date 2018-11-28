@@ -2,13 +2,13 @@
 /*
  * Plugin Name: Asset CleanUp: Page Speed Booster
  * Plugin URI: https://wordpress.org/plugins/wp-asset-clean-up/
- * Version: 1.2.8.2
+ * Version: 1.2.8.3
  * Description: Prevent Chosen Scripts & Styles from loading in Posts/Pages to reduce HTTP Requests and have the website load faster
  * Author: Gabriel Livan
- * Author URI: http://www.gabelivan.com/
+ * Author URI: http://gabelivan.com/
 */
 
-define('WPACU_PLUGIN_VERSION', '1.2.8.2');
+define('WPACU_PLUGIN_VERSION', '1.2.8.3');
 
 // Exit if accessed directly
 if (! defined('ABSPATH')) {
@@ -74,8 +74,8 @@ define('WPACU_PLUGIN_CLASSES_PATH',        WPACU_PLUGIN_DIR.'/classes/');
 define('WPACU_PLUGIN_URL',                 plugins_url('', WPACU_PLUGIN_FILE));
 
 // Upgrade to Pro Sales Page
-define('WPACU_PLUGIN_GO_PRO_URL',          'https://www.gabelivan.com/items/wp-asset-cleanup-pro/');
-define('WPACU_PLUGIN_FEATURE_REQUEST_URL', 'https://www.gabelivan.com/asset-cleanup-lite-feature-request/');
+define('WPACU_PLUGIN_GO_PRO_URL',          'https://gabelivan.com/items/wp-asset-cleanup-pro/');
+define('WPACU_PLUGIN_FEATURE_REQUEST_URL', 'https://gabelivan.com/asset-cleanup-lite-feature-request/');
 
 // Global Values
 define('WPACU_LOAD_ASSETS_REQ_KEY',         WPACU_PLUGIN_NAME . '_load');

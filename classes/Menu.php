@@ -53,7 +53,7 @@ class Menu
 	        self::$capability,
             self::$slug,
             array(new Settings, 'settingsPage'),
-            'dashicons-filter'
+	        WPACU_PLUGIN_URL.'/assets/icons/icon-asset-cleanup.png'
         );
 
         add_submenu_page(

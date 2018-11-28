@@ -12,9 +12,7 @@ include_once '_top-area.php';
 $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_pages_info" class="go-pro-link-no-style"><span class="tooltip">Available for Pro users<br />Click to upgrade!</span> <img width="20" height="20" src="'.WPACU_PLUGIN_URL.'/assets/icons/icon-lock.svg" valign="top" alt="" /></a>';
 // [/wpacu_lite]
 ?>
-<div class="wpacu-wrap">
-    <h1><?php echo WPACU_PLUGIN_TITLE; ?></h1>
-
+<div id="wpacu-pages-info-area" class="wpacu-wrap">
     <!-- [wpacu_lite] -->
     <p>* <em>Unloading assets (CSS &amp; JavaScript) for page types that have a locker next to their name requires an <a href="<?php echo WPACU_PLUGIN_GO_PRO_URL; ?>?utm_source=plugin_pages_info&utm_medium=top_note">upgrade to the Pro version</a>.</em></p>
     <!-- [/wpacu_lite] -->

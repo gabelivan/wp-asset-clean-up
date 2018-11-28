@@ -14,7 +14,7 @@ $availableForPro = '<span class="tooltip">Available for Pro users<br />Click to 
 ?>
 
 <div class="wpacu-wrap">
-<h1><?php echo WPACU_PLUGIN_TITLE; ?></h1>
+
 <h2><?php _e('Bulk Unloaded', WPACU_PLUGIN_NAME); ?></h2>
 
 <p>If you have used rules such as <em>"Unload everywhere"</em> or <em>"Unload on All Pages of <strong>post</strong> post type"</em> etc., then the assets will be shown here. Although, you can manage them when editing a page, post etc., this page will make things easier by seeing all the bulk unloads:</p>

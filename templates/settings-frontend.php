@@ -9,7 +9,7 @@ if (! isset($data)) {
 
 <form action="#wpacu_wrap_assets" method="post">
     <div id="wpacu_wrap_assets">
-        <h1><?php echo WPACU_PLUGIN_TITLE; ?></h1>
+
         <?php
         if ($data['is_updateable']) {
         ?>

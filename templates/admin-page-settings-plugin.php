@@ -13,7 +13,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
 // [/wpacu_lite]
 ?>
 <div class="wpacu-wrap">
-    <h1><?php echo WPACU_PLUGIN_TITLE; ?></h1>
+
 
     <form method="post" action="">
         <input type="hidden" name="wpacu_settings_page" value="1" />

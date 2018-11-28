@@ -4,7 +4,7 @@ Tags: speed, pagespeed, page speed, cleanup, remove style, remove script, dequeu
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GJZCW6RD8ECS
 Requires at least: 4.0
 Tested up to: 4.9.8
-Stable tag: 1.2.8.2
+Stable tag: 1.2.8.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -131,6 +131,10 @@ If that's the case, then it's advisable to consult with a developer (ideally the
 4. Scripts (.JS) are selected for site-wide unload
 
 == Changelog ==
+= 1.2.8.3 =
+* Added the logo on top of each admin page belonging to the plugin
+* Changed plugin's icon from the Dashboard left menu
+
 = 1.2.8.2 =
 * Added option to expand / contract "Styles" and "Scripts" management list and ability to choose the initial state on page load via plugin's "Settings" page
 

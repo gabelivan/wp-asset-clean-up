@@ -9,7 +9,7 @@ if (! isset($data)) {
 include_once '_top-area.php';
 ?>
 <div class="wpacu-wrap wpacu-get-help-wrap">
-    <h1><?php echo WPACU_PLUGIN_TITLE; ?></h1>
+
     <div class="help-content-wrap">
         <div class="help-content upgrade-help">
             <h2 class="content-title"><?php _e('I have purchased the Pro version. How to do the upgrade?', WPACU_PLUGIN_NAME); ?></h2>

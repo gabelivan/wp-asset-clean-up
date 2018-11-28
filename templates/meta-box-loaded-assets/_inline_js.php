@@ -23,6 +23,8 @@ if (! isset($data)) {
         });
     }
 
+    // [wpacu_lite]
+    // As 'view-default.php' is the only layout available in Lite, these buttons will always be there
     document.getElementById('wpacu-assets-contract-all').addEventListener('click', function (e) {
         e.preventDefault();
         wpacuContractAll();
@@ -32,6 +34,7 @@ if (! isset($data)) {
         e.preventDefault();
         wpacuExpandAll();
     });
+    // [/wpacu_lite]
 
     function wpacuExpandAll() {
         var wpacuI, assetsListContent, wpacuContentLinks = document.getElementsByClassName('wpacu-assets-collapsible');

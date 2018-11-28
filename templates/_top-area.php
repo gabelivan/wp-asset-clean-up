@@ -57,6 +57,10 @@ global $current_screen;
 
 $wpacu_current_page = str_replace(array('asset-cleanup_page_', 'toplevel_page_'), '', $current_screen->base);
 ?>
+<div id="wpacu-logo-area">
+    <img alt="" src="<?php echo WPACU_PLUGIN_URL; ?>/assets/images/asset-cleanup-logo.png" />
+</div>
+
 <div class="wpacu-tabs wpacu-tabs-style-topline">
 	<nav>
 		<ul>

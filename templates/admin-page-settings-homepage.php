@@ -9,7 +9,7 @@ if (! isset($data)) {
 include_once '_top-area.php';
 ?>
 <div class="wpacu-wrap">
-<h1><?php echo WPACU_PLUGIN_TITLE; ?></h1>
+
 <h2><?php _e('Home Page Scripts &amp; Styles Management', WPACU_PLUGIN_NAME); ?></h2>
 
 <?php
