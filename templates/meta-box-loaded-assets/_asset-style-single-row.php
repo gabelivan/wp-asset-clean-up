@@ -5,6 +5,8 @@
 if (! isset($data)) {
 	exit; // no direct access
 }
+
+$inlineCodeStatus = $data['plugin_settings']['assets_list_inline_code_status'];
 ?>
 <tr class="wpacu_asset_row <?php echo $data['row']['class']; ?>">
     <td valign="top">
@@ -176,10 +178,21 @@ if (! isset($data)) {
 		<?php }
 
 		if (! empty($data['row']['extra_data_css_list'])) { ?>
-			<p><strong><?php _e('Inline styling associated with the handle:', WPACU_PLUGIN_NAME); ?></strong></p>
-			<p style="margin-bottom: 15px;"><?php foreach ($data['row']['extra_data_css_list'] as $extraDataCSS) {
-					echo '<em>'.htmlspecialchars($extraDataCSS).'</em>'.'<br />';
-				} ?></p>
+			<div><strong><?php _e('Inline styling associated with the handle:', WPACU_PLUGIN_NAME); ?></strong>
+                <a class="wpacu-assets-inline-code-collapsible"
+                   <?php if ($inlineCodeStatus !== 'contracted') { echo 'wpacu-assets-inline-code-collapsible-active'; } ?>
+                   href="#">Show / Hide</a>
+                <div class="wpacu-assets-inline-code-collapsible-content <?php if ($inlineCodeStatus !== 'contracted') { echo 'wpacu-open'; } ?>">
+                    <div>
+                        <p style="margin-bottom: 15px;">
+                            <?php foreach ($data['row']['extra_data_css_list'] as $extraDataCSS) {
+                                echo '<em>'.htmlspecialchars($extraDataCSS).'</em>'.'<br />';
+                            }
+                            ?>
+                        </p>
+                    </div>
+                </div>
+            </div>
 			<?php
 		}
 

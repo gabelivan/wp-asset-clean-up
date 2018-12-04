@@ -114,8 +114,13 @@ if (isset($data['page_template'])) {
     </div>
 <?php
 }
-
-include_once __DIR__.'/meta-box-loaded-assets/view-default.php';
+?>
+<div class="<?php if ($data['plugin_settings']['input_style'] !== 'standard') { ?>wpacu-switch-enhanced<?php } else { ?>wpacu-switch-standard<?php } ?>">
+    <?php
+	include_once __DIR__.'/meta-box-loaded-assets/view-default.php';
+	?>
+</div>
+<?php
 
 /*
  Bug Fix: Make sure that savePost() from Update class is triggered ONLY if the meta box is loaded

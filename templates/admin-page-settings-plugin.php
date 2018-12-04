@@ -12,9 +12,7 @@ include_once '_top-area.php';
 $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_settings" class="go-pro-link-no-style"><span class="tooltip">Available for Pro users<br />Click to unlock all features!</span> <img width="20" height="20" src="'.WPACU_PLUGIN_URL.'/assets/icons/icon-lock.svg" valign="top" alt="" /></a> &nbsp; ';
 // [/wpacu_lite]
 ?>
-<div class="wpacu-wrap">
-
-
+<div class="wpacu-wrap <?php if ($data['input_style'] !== 'standard') { ?>wpacu-switch-enhanced<?php } else { ?>wpacu-switch-standard<?php } ?>">
     <form method="post" action="">
         <input type="hidden" name="wpacu_settings_page" value="1" />
         <h2><?php _e('Plugin Usage Settings', WPACU_PLUGIN_NAME); ?></h2>
@@ -93,7 +91,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
 
             <tr valign="top">
                 <th scope="row">
-                    <label for="wpacu_assets_list_layout">On Assets List Layout Load, keep "Styles &amp; Scripts" area:</label>
+                    <label>On Assets List Layout Load, keep "Styles &amp; Scripts" area:</label>
                 </th>
                 <td>
                     <ul class="assets_list_layout_areas_status_choices">
@@ -123,14 +121,78 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
             </tr>
 
             <tr valign="top">
+                <th scope="row">
+                    <label>On Assets List Layout Load, keep "Inline code associated with this handle" area:</label>
+                </th>
+                <td>
+                    <ul class="assets_list_inline_code_status_choices">
+                        <li>
+                            <label for="assets_list_inline_code_status_expanded">
+                                <input id="assets_list_inline_code_status_expanded"
+						               <?php if (! $data['assets_list_inline_code_status'] || $data['assets_list_inline_code_status'] === 'expanded') { ?>checked="checked"<?php } ?>
+                                       type="radio"
+                                       name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[assets_list_inline_code_status]"
+                                       value="expanded"> Expanded (Default)
+                            </label>
+                        </li>
+                        <li>
+                            <label for="assets_list_inline_code_status_contracted">
+                                <input id="assets_list_inline_code_status_contracted"
+						               <?php if ($data['assets_list_inline_code_status'] === 'contracted') { ?>checked="checked"<?php } ?>
+                                       type="radio"
+                                       name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[assets_list_inline_code_status]"
+                                       value="contracted"> Contracted
+                            </label>
+                        </li>
+                    </ul>
+                    <div class="wpacu-clearfix"></div>
+
+                    <p><small>Some assets (CSS &amp; JavaScript) have inline code associate with them and often, they are quite large, making the asset row bigger and requiring you to scroll more until you reach a specific area. By setting it to "Contracted", it will hide all the inline code by default and you can view it by clicking on the toggle link inside the asset row.</small></p>
+                </td>
+            </tr>
+
+            <tr valign="top">
                 <th scope="row" class="setting_title">
-                    <label for="wpacu_frontend">Enable Test Mode?</label>
+                    <label>Input Fields Style:</label>
+                    <p class="wpacu_subtitle"><small><em>How would you like to view the checkboxes / selectors?</em></small></p>
+                    <p class="wpacu_read_more"><a href="https://assetcleanup.com/docs/?p=95" target="_blank">Read More</a></p>
+                </th>
+                <td>
+                    <ul class="input_style_choices">
+                        <li>
+                            <label for="input_style_enhanced">
+                                <input id="input_style_enhanced"
+						               <?php if (! $data['input_style'] || $data['input_style'] === 'enhanced') { ?>checked="checked"<?php } ?>
+                                       type="radio"
+                                       name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[input_style]"
+                                       value="enhanced"> Enhanced iPhone Style (Default)
+                            </label>
+                        </li>
+                        <li>
+                            <label for="input_style_standard">
+                                <input id="input_style_standard"
+						               <?php if ($data['input_style'] === 'standard') { ?>checked="checked"<?php } ?>
+                                       type="radio"
+                                       name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[input_style]"
+                                       value="standard"> Standard
+                            </label>
+                        </li>
+                    </ul>
+                    <div class="wpacu-clearfix"></div>
+
+                    <p><small>In case you prefer standard HTML checkboxes instead of the enhanced CSS3 iPhone style ones (on &amp; off) or you need a simple HTML layout in case you're using a screen reader software (e.g. for people with disabilities) which requires standard/clean HTML code, then you can choose "Standard" as an option.</small></p>
+                </td>
+            </tr>
+
+            <tr valign="top">
+                <th scope="row" class="setting_title">
+                    <label for="wpacu_enable_test_mode">Enable Test Mode?</label>
                     <p class="wpacu_subtitle"><small><em>Apply plugin's changes for the admin only</em></small></p>
                     <p class="wpacu_read_more"><a target="_blank" href="https://assetcleanup.com/docs/?p=84">Read More</a></p>
                 </th>
                 <td>
                     <label class="wpacu_switch">
-                        <input id="wpacu_frontend"
+                        <input id="wpacu_enable_test_mode"
                                type="checkbox"
 					        <?php echo (($data['test_mode'] == 1) ? 'checked="checked"' : ''); ?>
                                name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[test_mode]"
@@ -307,7 +369,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
             <!-- Remove "Post's Relational Links" tag? -->
             <tr valign="top">
                 <th scope="row">
-                    <label for="remove_posts_rel_links">Remove "Post's Relational Links" tag?</label>
+                    <label for="wpacu_remove_posts_rel_links">Remove "Post's Relational Links" tag?</label>
                 </th>
                 <td>
 	                <?php echo $availableForPro; ?>
@@ -326,7 +388,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
             <!-- Remove "WordPress version" meta tag? -->
             <tr valign="top">
                 <th scope="row">
-                    <label for="remove_wp_version">Remove "WordPress version" meta tag?</label>
+                    <label for="wpacu_remove_wp_version">Remove "WordPress version" meta tag?</label>
                 </th>
                 <td>
 	                <?php echo $availableForPro; ?>

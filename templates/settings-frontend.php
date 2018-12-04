@@ -9,9 +9,24 @@ if (! isset($data)) {
 
 <form action="#wpacu_wrap_assets" method="post">
     <div id="wpacu_wrap_assets">
-
         <?php
         if ($data['is_updateable']) {
+            $wpacuMisc = new \WpAssetCleanUp\Misc();
+            $activeCachePlugins = $wpacuMisc->getActiveCachePlugins();
+
+            if (in_array('wp-rocket/wp-rocket.php', $activeCachePlugins)) {
+                // Get WP Rocket Settings
+                $wpRocketSettings = get_option('wp_rocket_settings');
+
+                if ($wpRocketSettings['cache_logged_user'] == 1) {
+	                ?>
+                    <div class="wpacu-warning">
+                        <strong><span class="dashicons dashicons-warning"></span> Important:</strong> You have enabled "<em>Enable caching for logged-in WordPress users</em>" in WP Rocket's Cache area. This could cause some issues with Asset CleanUp retrieving an outdated (cached) asset list below. If you experience issues such as unsaved settings or viewing assets from plugins that are disabled, consider using Asset CleanUp only in the Dashboard area (option "Manage in the Dashboard?" has to be enabled in plugin's settings).
+                    </div>
+                    <div class="clearfix"></div>
+	                <?php
+                }
+            }
         ?>
             <p><small>* this area is shown only for the admin users and if "Manage in the Front-end?" was selected in the plugin's settings</small></p>
             <p><small>* 'admin-bar' and 'wpassetcleanup-style' are not included as they are irrelevant since they are used by the plugin for this area</small></p>

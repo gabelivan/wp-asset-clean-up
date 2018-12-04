@@ -21,8 +21,8 @@ $availableForPro = '<span class="tooltip">Available for Pro users<br />Click to 
 <p>A bulk unload is considered anything that is applied once and it has effect on multiple pages of the same kind or site-wide such as "Unload everywhere".</p>
 
 <nav class="nav-tab-wrapper">
-    <a href="admin.php?page=wpassetcleanup_bulk_unloads" class="nav-tab <?php if ($data['for'] === 'everywhere') { ?>nav-tab-active<?php } ?>">Everywhere</a>
-    <a href="admin.php?page=wpassetcleanup_bulk_unloads&wpacu_for=post_types" class="nav-tab <?php if ($data['for'] === 'post_types') { ?>nav-tab-active<?php } ?>">Post Types</a>
+    <a href="<?php echo admin_url('admin.php?page=wpassetcleanup_bulk_unloads'); ?>" class="nav-tab <?php if ($data['for'] === 'everywhere') { ?>nav-tab-active<?php } ?>">Everywhere</a>
+    <a href="<?php echo admin_url('admin.php?page=wpassetcleanup_bulk_unloads&wpacu_for=post_types'); ?>" class="nav-tab <?php if ($data['for'] === 'post_types') { ?>nav-tab-active<?php } ?>">Post Types</a>
     <a href="<?php echo WPACU_PLUGIN_GO_PRO_URL; ?>?utm_source=plugin_bulk_unloaded&utm_medium=tab_link" target="_blank" class="nav-tab go-pro-link-no-style"><?php echo $availableForPro; ?> &nbsp;Taxonomies</a>
     <a href="<?php echo WPACU_PLUGIN_GO_PRO_URL; ?>?utm_source=plugin_bulk_unloaded&utm_medium=tab_link" target="_blank" class="nav-tab go-pro-link-no-style"><?php echo $availableForPro; ?> &nbsp;Authors</a>
     <a href="<?php echo WPACU_PLUGIN_GO_PRO_URL; ?>?utm_source=plugin_bulk_unloaded&utm_medium=tab_link" target="_blank" class="nav-tab go-pro-link-no-style"><?php echo $availableForPro; ?> &nbsp;Search Results</a>
@@ -38,7 +38,7 @@ do_action('wpacu_admin_notices');
 if ($data['for'] === 'post_types') {
     ?>
     <div style="margin: 15px 0;">
-        <form id="wpacu_post_type_form" method="get" action="admin.php">
+        <form id="wpacu_post_type_form" method="get" action="<?php echo admin_url('admin.php'); ?>">
             <input type="hidden" name="page" value="wpassetcleanup_bulk_unloads" />
             <input type="hidden" name="wpacu_for" value="post_types" />
 

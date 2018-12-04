@@ -8,13 +8,36 @@ namespace WpAssetCleanUp;
  */
 class Misc
 {
+	/**
+	 * @var array
+	 */
+	public static $potentialCachePlugins = array(
+		'wp-rocket/wp-rocket.php', // WP Rocket
+		'wp-super-cache/wp-cache.php', // WP Super Cache
+		'w3-total-cache/w3-total-cache.php', // W3 Total Cache
+		'wp-fastest-cache/wpFastestCache.php', // WP Fastest Cache
+		'swift-performance-lite/performance.php', // Swift Performance Lite
+		'breeze/breeze.php', // Breeze – WordPress Cache Plugin
+		'comet-cache/comet-cache.php', // Comet Cache
+		'cache-enabler/cache-enabler.php', // Cache Enabler
+		'hyper-cache/plugin.php', // Hyper Cache
+		'cachify/cachify.php', // Cachify
+		'simple-cache/simple-cache.php', // Simple Cache
+		'litespeed-cache/litespeed-cache.php' // LiteSpeed Cache
+	);
+
+	/**
+	 * @var array
+	 */
+	public $activeCachePlugins = array();
+
     /**
      * Misc constructor.
      */
     public function __construct()
     {
         if (isset($_REQUEST['wpacuNoAdminBar'])) {
-            self::noAdminBarLoad();
+	        self::noAdminBarLoad();
         }
     }
 
@@ -22,6 +45,24 @@ class Misc
      * @var
      */
     public static $showOnFront;
+
+	/**
+	 *
+	 */
+	public function getActiveCachePlugins()
+	{
+		if (empty($this->activeCachePlugins)) {
+			$activePlugins = get_option( 'active_plugins' );
+
+			foreach ( self::$potentialCachePlugins as $cachePlugin ) {
+				if ( in_array( $cachePlugin, $activePlugins ) ) {
+					$this->activeCachePlugins[] = $cachePlugin;
+				}
+			}
+		}
+
+		return $this->activeCachePlugins;
+	}
 
     /**
      * @param $string

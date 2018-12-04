@@ -121,9 +121,35 @@ class Update
     		return;
 	    }
 
-    	$requestUri = $_SERVER['REQUEST_URI'] . '#wpacu_wrap_assets';
+	    $parseUrl = parse_url($_SERVER['REQUEST_URI']);
 
-	    wp_safe_redirect($requestUri);
+	    $location = $parseUrl['path'];
+
+	    $paramsToAdd = array(
+	    	'wpacu_time' => time(),
+		    'nocache'    => 'true'
+	    );
+
+	    $extraParamsSign = '?';
+
+	    if (isset($parseUrl['query']) && $parseUrl['query']) {
+		    parse_str($parseUrl['query'], $existingQueryParams);
+
+		    foreach (array_keys($paramsToAdd) as $paramKey) {
+			    if ( isset( $existingQueryParams[$paramKey] ) ) {
+				    unset( $existingQueryParams[$paramKey] );
+			    }
+		    }
+
+		    if (! empty($existingQueryParams)) {
+			    $location .= '?'.http_build_query($existingQueryParams);
+			    $extraParamsSign = '&';
+		    }
+	    }
+
+	    $location .= $extraParamsSign . http_build_query($paramsToAdd) . '#wpacu_wrap_assets';
+
+	    wp_safe_redirect($location);
     	exit();
     }
 

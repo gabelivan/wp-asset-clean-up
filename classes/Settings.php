@@ -16,11 +16,14 @@ class Settings
 		'dom_get_type',
         'frontend_show',
 
+		'input_style',
+
 		// [wpacu_pro]
 		'assets_list_layout',
 		// [wpacu_pro]
 
         'assets_list_layout_areas_status',
+        'assets_list_inline_code_status',
 
         'test_mode',
 
