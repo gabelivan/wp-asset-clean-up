@@ -9,7 +9,7 @@ if (! isset($data)) {
 include_once '_top-area.php';
 
 // [wpacu_lite]
-$availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_settings" class="go-pro-link-no-style"><span class="tooltip">Available for Pro users<br />Click to unlock all features!</span> <img width="20" height="20" src="'.WPACU_PLUGIN_URL.'/assets/icons/icon-lock.svg" valign="top" alt="" /></a> &nbsp; ';
+$availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_settings" class="go-pro-link-no-style"><span class="tooltip">Available for Pro users<br />Buy now to unlock all features!</span> <img width="20" height="20" src="'.WPACU_PLUGIN_URL.'/assets/icons/icon-lock.svg" valign="top" alt="" /></a> &nbsp; ';
 // [/wpacu_lite]
 ?>
 <div class="wpacu-wrap <?php if ($data['input_style'] !== 'standard') { ?>wpacu-switch-enhanced<?php } else { ?>wpacu-switch-standard<?php } ?>">
@@ -181,6 +181,22 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
                     <div class="wpacu-clearfix"></div>
 
                     <p><small>In case you prefer standard HTML checkboxes instead of the enhanced CSS3 iPhone style ones (on &amp; off) or you need a simple HTML layout in case you're using a screen reader software (e.g. for people with disabilities) which requires standard/clean HTML code, then you can choose "Standard" as an option.</small></p>
+                </td>
+            </tr>
+
+            <tr valign="top">
+                <th scope="row">
+                    <label for="wpacu_hide_core_files">Hide WordPress Core Files From The Assets List?</label>
+                </th>
+                <td>
+                    <label class="wpacu_switch">
+                        <input id="wpacu_hide_core_files"
+                               type="checkbox"
+					        <?php echo (($data['hide_core_files'] == 1) ? 'checked="checked"' : ''); ?>
+                               name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[hide_core_files]"
+                               value="1" /> <span class="wpacu_slider wpacu_round"></span> </label>
+                    &nbsp;
+                    <small>WordPress Core Files having handles such as 'jquery', 'wp-embed', 'comment-reply', 'dashicons' etc. should only be unloaded by experienced developers when they are convinced that are not needed in particular situations. It's better to leave them loaded if you have any doubts whether you need them or not. By hiding them in the assets management list, you will see a smaller assets list (easier to manage) and you will avoid updating by mistake any option (unload, async, defer) related to any core file.</small>
                 </td>
             </tr>
 
@@ -423,6 +439,44 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
                 </td>
             </tr>
 
+            <!-- Remove Main RSS Feed Link -->
+            <tr valign="top">
+                <th scope="row">
+                    <label for="wpacu_remove_main_feed_link">Remove Main RSS Feed Link?</label>
+                </th>
+                <td>
+	                <?php echo $availableForPro; ?>
+                    <label class="wpacu_switch wpacu_locked_for_pro">
+                        <input id="wpacu_remove_main_feed_link"
+                               type="checkbox"
+                               disabled="disabled"
+                               name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[remove_main_feed_link]"
+                               value="1" /> <span class="wpacu_slider wpacu_round"></span> </label>
+                    &nbsp;
+                    <code>&lt;link rel=&quot;alternate&quot; type=&quot;application/rss xml&quot; title=&quot;Your Site Title &amp;raquo; Feed&quot; href=&quot;https://www.yourwebsite.com/feed/&quot; /&gt;</code>
+                    <p>If you do not use WordPress for blogging purposes at all, and it doesn't have any blog posts (apart from the main pages that you added), then you can remove the main feed link. It will also remove feeds for the following pages: categories, tags, custom taxonomies &amp; search results. Note that it will not remove comments RSS feeds which can be removed using the setting below. Some websites might have blog posts and would keep the main RSS feeds enabled, while removing the comments RSS feeds if they don't use the comments functionality.</p>
+                </td>
+            </tr>
+
+            <!-- Remove Comment Feeds Link -->
+            <tr valign="top">
+                <th scope="row">
+                    <label for="wpacu_remove_comment_feed_link">Remove Comment RSS Feed Link?</label>
+                </th>
+                <td>
+	                <?php echo $availableForPro; ?>
+                    <label class="wpacu_switch wpacu_locked_for_pro">
+                        <input id="wpacu_remove_comment_feed_link"
+                               type="checkbox"
+                               disabled="disabled"
+                               name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[remove_comment_feed_link]"
+                               value="1" /> <span class="wpacu_slider wpacu_round"></span> </label>
+                    &nbsp;
+                    <code>e.g. &lt;link rel=&quot;alternate&quot; type=&quot;application/rss xml&quot; title=&quot;Your Website Title &amp;raquo; Comments Feed&quot; href=&quot;https://www.yourdomain.com/comments/feed/&quot; /&gt;</code>
+                    <p>If you do not use the comments functionality on your posts or do not use WordPress for blogging purposes at all, then you can remove the comments feed link.</p>
+                </td>
+            </tr>
+
             <!-- Disable "XML-RPC" protocol support? -->
             <tr valign="top">
                 <th scope="row">
@@ -436,11 +490,14 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
 
                     <p style="margin-bottom: 10px;"><strong>Disable XML-RPC Pingback Only</strong>: If you need the XML-RPC protocol support, but you do not use the pingbacks which are used by your website to notify another website that you have linked to it from your page(s), you can just disable the pinbacks and keep the other XML-RPC functionality. This is also a security measure to prevent DDoS attacks.</p>
 
-                    <p style="margin-bottom: 10px;"><strong>Disable XML-RPC Completely</strong>: Id you do not use Jetpack plugin for off-site server communication or you only use the Dashboard to post content (without any remote software connection to the WordPress website such as Windows Live Writer or mobile apps), then you can disable the XML-RPC functionality. You can always re-enable it whenever you believe you'll need it.</p>
+                    <p style="margin-bottom: 10px;"><strong>Disable XML-RPC Completely</strong>: If you do not use Jetpack plugin for off-site server communication or you only use the Dashboard to post content (without any remote software connection to the WordPress website such as Windows Live Writer or mobile apps), then you can disable the XML-RPC functionality. You can always re-enable it whenever you believe you'll need it.</p>
                 </td>
             </tr>
         </table>
 
-        <?php submit_button(); ?>
+	    <?php
+	    wp_nonce_field('wpacu_settings_update');
+	    submit_button();
+	    ?>
     </form>
 </div>

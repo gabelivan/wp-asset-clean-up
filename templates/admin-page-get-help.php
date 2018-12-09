@@ -23,7 +23,7 @@ include_once '_top-area.php';
                         <div class="wpacu-image-area wpacu-delete col-right">
                             <img src="<?php echo WPACU_PLUGIN_URL; ?>/assets/images/wpacu-upgrade-steps/wpacu-upgrade-step-1-delete.jpg" alt="" />
                         </div>
-                        <div class="clear"></div>
+                        <div class="wpacu-clearfix"></div>
                         <hr />
                     </div>
                 </li>
@@ -64,7 +64,7 @@ include_once '_top-area.php';
                 <li>You choose the one you want to work with.</li>
             </ol>
 
-            <div class="clear"></div>
+            <div class="wpacu-clearfix"></div>
             <hr /><br />
 
             <div class="wpacu-btns">

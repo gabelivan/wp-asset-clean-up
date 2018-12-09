@@ -64,7 +64,7 @@ class Main
     /**
      * @var array
      */
-    public $vars = array('woo_url_not_match' => false, 'is_woo_shop_page'  => false);
+    public $vars = array('woo_url_not_match' => false, 'is_woo_shop_page' => false);
 
     /**
      * @var bool
@@ -1044,15 +1044,15 @@ class Main
     public function ajaxGetJsonListCallback()
     {
         $postId = isset($_POST['post_id']) ? (int)$_POST['post_id'] : ''; // if any (could be home page for instance)
-        $pageUrl = isset($_POST['page_url']) ? $_POST['page_url'] : ''; // post, page, custom post type, home page etc.
+        $pageUrl = Misc::getVar('post', 'page_url'); // post, page, custom post type, home page etc.
 
         $wpacuList = $contents = '';
 
         $settings = new Settings();
 
         if (self::$domGetType === 'direct') {
-            $contents = isset($_POST['contents']) ? $_POST['contents'] : '';
-            $wpacuList = isset($_POST['wpacu_list']) ? $_POST['wpacu_list'] : '';
+            $contents = Misc::getVar('post', 'contents');
+            $wpacuList = Misc::getVar('post', 'wpacu_list');
         } elseif (self::$domGetType === 'wp_remote_post') {
 	        $wpRemotePost = wp_remote_post($pageUrl, array(
                 'body' => array(
@@ -1146,7 +1146,7 @@ class Main
         //echo '<pre>'; print_r($data['bulk_unloaded']['post_type']);
 		if ($postId > 0) {
 			$type = 'post';
-		} elseif (isset($_POST['tag_id']) && $_POST['tag_id']) {
+		} elseif (Misc::getVar('post', 'tag_id')) {
 			// [wpacu_pro]
 			$type = 'for_pro';
 			// [/wpacu_pro]

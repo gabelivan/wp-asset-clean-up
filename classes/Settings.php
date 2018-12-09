@@ -25,6 +25,7 @@ class Settings
         'assets_list_layout_areas_status',
         'assets_list_inline_code_status',
 
+        'hide_core_files',
         'test_mode',
 
         'disable_emojis',
@@ -91,6 +92,8 @@ class Settings
     public function saveSettings()
     {
         if (! empty($_POST) && array_key_exists('wpacu_settings_page', $_POST)) {
+	        check_admin_referer('wpacu_settings_update');
+
             $data = Misc::getVar('post', WPACU_PLUGIN_NAME . '_settings', array());
             $this->update($data);
         }

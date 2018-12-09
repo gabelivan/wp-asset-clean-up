@@ -96,6 +96,8 @@ class BulkUnloads
      */
     public function update()
     {
+	    check_admin_referer('wpacu_bulk_unloads_update');
+
         $wpacuUpdate = new Update;
 
         if ($this->wpacuFor === 'everywhere') {

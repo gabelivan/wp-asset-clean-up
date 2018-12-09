@@ -17,7 +17,7 @@ class HomePage
      */
     public function __construct()
     {
-        $this->data['nonce_name']    = WPACU_PLUGIN_NAME.'_settings';
+        $this->data['nonce_name'] = WPACU_PLUGIN_NAME.'_home_page_update';
         $this->data['show_on_front'] = Misc::getShowOnFront();
 
         $isHomePageEdit = (Misc::getVar('get', 'page') === WPACU_PLUGIN_NAME.'_home_page');
@@ -57,17 +57,16 @@ class HomePage
      */
     public function page()
     {
-        $wpacuNoLoadAssets = Misc::getVar('post', WPACU_PLUGIN_NAME, array());
-
-        $noncePost = Misc::getVar('post', $this->data['nonce_name']);
+	    $wpacuNoLoadAssets = Misc::getVar('post', WPACU_PLUGIN_NAME, array());
+	    $wpacuHomePageUpdate = Misc::getVar('post', 'wpacu_manage_home_page_assets', false);
 
 	    // Could Be an Empty Array as Well so just is_array() is enough to use
-        if (is_array($wpacuNoLoadAssets) && wp_verify_nonce($noncePost, $this->data['nonce_name'])) {
+        if (is_array($wpacuNoLoadAssets) && ! empty($wpacuNoLoadAssets) && $wpacuHomePageUpdate) {
+	        check_admin_referer($this->data['nonce_name']);
+
             $wpacuUpdate = new Update;
             $wpacuUpdate->updateFrontPage($wpacuNoLoadAssets);
         }
-
-        $this->data['nonce_value'] = wp_create_nonce($this->data['nonce_name']);
 
         $wpacuSettings = new Settings;
         $this->data['wpacu_settings'] = $wpacuSettings->getAll();

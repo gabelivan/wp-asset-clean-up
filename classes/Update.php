@@ -21,6 +21,33 @@ class Update
 	 */
 	public $frontEndUpdateTriggered = false;
 
+	/**
+	 * @var array
+	 */
+	public $frontEndUpdateFor = array(
+		'homepage' => false,
+		'page'     => false
+	);
+
+	/**
+	 * @var array
+	 */
+	public $updateDoneMsg = array();
+
+	/**
+	 * Update constructor.
+	 */
+	public function __construct()
+	{
+		$this->updateDoneMsg['homepage'] = <<<HTML
+<span class="dashicons dashicons-yes"></span> The homepage's settings were updated. Please make sure the homepage's cache is cleared (if you're using a caching plugin or a server-side caching solution) to immediately have the changes applied for every visitor.
+HTML;
+
+		$this->updateDoneMsg['page'] = <<<HTML
+<span class="dashicons dashicons-yes"></span> This page's settings were updated. Please make sure the page's cache is cleared (if you're using a caching plugin or a server-side caching solution) to immediately have the changes applied for every visitor.
+HTML;
+	}
+
     /**
      *
      */
@@ -52,6 +79,13 @@ class Update
      */
     public function frontendUpdate()
     {
+	    @session_start();
+
+	    if (isset($_SESSION['wpacu_page_just_updated'])) {
+		    define('WPACU_PAGE_JUST_UPDATED', true);
+		    unset($_SESSION['wpacu_page_just_updated']);
+	    }
+
         $postId = 0;
 
         if (Main::instance()->currentPostId > 0) {
@@ -148,6 +182,8 @@ class Update
 	    }
 
 	    $location .= $extraParamsSign . http_build_query($paramsToAdd) . '#wpacu_wrap_assets';
+
+	    $_SESSION['wpacu_page_just_updated'] = true;
 
 	    wp_safe_redirect($location);
     	exit();
@@ -255,7 +291,24 @@ class Update
 
         // Add / Remove Site-wide Unloads
 		$this->updateEverywhereUnloads();
+
+	    add_action('wpacu_admin_notices', array($this, 'homePageUpdated'));
+
+	    $this->frontEndUpdateFor['homepage'] = true;
     }
+
+	/**
+	/**
+	 *
+	 */
+	public function homePageUpdated()
+	{
+		?>
+        <div class="updated notice wpacu-notice is-dismissible">
+            <p><?php echo $this->updateDoneMsg['homepage']; ?></p>
+        </div>
+		<?php
+	}
 
 	/**
 	 * Lite: For Singular Page (Post, Page, Custom Post Type) and Front Page (Home Page)

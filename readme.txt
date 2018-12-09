@@ -1,10 +1,10 @@
 === Asset CleanUp: Page Speed Booster ===
 Contributors: gabelivan
-Tags: speed, pagespeed, page speed, cleanup, remove style, remove script, dequeue style, dequeue script, unload style, unload script, disable emojis
+Tags: pagespeed, page speed, dequeue, performance, gtmetrix
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GJZCW6RD8ECS
 Requires at least: 4.0
-Tested up to: 4.9.8
-Stable tag: 1.2.8.4
+Tested up to: 5.0
+Stable tag: 1.2.8.5
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -131,6 +131,12 @@ If that's the case, then it's advisable to consult with a developer (ideally the
 4. Scripts (.JS) are selected for site-wide unload
 
 == Changelog ==
+= 1.2.8.5 =
+* Option to hide WordPress core files from the management list to avoid applying settings to any of them by mistake (showing the core files for unload, async or defer are mostly useful for advanced developers in particular situations)
+* Improved security of the pages by adding nonces everywhere there is an update button within the Dashboard related to the plugin
+* Added confirmation message on top of the list in front-end view after an update is made (to avoid confusion whether the settings were updated or not)
+* The height of an asset row (CSS or JavaScript) is now smaller as "Unload on this page" and bulk unloads (site-wide, by post type etc.) are placed on the same line if the screen width is large enough, convenient when going through a big list of assets
+
 = 1.2.8.4 =
 * Added "Input Fields Style" option in plugin's "Settings" which would turn the fancy CSS3 iPhone-like checkboxes to standard HTML checkboxes (good for people with disabilities who use a screen reader software or personal preference)
 * Added notification in the front-end view in case WP Rocket is enabled with "User Cache" enabled

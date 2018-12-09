@@ -11,6 +11,19 @@ if (! isset($data)) {
     <div id="wpacu_wrap_assets">
         <?php
         if ($data['is_updateable']) {
+	        if (defined('WPACU_PAGE_JUST_UPDATED')) {
+		        $updateClass = new \WpAssetCleanUp\Update;
+		        ?>
+                <div class="wpacu-updated-frontend"><em>
+				        <?php if (\WpAssetCleanUp\Misc::isHomePage()) {
+					        echo $updateClass->updateDoneMsg['homepage'];
+				        } else {
+					        echo $updateClass->updateDoneMsg['page'];
+				        } ?>
+                    </em></div>
+		        <?php
+	        }
+
             $wpacuMisc = new \WpAssetCleanUp\Misc();
             $activeCachePlugins = $wpacuMisc->getActiveCachePlugins();
 

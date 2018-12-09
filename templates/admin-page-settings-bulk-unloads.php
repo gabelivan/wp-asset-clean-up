@@ -23,14 +23,14 @@ $availableForPro = '<span class="tooltip">Available for Pro users<br />Click to 
 <nav class="nav-tab-wrapper">
     <a href="<?php echo admin_url('admin.php?page=wpassetcleanup_bulk_unloads'); ?>" class="nav-tab <?php if ($data['for'] === 'everywhere') { ?>nav-tab-active<?php } ?>">Everywhere</a>
     <a href="<?php echo admin_url('admin.php?page=wpassetcleanup_bulk_unloads&wpacu_for=post_types'); ?>" class="nav-tab <?php if ($data['for'] === 'post_types') { ?>nav-tab-active<?php } ?>">Post Types</a>
-    <a href="<?php echo WPACU_PLUGIN_GO_PRO_URL; ?>?utm_source=plugin_bulk_unloaded&utm_medium=tab_link" target="_blank" class="nav-tab go-pro-link-no-style"><?php echo $availableForPro; ?> &nbsp;Taxonomies</a>
-    <a href="<?php echo WPACU_PLUGIN_GO_PRO_URL; ?>?utm_source=plugin_bulk_unloaded&utm_medium=tab_link" target="_blank" class="nav-tab go-pro-link-no-style"><?php echo $availableForPro; ?> &nbsp;Authors</a>
-    <a href="<?php echo WPACU_PLUGIN_GO_PRO_URL; ?>?utm_source=plugin_bulk_unloaded&utm_medium=tab_link" target="_blank" class="nav-tab go-pro-link-no-style"><?php echo $availableForPro; ?> &nbsp;Search Results</a>
-    <a href="<?php echo WPACU_PLUGIN_GO_PRO_URL; ?>?utm_source=plugin_bulk_unloaded&utm_medium=tab_link" target="_blank" class="nav-tab go-pro-link-no-style"><?php echo $availableForPro; ?> &nbsp;Dates</a>
-    <a href="<?php echo WPACU_PLUGIN_GO_PRO_URL; ?>?utm_source=plugin_bulk_unloaded&utm_medium=tab_link" target="_blank" class="nav-tab go-pro-link-no-style"><?php echo $availableForPro; ?> &nbsp;404 Not Found</a>
+    <a href="<?php echo WPACU_PLUGIN_GO_PRO_URL; ?>?utm_source=plugin_bulk_unloaded&utm_medium=tab_link" target="_blank" class="nav-tab go-pro-link-no-style no-transition"><?php echo $availableForPro; ?> &nbsp;Taxonomies</a>
+    <a href="<?php echo WPACU_PLUGIN_GO_PRO_URL; ?>?utm_source=plugin_bulk_unloaded&utm_medium=tab_link" target="_blank" class="nav-tab go-pro-link-no-style no-transition"><?php echo $availableForPro; ?> &nbsp;Authors</a>
+    <a href="<?php echo WPACU_PLUGIN_GO_PRO_URL; ?>?utm_source=plugin_bulk_unloaded&utm_medium=tab_link" target="_blank" class="nav-tab go-pro-link-no-style no-transition"><?php echo $availableForPro; ?> &nbsp;Search Results</a>
+    <a href="<?php echo WPACU_PLUGIN_GO_PRO_URL; ?>?utm_source=plugin_bulk_unloaded&utm_medium=tab_link" target="_blank" class="nav-tab go-pro-link-no-style no-transition"><?php echo $availableForPro; ?> &nbsp;Dates</a>
+    <a href="<?php echo WPACU_PLUGIN_GO_PRO_URL; ?>?utm_source=plugin_bulk_unloaded&utm_medium=tab_link" target="_blank" class="nav-tab go-pro-link-no-style no-transition"><?php echo $availableForPro; ?> &nbsp;404 Not Found</a>
 </nav>
 
-<div class="clear"></div>
+<div class="wpacu-clearfix"></div>
 
 <?php
 do_action('wpacu_admin_notices');
@@ -58,7 +58,7 @@ if ($data['for'] === 'post_types') {
 <?php
 if ($data['for'] === 'everywhere') {
     ?>
-    <div class="clear"></div>
+    <div class="wpacu-clearfix"></div>
 
     <div class="alert">
         <p>This is the list of the assets that are <strong>globally unloaded</strong> on all pages (including home page).</p>
@@ -71,7 +71,7 @@ if ($data['for'] === 'everywhere') {
         </div>
     </div>
 
-    <div class="clear"></div>
+    <div class="wpacu-clearfix"></div>
 
     <div style="padding: 0 10px 0 0;">
         <h3>Styles</h3>
@@ -143,7 +143,7 @@ if ($data['for'] === 'everywhere') {
     <?php
 } elseif ($data['for'] === 'post_types') {
     ?>
-    <div class="clear"></div>
+    <div class="wpacu-clearfix"></div>
 
     <div class="alert">
         <p>This is the list of the assets that are <strong>unloaded</strong> on all pages belonging to the <strong><u><?php echo $data['post_type']; ?></u></strong> post type.</p>
@@ -156,7 +156,7 @@ if ($data['for'] === 'everywhere') {
         </div>
     </div>
 
-    <div class="clear"></div>
+    <div class="wpacu-clearfix"></div>
 
     <div style="padding: 0 10px 0 0;">
         <h3>Styles</h3>
@@ -243,9 +243,12 @@ $noAssetsToRemove = (empty($data['values']['styles']) && empty($data['values']['
     }
     ?>
 
-<div class="clear"></div>
+<div class="wpacu-clearfix"></div>
 
 <p class="submit">
+    <?php
+    wp_nonce_field('wpacu_bulk_unloads_update');
+    ?>
     <input type="submit"
            name="submit"
            id="submit"

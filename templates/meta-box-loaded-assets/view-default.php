@@ -37,7 +37,14 @@ $listAreaStatus = $data['plugin_settings']['assets_list_layout_areas_status'];
                 <p><?php echo sprintf(__('The following styles are loading on this page. Please select the ones that are %sNOT NEEDED%s. If you are not sure which ones to unload, it is better to leave them enabled (unchecked) and consult with a developer about unloading the assets.', WPACU_PLUGIN_NAME), '<span style="color: #CC0000;"><strong>', '</strong></span>'); ?></p>
                 <p><?php echo __('"Load in on this page (make exception)" will take effect when a bulk unload rule is used. Otherwise, the asset will load anyway unless you select it for unload.', WPACU_PLUGIN_NAME); ?></p>
                 <?php
-                if ($data['core_styles_loaded']) {
+	            if ($data['plugin_settings']['hide_core_files']) {
+		            ?>
+                    <div class="wpacu_note"><span class="dashicons dashicons-info"></span> WordPress CSS core files are hidden as requested in the plugin's settings. They are meant to be managed by experienced developers in special situations.</div>
+                    <div style="clear:both; margin-top: 10px;"></div>
+		            <?php
+	            }
+
+                if ($data['core_styles_loaded'] && ! $data['plugin_settings']['hide_core_files']) {
                     ?>
                     <div class="wpacu_note wpacu_warning"><em><?php
                             echo sprintf(
@@ -92,7 +99,14 @@ $listAreaStatus = $data['plugin_settings']['assets_list_layout_areas_status'];
             <p><?php echo sprintf(__('The following scripts are loading on this page. Please select the ones that are %sNOT NEEDED%s. If you are not sure which ones to unload, it is better to leave them enabled and consult with a developer about unloading the assets.', WPACU_PLUGIN_NAME), '<span style="color: #CC0000;"><strong>', '</strong></span>'); ?></p>
             <p><?php echo __('"Load in on this page (make exception)" will take effect when a bulk unload rule is used. Otherwise, the asset will load anyway unless you select it for unload.', WPACU_PLUGIN_NAME); ?></p>
             <?php
-            if ($data['core_scripts_loaded']) {
+            if ($data['plugin_settings']['hide_core_files']) {
+                ?>
+                <div class="wpacu_note"><span class="dashicons dashicons-info"></span> WordPress JavaScript core files are hidden as requested in the plugin's settings. They are meant to be managed by experienced developers in special situations.</div>
+                <div style="clear:both; margin-top: 10px;"></div>
+                <?php
+            }
+
+            if ($data['core_scripts_loaded'] && ! $data['plugin_settings']['hide_core_files']) {
                 ?>
                 <div class="wpacu_note wpacu_warning"><em><?php
                         echo sprintf(

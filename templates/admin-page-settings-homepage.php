@@ -9,10 +9,11 @@ if (! isset($data)) {
 include_once '_top-area.php';
 ?>
 <div class="wpacu-wrap">
-
 <h2><?php _e('Home Page Scripts &amp; Styles Management', WPACU_PLUGIN_NAME); ?></h2>
 
 <?php
+do_action('wpacu_admin_notices');
+
 if ($data['wpacu_settings']['dashboard_show'] != 1) {
     ?>
     <div class="error" style="padding: 10px;"><?php echo sprintf(__('As "Manage in the Dashboard?" is not enabled in "%sSettings%s", you can not manage the assets from the Dashboard.', WPACU_PLUGIN_NAME), '<a href="admin.php?page=wpassetcleanup_settings">', '</a>'); ?></div>
@@ -69,7 +70,9 @@ if ($data['show_on_front'] === 'page') {
 		        ); ?></p>
         </div>
 
-        <input type="hidden" name="<?php echo $data['nonce_name']; ?>" value="<?php echo $data['nonce_value']; ?>" />
+	    <?php
+	    wp_nonce_field($data['nonce_name']);
+	    ?>
         <p class="submit"><input type="submit" name="submit" id="submit" class="hidden button button-primary" value="<?php esc_attr_e('Update', WPACU_PLUGIN_NAME); ?>"></p>
     </form>
 <?php

@@ -123,6 +123,15 @@ class Menu
 		    function() {}
 	    );
 
+	    // Add "Asset CleanUp Pro" Settings Link to the main "Settings" menu within the Dashboard
+	    // For easier navigation
+	    $GLOBALS['submenu']['options-general.php'][] = array(
+		    __('Asset CleanUp', WPACU_PLUGIN_NAME),
+		    self::$capability,
+		    admin_url('admin.php?page='.WPACU_PLUGIN_NAME.'_settings'),
+		    __('Asset CleanUp', WPACU_PLUGIN_NAME),
+	    );
+
         // Rename first item from the menu which has the same title as the menu page
         $GLOBALS['submenu'][self::$slug][0][0] = esc_attr__('Settings', WPACU_PLUGIN_NAME);
     }

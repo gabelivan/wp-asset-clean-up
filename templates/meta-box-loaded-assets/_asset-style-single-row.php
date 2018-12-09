@@ -7,13 +7,16 @@ if (! isset($data)) {
 }
 
 $inlineCodeStatus = $data['plugin_settings']['assets_list_inline_code_status'];
+$isCoreFile       = (isset($data['row']['obj']->wp) && $data['row']['obj']->wp);
+$hideCoreFiles    = $data['plugin_settings']['hide_core_files'];
+$isBulkUnloaded   = ($data['row']['global_unloaded'] || $data['row']['is_post_type_unloaded']);
 ?>
-<tr class="wpacu_asset_row <?php echo $data['row']['class']; ?>">
+<tr class="wpacu_asset_row <?php echo $data['row']['class']; ?>" style="<?php if ($isCoreFile && $hideCoreFiles) { echo 'display: none;'; } ?>">
     <td valign="top">
         <p class="wpacu_handle">
             <label for="style_<?php echo $data['row']['obj']->handle; ?>"><?php _e('Handle:', WPACU_PLUGIN_NAME); ?> <strong><span style="color: green;"><?php echo $data['row']['obj']->handle; ?></span></strong></label>
 			<?php
-			if (isset($data['row']['obj']->wp) && $data['row']['obj']->wp) {
+			if ($isCoreFile && ! $hideCoreFiles) {
 				?>
 				<span class="dashicons dashicons-warning wordpress-core-file"><span class="tooltip">WordPress Core File<br />Not sure if needed or not? In this case, it's better to leave it loaded to avoid breaking the website.</span></span>
 				<?php
@@ -21,29 +24,30 @@ $inlineCodeStatus = $data['plugin_settings']['assets_list_inline_code_status'];
 			?>
 		</p>
 
-		<div class="wpacu_asset_options_wrap">
-			<ul class="wpacu_asset_options wpacu_exception_options_area" <?php /* [wpacu_lite] */ if ($data['row']['global_unloaded'] || $data['row']['is_post_type_unloaded']) { /* [/wpacu_lite] */ echo 'style="display: none;"'; } ?>>
+        <div <?php if (! $isBulkUnloaded) { ?>class="wrap_bulk_unload_options"<?php } ?>>
+		    <div class="wpacu_asset_options_wrap">
+			<ul class="wpacu_asset_options wpacu_exception_options_area" <?php if ($isBulkUnloaded) { echo 'style="display: none;"'; } ?>>
 				<li class="wpacu_unload_this_page">
-					<label class="wpacu_switch"><input class="input-unload-on-this-page" id="style_<?php echo $data['row']['obj']->handle; ?>" <?php /* [wpacu_lite] */ if ($data['row']['global_unloaded'] || $data['row']['is_post_type_unloaded']) { /* [/wpacu_lite] */ echo 'disabled="disabled"'; } echo $data['row']['checked']; ?> name="<?php echo WPACU_PLUGIN_NAME; ?>[styles][]" type="checkbox" value="<?php echo $data['row']['obj']->handle; ?>" /><span class="wpacu_slider wpacu_round"></span></label> <label class="wpacu_slider_text" for="style_<?php echo $data['row']['obj']->handle; ?>">Unload on this page</label>
+					<label class="wpacu_switch"><input class="input-unload-on-this-page" id="style_<?php echo $data['row']['obj']->handle; ?>" <?php /* [wpacu_lite] */ if ($isBulkUnloaded) { /* [/wpacu_lite] */ echo 'disabled="disabled"'; } echo $data['row']['checked']; ?> name="<?php echo WPACU_PLUGIN_NAME; ?>[styles][]" type="checkbox" value="<?php echo $data['row']['obj']->handle; ?>" /><span class="wpacu_slider wpacu_round"></span></label> <label class="wpacu_slider_text" for="style_<?php echo $data['row']['obj']->handle; ?>">Unload on this page</label>
 				</li>
 			</ul>
 
 			<?php
-			/* [wpacu_lite] */ if ($data['row']['global_unloaded'] || $data['row']['is_post_type_unloaded']) { /* [/wpacu_lite] */
+			if ($isBulkUnloaded) {
 				?>
 				<em>"Unload on this page" rule is locked and irrelevant as there are global rules set below that overwrite it. Once all the rules below are removed, this option will become available again.</em>
 				<?php
 			}
 			?>
-		</div>
+		    </div>
 
-		<div class="wpacu_asset_options_wrap">
+		    <div class="wpacu_asset_options_wrap">
 			<?php
 			// Unloaded Everywhere
 			if ($data['row']['global_unloaded']) {
 				?>
 				<p><strong style="color: #d54e21;">This stylesheet file is unloaded everywhere</strong></p>
-				<div class="clear"></div>
+				<div class="wpacu-clearfix"></div>
 				<?php
 			}
 			?>
@@ -97,7 +101,7 @@ $inlineCodeStatus = $data['plugin_settings']['assets_list_inline_code_status'];
 			if ($data['row']['is_post_type_unloaded']) {
 				?>
 				<p><strong style="color: #d54e21;">This stylesheet file is unloaded on all <u><?php echo $data['post_type']; ?></u> post types.</strong></p>
-				<div class="clear"></div>
+				<div class="wpacu-clearfix"></div>
 				<?php
 			}
 			?>
@@ -153,6 +157,9 @@ $inlineCodeStatus = $data['plugin_settings']['assets_list_inline_code_status'];
 		</div>
 	<?php } ?>
 
+            <div class="wpacu-clearfix"></div>
+        </div>
+
 		<?php
 		// [wpacu_pro]
 		do_action('wpacu_pro_bulk_unload_output', $data, $data['row']['obj'], 'css');
@@ -168,7 +175,7 @@ $inlineCodeStatus = $data['plugin_settings']['assets_list_inline_code_status'];
 						<?php if ($data['row']['is_load_exception']) { ?> checked="checked" <?php } ?>
 						      name="wpacu_styles_load_it[]"
 						      value="<?php echo $data['row']['obj']->handle; ?>"/>
-					Load it on this page (make exception<?php if (! $data['row']['is_global_rule']) { echo ' * works only IF any of bulk rule above is selected'; } ?>)</label>
+					Load it on this page (make exception<?php if (! $isBulkUnloaded) { echo ' * works only IF any of bulk rule above is selected'; } ?>)</label>
 			</li>
 		</ul>
 		<?php
@@ -207,7 +214,7 @@ $inlineCodeStatus = $data['plugin_settings']['assets_list_inline_code_status'];
 		}
 
 		// [wpacu_lite]
-		$extraInfo[] = '<strong>'.__('File Size:', WPACU_PLUGIN_NAME).'</strong> <a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=manage_asset&utm_medium=file_size" class="go-pro-link-no-style"><span class="tooltip">Upgrade to Pro to unlock all features</span><img width="20" height="20" src="'.WPACU_PLUGIN_URL.'/assets/icons/icon-lock.svg" valign="top" alt="" /> Pro Version</a>';
+		$extraInfo[] = '<strong>'.__('File Size:', WPACU_PLUGIN_NAME).'</strong> <a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=manage_asset&utm_medium=file_size" class="go-pro-link-no-style"><span class="tooltip">Upgrade to Pro and unlock all features</span><img width="20" height="20" src="'.WPACU_PLUGIN_URL.'/assets/icons/icon-lock.svg" valign="top" alt="" /> Pro Version</a>';
 		// [/wpacu_lite]
 
 		if (! empty($extraInfo)) {

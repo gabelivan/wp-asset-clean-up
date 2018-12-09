@@ -15,6 +15,6 @@ include_once '_top-area.php';
 
     <div class="wrap-upgrade-info">
         <p><span class="dashicons dashicons-info"></span> If you already purchased the Pro version and you don't know how to activate it, <a href="admin.php?page=wpassetcleanup_get_help">follow the steps from the "Help" section</a>.</p>
-        <div class="clear"></div>
+        <div class="wpacu-clearfix"></div>
     </div>
 </div>
