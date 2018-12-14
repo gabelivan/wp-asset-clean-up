@@ -34,7 +34,7 @@ class AdminBar
 			$wp_admin_bar->add_menu(array(
 				'id'    => 'wpacu-test-mode',
 				'title' => WPACU_PLUGIN_TITLE.': <span class="dashicons dashicons-admin-tools"></span> <strong>TEST MODE</strong> is <strong>ENABLED SITE-WIDE</strong>',
-				'href'  => admin_url('admin.php?page=' . WPACU_PLUGIN_NAME . '_settings')
+				'href'  => admin_url( 'admin.php?page=' . WPACU_PLUGIN_ID . '_settings')
 			));
 
 			$wp_admin_bar->add_menu(array(

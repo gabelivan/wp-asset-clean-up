@@ -11,8 +11,6 @@ class Plugin
 	 */
 	public function __construct()
 	{
-		register_activation_hook(WPACU_PLUGIN_FILE, array($this, 'whenActivated'));
-
 		// [wpacu_lite]
 		// Admin footer text: Ask the user to review the plugin
 		add_filter('admin_footer_text', array($this, 'adminFooter'), 1, 1);
@@ -23,29 +21,13 @@ class Plugin
 	}
 
 	/**
-	 *
-	 */
-	public function whenActivated()
-	{
-		if (! get_option(WPACU_PLUGIN_NAME.'_settings')) {
-			$defaultSettings = array(
-				'dashboard_show' => 1,
-				'dom_get_type'   => 'direct'
-			);
-
-            $settings = new Settings();
-            $settings->update($defaultSettings);
-		}
-	}
-
-	/**
 	 * @param $links
 	 *
 	 * @return mixed
 	 */
 	public function actionLinks($links)
 	{
-		$links['settings'] = '<a href="admin.php?page='.WPACU_PLUGIN_NAME.'_settings">Settings</a>';
+		$links['settings'] = '<a href="admin.php?page=' . WPACU_PLUGIN_ID . '_settings">' . __('Settings', WPACU_PLUGIN_TEXT_DOMAIN) . '</a>';
 
 		// [wpacu_lite]
 		$allPlugins = get_plugins();
@@ -67,7 +49,7 @@ class Plugin
 	 */
 	public function adminFooter($text)
 	{
-		if (isset($_GET['page']) && strpos($_GET['page'], WPACU_PLUGIN_NAME) !== false) {
+		if (isset($_GET['page']) && strpos($_GET['page'], WPACU_PLUGIN_ID) !== false) {
 			$reviewUrl = 'https://wordpress.org/support/plugin/wp-asset-clean-up/reviews/?filter=5#new-post';
 			$text = 'Thank you for using '.WPACU_PLUGIN_TITLE.' v'.WPACU_PLUGIN_VERSION.') <span class="dashicons dashicons-smiley"></span> &nbsp;&nbsp; If you like it, please <a target="_blank" href="'.$reviewUrl.'"><strong>rate</strong> '.WPACU_PLUGIN_TITLE.'</a> <a target="_blank" href="'.$reviewUrl.'"><span class="dashicons dashicons-wpacu dashicons-star-filled"></span><span class="dashicons dashicons-wpacu dashicons-star-filled"></span><span class="dashicons dashicons-wpacu dashicons-star-filled"></span><span class="dashicons dashicons-wpacu dashicons-star-filled"></span><span class="dashicons dashicons-wpacu dashicons-star-filled"></span></a> on WordPress.org to help me spread the word to the community.';
 		}

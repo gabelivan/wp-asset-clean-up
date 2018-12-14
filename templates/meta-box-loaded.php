@@ -124,7 +124,7 @@ if (isset($data['page_template'])) {
 
 /*
  Bug Fix: Make sure that savePost() from Update class is triggered ONLY if the meta box is loaded
- Otherwise, an early form submit will erase any selected assets for unload by sending an empty $_POST[WPACU_PLUGIN_NAME] request
+ Otherwise, an early form submit will erase any selected assets for unload by sending an empty $_POST[WPACU_PLUGIN_ID] request
 
  NOTE: In case no assets are retrieved, then it's likely that for some reason, fetching the assets from the Dashboard
  is not possible and the user will have to manage them in the front-end.

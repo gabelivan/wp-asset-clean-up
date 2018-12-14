@@ -9,29 +9,29 @@ if (! isset($data)) {
 include_once '_top-area.php';
 ?>
 <div class="wpacu-wrap">
-<h2><?php _e('Home Page Scripts &amp; Styles Management', WPACU_PLUGIN_NAME); ?></h2>
+<h2><?php _e('Home Page Scripts &amp; Styles Management', WPACU_PLUGIN_TEXT_DOMAIN); ?></h2>
 
 <?php
 do_action('wpacu_admin_notices');
 
 if ($data['wpacu_settings']['dashboard_show'] != 1) {
     ?>
-    <div class="error" style="padding: 10px;"><?php echo sprintf(__('As "Manage in the Dashboard?" is not enabled in "%sSettings%s", you can not manage the assets from the Dashboard.', WPACU_PLUGIN_NAME), '<a href="admin.php?page=wpassetcleanup_settings">', '</a>'); ?></div>
+    <div class="error" style="padding: 10px;"><?php echo sprintf(__('As "Manage in the Dashboard?" is not enabled in "%sSettings%s", you can not manage the assets from the Dashboard.', WPACU_PLUGIN_TEXT_DOMAIN), '<a href="admin.php?page=wpassetcleanup_settings">', '</a>'); ?></div>
     <?php
     return;
 }
 
 if ($data['show_on_front'] === 'page') {
     ?>
-    <p><?php _e('In "Settings" &#187; "Reading" you have selected a static page for "Front page displays" setting. To manage the assets (.CSS &amp; .JS) that will NOT LOAD, use the link(s) below:', WPACU_PLUGIN_NAME); ?></p>
+    <p><?php _e('In "Settings" &#187; "Reading" you have selected a static page for "Front page displays" setting. To manage the assets (.CSS &amp; .JS) that will NOT LOAD, use the link(s) below:', WPACU_PLUGIN_TEXT_DOMAIN); ?></p>
     <div>
         <ul>
             <?php
             if ($data['page_on_front']) {
             ?>
                 <li>
-                    <?php _e('Front page:', WPACU_PLUGIN_NAME); ?>
-                    <a href="post.php?post=<?php echo $data['page_on_front']; ?>&action=edit#<?php echo WPACU_PLUGIN_NAME; ?>_asset_list"><strong><?php echo $data['page_on_front_title']; ?></strong></a>
+                    <?php _e('Front page:', WPACU_PLUGIN_TEXT_DOMAIN); ?>
+                    <a href="<?php echo admin_url('post.php?post='.$data['page_on_front'].'&action=edit#'.WPACU_PLUGIN_ID.'_asset_list'); ?>"><strong><?php echo $data['page_on_front_title']; ?></strong></a>
                 </li>
             <?php
             }
@@ -39,32 +39,32 @@ if ($data['show_on_front'] === 'page') {
             if ($data['page_for_posts']) {
                 ?>
                 <li>
-                    <?php _e('Posts page:', WPACU_PLUGIN_NAME); ?>
-                    <a href="post.php?post=<?php echo $data['page_for_posts']; ?>&action=edit#<?php echo WPACU_PLUGIN_NAME; ?>_asset_list"><strong><?php echo $data['page_for_posts_title']; ?></strong></a>
+                    <?php _e('Posts page:', WPACU_PLUGIN_TEXT_DOMAIN); ?>
+                    <a href="<?php echo admin_url('post.php?post='.$data['page_for_posts'].'&action=edit#'.WPACU_PLUGIN_ID.'_asset_list'); ?>"><strong><?php echo $data['page_for_posts_title']; ?></strong></a>
                 </li>
                 <?php
             }
             ?>
         </ul>
     </div>
-    <p><?php echo sprintf(__('To read more about creating a static front page in WordPress, %scheck the Codex%s.', WPACU_PLUGIN_NAME), '<a target="_blank" href="https://codex.wordpress.org/Creating_a_Static_Front_Page">', '</a>'); ?></p>
+    <p><?php echo sprintf(__('To read more about creating a static front page in WordPress, %scheck the Codex%s.', WPACU_PLUGIN_TEXT_DOMAIN), '<a target="_blank" href="https://codex.wordpress.org/Creating_a_Static_Front_Page">', '</a>'); ?></p>
     <?php
 } else {
 ?>
     <form id="wpacu_home_page_form" method="post" action="">
-        <p><?php echo sprintf(__('Your front (home) page URL is <strong>%s</strong>'), $data['site_url']); ?></p>
+        <p><?php echo sprintf(__('Your front (home) page URL is <strong>%s</strong>', WPACU_PLUGIN_TEXT_DOMAIN), $data['site_url']); ?></p>
 
-        <p><?php _e('Here you can unload assets that are loading on the home page. "Front page displays" (from "Settings" &#187; "Reading") is set to either "Your latest posts" (in "Settings" &#187; "Reading") OR a special layout (from a theme or plugin) was enabled. When you edit a page/post (e.g. "Posts" -&gt; "All Posts", "Pages" -&gt; "All Pages" etc.), you will see the list inside a meta box.', WPACU_PLUGIN_NAME); ?></p>
+        <p><?php _e('Here you can unload assets that are loading on the home page. "Front page displays" (from "Settings" &#187; "Reading") is set to either "Your latest posts" (in "Settings" &#187; "Reading") OR a special layout (from a theme or plugin) was enabled. When you edit a page/post (e.g. "Posts" -&gt; "All Posts", "Pages" -&gt; "All Pages" etc.), you will see the list inside a meta box.', WPACU_PLUGIN_TEXT_DOMAIN); ?></p>
 
         <p>The plugin uses <a target="_blank" href="https://codex.wordpress.org/Function_Reference/is_front_page">is_front_page()</a> and <a href="https://codex.wordpress.org/Conditional_Tags#The_Main_Page">is_home()</a> WordPress functions to check if the visitor is on the home page. Note that the setting will also apply to pages such as <code>/page/2</code> <code>page/3</code> etc. in case the latest blog posts are paginated.</p>
 
         <div id="wpacu_meta_box_content">
             <img src="<?php echo admin_url(); ?>/images/spinner.gif" align="top" width="20" height="20" alt="" />&nbsp;
 
-            <?php _e('We\'re getting the loaded scripts and styles for the home page. Please wait...', WPACU_PLUGIN_NAME); ?>
+            <?php _e('We\'re getting the loaded scripts and styles for the home page. Please wait...', WPACU_PLUGIN_TEXT_DOMAIN); ?>
 
             <p><?php echo sprintf(
-			        __('If you believe fetching the page takes too long and the assets should have loaded by now, I suggest you go to "Settings", make sure "Manage in front-end" is checked and then %smanage the assets in the front-end%s.', WPACU_PLUGIN_NAME),
+			        __('If you believe fetching the page takes too long and the assets should have loaded by now, I suggest you go to "Settings", make sure "Manage in front-end" is checked and then %smanage the assets in the front-end%s.', WPACU_PLUGIN_TEXT_DOMAIN),
 			        '<a href="'.$data['site_url'].'#wpacu_wrap_assets">',
 			        '</a>'
 		        ); ?></p>
@@ -73,7 +73,7 @@ if ($data['show_on_front'] === 'page') {
 	    <?php
 	    wp_nonce_field($data['nonce_name']);
 	    ?>
-        <p class="submit"><input type="submit" name="submit" id="submit" class="hidden button button-primary" value="<?php esc_attr_e('Update', WPACU_PLUGIN_NAME); ?>"></p>
+        <p class="submit"><input type="submit" name="submit" id="submit" class="hidden button button-primary" value="<?php esc_attr_e('Update', WPACU_PLUGIN_TEXT_DOMAIN); ?>"></p>
     </form>
 <?php
 }

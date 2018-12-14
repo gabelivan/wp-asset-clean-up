@@ -111,11 +111,11 @@ HTML;
             $postUrlAnchor = $_SERVER['REQUEST_URI'].'#wpacu_wrap_assets';
             wp_die(
                 sprintf(
-                    __('The nonce expired or is not correct, thus the request was not processed. %sPlease retry%s.', WPACU_PLUGIN_NAME),
+                    __('The nonce expired or is not correct, thus the request was not processed. %sPlease retry%s.', WPACU_PLUGIN_TEXT_DOMAIN),
                     '<a href="'.$postUrlAnchor.'">',
                     '</a>'
                 ),
-                __('Nonce Expired', WPACU_PLUGIN_NAME)
+                __('Nonce Expired', WPACU_PLUGIN_TEXT_DOMAIN)
             );
         }
 
@@ -124,8 +124,8 @@ HTML;
         // Form submitted from the homepage
 	    // e.g. from a page such as latest blog posts, not a static page that was selected as home page)
         if (Misc::isHomePage() && ! ($postId > 0)) {
-            $wpacuNoLoadAssets = isset($_POST[WPACU_PLUGIN_NAME])
-                ? $_POST[WPACU_PLUGIN_NAME] : array();
+            $wpacuNoLoadAssets = isset($_POST[WPACU_PLUGIN_ID])
+                ? $_POST[WPACU_PLUGIN_ID] : array();
 
             $this->updateFrontPage($wpacuNoLoadAssets);
             return;
@@ -202,7 +202,7 @@ HTML;
     public function savePost($postId, $post = array())
     {
     	// This is triggered only if the "Asset CleanUp" meta box was loaded with the list of assets
-	    // Otherwise, $_POST[WPACU_PLUGIN_NAME] will be taken as empty which might be not if there are values in the database
+	    // Otherwise, $_POST[WPACU_PLUGIN_ID] will be taken as empty which might be not if there are values in the database
     	if (! (isset($_POST['wpacu_unload_assets_area_loaded']) && $_POST['wpacu_unload_assets_area_loaded'])) {
     	    return;
 	    }
@@ -227,8 +227,8 @@ HTML;
             return;
         }
 
-        $wpacuNoLoadAssets = isset($_POST[WPACU_PLUGIN_NAME])
-            ? $_POST[WPACU_PLUGIN_NAME] : array();
+        $wpacuNoLoadAssets = isset($_POST[WPACU_PLUGIN_ID])
+            ? $_POST[WPACU_PLUGIN_ID] : array();
 
         if (is_array($wpacuNoLoadAssets)) {
             global $wpdb;
@@ -240,7 +240,7 @@ HTML;
                 // Remove any row with no results
                 $wpdb->delete(
                     $wpdb->postmeta,
-                    array('post_id' => $postId, 'meta_key' => '_' . WPACU_PLUGIN_NAME . '_no_load')
+                    array('post_id' => $postId, 'meta_key' => '_' . WPACU_PLUGIN_ID . '_no_load')
                 );
                 $noUpdate = true;
             }
@@ -248,8 +248,8 @@ HTML;
             if (! $noUpdate) {
                 $jsonNoAssetsLoadList = json_encode($wpacuNoLoadAssets);
 
-                if (! add_post_meta($postId, '_' . WPACU_PLUGIN_NAME . '_no_load', $jsonNoAssetsLoadList, true)) {
-                    update_post_meta($postId, '_' . WPACU_PLUGIN_NAME . '_no_load', $jsonNoAssetsLoadList);
+                if (! add_post_meta($postId, '_' . WPACU_PLUGIN_ID . '_no_load', $jsonNoAssetsLoadList, true)) {
+                    update_post_meta($postId, '_' . WPACU_PLUGIN_ID . '_no_load', $jsonNoAssetsLoadList);
                 }
             }
         }
@@ -282,8 +282,8 @@ HTML;
 
         $jsonNoAssetsLoadList = json_encode($wpacuNoLoadAssets);
 
-        if (! update_option(WPACU_PLUGIN_NAME . '_front_page_no_load', $jsonNoAssetsLoadList)) {
-            add_option(WPACU_PLUGIN_NAME . '_front_page_no_load', $jsonNoAssetsLoadList);
+        if (! update_option( WPACU_PLUGIN_ID . '_front_page_no_load', $jsonNoAssetsLoadList)) {
+            add_option( WPACU_PLUGIN_ID . '_front_page_no_load', $jsonNoAssetsLoadList);
         }
 
         // If globally disabled, make exception to load for submitted assets
@@ -336,9 +336,9 @@ HTML;
 
         // Clear existing list first
         if ($type === 'post') {
-            delete_post_meta($postId, '_' . WPACU_PLUGIN_NAME . '_load_exceptions');
+            delete_post_meta($postId, '_' . WPACU_PLUGIN_ID . '_load_exceptions');
         } elseif ($type === 'front_page') {
-            delete_option(WPACU_PLUGIN_NAME . '_front_page_load_exceptions');
+            delete_option( WPACU_PLUGIN_ID . '_front_page_load_exceptions');
         } /* [wpacu_pro] */ elseif ($type === 'for_pro') {
 	        // Clear existing list for pages like: taxonomy, 404, search, date etc.
 	        do_action( 'wpacu_pro_clear_load_exceptions' );
@@ -399,11 +399,11 @@ HTML;
             $jsonLoadExceptions = json_encode($list);
 
             if ($type === 'post') {
-                if (! add_post_meta($postId, '_' . WPACU_PLUGIN_NAME . '_load_exceptions', $jsonLoadExceptions, true)) {
-                    update_post_meta($postId, '_' . WPACU_PLUGIN_NAME . '_load_exceptions', $jsonLoadExceptions);
+                if (! add_post_meta($postId, '_' . WPACU_PLUGIN_ID . '_load_exceptions', $jsonLoadExceptions, true)) {
+                    update_post_meta($postId, '_' . WPACU_PLUGIN_ID . '_load_exceptions', $jsonLoadExceptions);
                 }
             } elseif ($type === 'front_page') {
-                update_option(WPACU_PLUGIN_NAME . '_front_page_load_exceptions', $jsonLoadExceptions);
+                update_option( WPACU_PLUGIN_ID . '_front_page_load_exceptions', $jsonLoadExceptions);
             } /* [wpacu_pro] */ elseif ($type === 'for_pro') {
 	            // Update any load extensions for pages like: taxonomy, 404, search, date etc.
 	            do_action( 'wpacu_pro_update_load_exceptions', $jsonLoadExceptions );
@@ -442,7 +442,7 @@ HTML;
 	public function saveToEverywhereUnloads($reqStyles = array(), $reqScripts = array())
     {
         // Is there any entry already in JSON format?
-        $existingListJson = get_option(WPACU_PLUGIN_NAME.'_global_unload');
+        $existingListJson = get_option( WPACU_PLUGIN_ID . '_global_unload');
 
         // Default list as array
         $existingListEmpty = array('styles' => array(), 'scripts' => array());
@@ -467,7 +467,7 @@ HTML;
         $existingList['styles'] = array_unique($existingList['styles']);
         $existingList['scripts'] = array_unique($existingList['scripts']);
 
-        update_option(WPACU_PLUGIN_NAME.'_global_unload', json_encode($existingList));
+        update_option( WPACU_PLUGIN_ID . '_global_unload', json_encode($existingList));
     }
 
 	/**
@@ -480,7 +480,7 @@ HTML;
 	public function removeEverywhereUnloads($stylesList = array(), $scriptsList = array(), $checkType = '')
     {
     	if ($checkType === 'post') {
-		    $stylesList = Misc::getVar('post', 'wpacu_options_styles', array());
+		    $stylesList  = Misc::getVar('post', 'wpacu_options_styles', array());
 		    $scriptsList = Misc::getVar('post', 'wpacu_options_scripts', array());
 	    }
 
@@ -504,7 +504,7 @@ HTML;
             }
         }
 
-        $existingListJson = get_option(WPACU_PLUGIN_NAME.'_global_unload');
+        $existingListJson = get_option( WPACU_PLUGIN_ID . '_global_unload');
 
         if (! $existingListJson) {
             return false;
@@ -535,7 +535,7 @@ HTML;
             }
 
             if ($isUpdated) {
-                update_option(WPACU_PLUGIN_NAME . '_global_unload', json_encode($existingList));
+                update_option( WPACU_PLUGIN_ID . '_global_unload', json_encode($existingList));
             }
         }
 
@@ -563,7 +563,7 @@ HTML;
             ? $_POST['wpacu_bulk_unload_scripts'] : array();
 
         // Is there any entry already in JSON format?
-        $existingListJson = get_option(WPACU_PLUGIN_NAME.'_bulk_unload');
+        $existingListJson = get_option( WPACU_PLUGIN_ID . '_bulk_unload');
 
         // Default list as array
         $existingListEmpty = array(
@@ -596,6 +596,10 @@ HTML;
 
                 if ($bulkType === 'post_type') {
                     foreach ($values as $postType => $handles) {
+                        if (empty($handles)) {
+                            continue;
+                        }
+
                     	foreach (array_unique($handles) as $handle) {
 		                    $existingList[ $assetType ]['post_type'][ $postType ][] = $handle;
 	                    }
@@ -606,7 +610,7 @@ HTML;
             }
         }
 
-        update_option(WPACU_PLUGIN_NAME.'_bulk_unload', json_encode($existingList));
+        update_option( WPACU_PLUGIN_ID . '_bulk_unload', json_encode($existingList));
     }
 
     /**
@@ -656,7 +660,7 @@ HTML;
             }
         }
 
-        $existingListJson = get_option(WPACU_PLUGIN_NAME.'_bulk_unload');
+        $existingListJson = get_option( WPACU_PLUGIN_ID . '_bulk_unload');
 
         if (! $existingListJson) {
             return false;
@@ -686,7 +690,7 @@ HTML;
                 }
             }
 
-            update_option(WPACU_PLUGIN_NAME.'_bulk_unload', json_encode($existingList));
+            update_option( WPACU_PLUGIN_ID . '_bulk_unload', json_encode($existingList));
         }
 
         return $isUpdated;

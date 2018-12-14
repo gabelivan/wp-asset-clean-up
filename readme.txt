@@ -4,7 +4,7 @@ Tags: pagespeed, page speed, dequeue, performance, gtmetrix
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GJZCW6RD8ECS
 Requires at least: 4.0
 Tested up to: 5.0
-Stable tag: 1.2.8.5
+Stable tag: 1.2.8.6
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -131,6 +131,13 @@ If that's the case, then it's advisable to consult with a developer (ideally the
 4. Scripts (.JS) are selected for site-wide unload
 
 == Changelog ==
+= 1.2.8.6 =
+* Better support for WordPress 5.0 when updating a post/page within the Dashboard
+* On new plugin installations, "Hide WordPress Core Files From The Assets List?" is enabled by default
+* Added option for users to opt in to security and feature updates notifications, and non-sensitive diagnostic tracking
+* Added "Tools" page which allows you to reset all settings or reset everything
+* Bug Fix: Notice error was printing when there was no source file for specific handles that are loading inline code (e.g. woocommerce-inline)
+
 = 1.2.8.5 =
 * Option to hide WordPress core files from the management list to avoid applying settings to any of them by mistake (showing the core files for unload, async or defer are mostly useful for advanced developers in particular situations)
 * Improved security of the pages by adding nonces everywhere there is an update button within the Dashboard related to the plugin

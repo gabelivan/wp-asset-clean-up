@@ -57,3 +57,7 @@ new \WpAssetCleanUp\Plugin;
 
 // Admin Bar (Top Area of the website when user is logged in)
 new \WpAssetCleanUp\AdminBar();
+
+if (is_admin()) {
+	new \WpAssetCleanUp\Tools();
+}

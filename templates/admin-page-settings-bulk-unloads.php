@@ -15,7 +15,7 @@ $availableForPro = '<span class="tooltip">Available for Pro users<br />Click to 
 
 <div class="wpacu-wrap">
 
-<h2><?php _e('Bulk Unloaded', WPACU_PLUGIN_NAME); ?></h2>
+<h2><?php _e('Bulk Unloaded', WPACU_PLUGIN_TEXT_DOMAIN); ?></h2>
 
 <p>If you have used rules such as <em>"Unload everywhere"</em> or <em>"Unload on All Pages of <strong>post</strong> post type"</em> etc., then the assets will be shown here. Although, you can manage them when editing a page, post etc., this page will make things easier by seeing all the bulk unloads:</p>
 <p>A bulk unload is considered anything that is applied once and it has effect on multiple pages of the same kind or site-wide such as "Unload everywhere".</p>
@@ -256,7 +256,7 @@ $noAssetsToRemove = (empty($data['values']['styles']) && empty($data['values']['
            disabled="disabled"
            <?php } ?>
            class="button button-primary"
-           value="<?php esc_attr_e('Update', WPACU_PLUGIN_NAME); ?>" />
+           value="<?php esc_attr_e('Update', WPACU_PLUGIN_TEXT_DOMAIN); ?>" />
     <?php
     if ($noAssetsToRemove) {
     ?>

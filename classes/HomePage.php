@@ -17,10 +17,10 @@ class HomePage
      */
     public function __construct()
     {
-        $this->data['nonce_name'] = WPACU_PLUGIN_NAME.'_home_page_update';
+        $this->data['nonce_name'] = WPACU_PLUGIN_ID . '_home_page_update';
         $this->data['show_on_front'] = Misc::getShowOnFront();
 
-        $isHomePageEdit = (Misc::getVar('get', 'page') === WPACU_PLUGIN_NAME.'_home_page');
+        $isHomePageEdit = ( Misc::getVar('get', 'page') === WPACU_PLUGIN_ID . '_home_page');
 
         // Only continue if we are on the plugin's homepage edit mode
         if (! $isHomePageEdit) {
@@ -57,7 +57,7 @@ class HomePage
      */
     public function page()
     {
-	    $wpacuNoLoadAssets = Misc::getVar('post', WPACU_PLUGIN_NAME, array());
+	    $wpacuNoLoadAssets = Misc::getVar('post', WPACU_PLUGIN_ID, array());
 	    $wpacuHomePageUpdate = Misc::getVar('post', 'wpacu_manage_home_page_assets', false);
 
 	    // Could Be an Empty Array as Well so just is_array() is enough to use

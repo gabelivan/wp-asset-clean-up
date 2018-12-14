@@ -78,7 +78,7 @@ class OwnAssets
             $this->loadPluginAssets = true;
         }
 
-        if (strpos($page, WPACU_PLUGIN_NAME) === 0) {
+        if ( strpos($page, WPACU_PLUGIN_ID) === 0) {
             $this->loadPluginAssets = true;
         }
 
@@ -125,7 +125,7 @@ class OwnAssets
     private function enqueueAdminStyles()
     {
         $styleRelPath = '/assets/style.min.css';
-        wp_enqueue_style(WPACU_PLUGIN_NAME . '-style', plugins_url($styleRelPath, WPACU_PLUGIN_FILE), array(), $this->_assetVer($styleRelPath));
+        wp_enqueue_style( WPACU_PLUGIN_ID . '-style', plugins_url($styleRelPath, WPACU_PLUGIN_FILE), array(), $this->_assetVer($styleRelPath));
     }
 
     /**
@@ -145,7 +145,7 @@ class OwnAssets
             $postId = $getPostId;
         }
 
-        if ($page === WPACU_PLUGIN_NAME.'_home_page' || $postId < 1) {
+        if ( $page === WPACU_PLUGIN_ID . '_home_page' || $postId < 1) {
             $postId = 0; // for home page
         }
 
@@ -167,7 +167,7 @@ class OwnAssets
         $scriptRelPath = '/assets/script.min.js';
 
         wp_register_script(
-            WPACU_PLUGIN_NAME . '-script',
+	        WPACU_PLUGIN_ID . '-script',
             plugins_url($scriptRelPath, WPACU_PLUGIN_FILE),
             array('jquery'),
             $this->_assetVer($scriptRelPath)
@@ -177,7 +177,7 @@ class OwnAssets
         $pageUrl = Misc::getPageUrl($postId);
 
         $wpacuObjectData = array(
-	        'plugin_name'  => WPACU_PLUGIN_NAME,
+	        'plugin_name'  => WPACU_PLUGIN_ID,
 	        'dom_get_type' => Main::$domGetType,
 	        'start_del'    => Main::START_DEL,
 	        'end_del'      => Main::END_DEL,
@@ -216,20 +216,32 @@ HTML;
             'Make sure to properly test your website if you unload the jQuery migration library.'."\n\n".
             'In some cases, due to old jQuery code triggered from plugins or the theme, unloading this migration library could cause those scripts not to function anymore and break some of the front-end functionality.'."\n\n".
             'If you are not sure about whether activating this option is right or not, it is better to leave it as it is (to be loaded by default) and consult with a developer.'."\n\n".
-            'Confirm this action to enable the unloading or cancel to leave it loaded by default.', WPACU_PLUGIN_NAME);
+            'Confirm this action to enable the unloading or cancel to leave it loaded by default.', WPACU_PLUGIN_TEXT_DOMAIN);
 
 	    $wpacuObjectData['comment_reply_disable_confirm_msg'] = __(
 		    'This is worth disabling if you are NOT using the default WordPress comment system (e.g. you are using the website for business purposes, to showcase your products and you are not using it as a blog where people leave comments to your posts).'."\n\n".
 		    'If you are not sure about whether activating this option is right or not, it is better to leave it as it is (to be loaded by default).'."\n\n".
-		    'Confirm this action to enable the unloading or cancel to leave it loaded by default.', WPACU_PLUGIN_NAME);
+		    'Confirm this action to enable the unloading or cancel to leave it loaded by default.', WPACU_PLUGIN_TEXT_DOMAIN);
+
+	    $wpacuObjectData['reset_settings_confirm_msg'] = __(
+		    'Are you sure you want to reset the settings to their default values?'."\n\n".'This is an irreversible action.'."\n\n".'Please confirm to continue or "Cancel" to abort it',
+            WPACU_PLUGIN_TEXT_DOMAIN
+        );
+
+	    $wpacuObjectData['reset_everything_confirm_msg'] = __(
+		    'Are you sure you want to reset everything (settings, unloads, load exceptions etc.) to the same point it was when you first activated the plugin?'."\n\n".
+            'This is an irreversible action.'."\n\n".
+            'Please confirm to continue or "Cancel" to abort it.',
+		    WPACU_PLUGIN_TEXT_DOMAIN
+	    );
 
         wp_localize_script(
-            WPACU_PLUGIN_NAME . '-script',
+	        WPACU_PLUGIN_ID . '-script',
             'wpacu_object',
             apply_filters('wpacu_object_data', $wpacuObjectData)
         );
 
-        wp_enqueue_script(WPACU_PLUGIN_NAME . '-script');
+        wp_enqueue_script( WPACU_PLUGIN_ID . '-script');
     }
 
     /**
@@ -238,7 +250,7 @@ HTML;
     private function enqueuePublicStyles()
     {
         $styleRelPath = '/assets/style.min.css';
-        wp_enqueue_style(WPACU_PLUGIN_NAME . '-style', plugins_url($styleRelPath, WPACU_PLUGIN_FILE), array(), $this->_assetVer($styleRelPath));
+        wp_enqueue_style( WPACU_PLUGIN_ID . '-style', plugins_url($styleRelPath, WPACU_PLUGIN_FILE), array(), $this->_assetVer($styleRelPath));
     }
 
     /**
@@ -247,7 +259,7 @@ HTML;
     public function enqueuePublicScripts()
     {
         $scriptRelPath = '/assets/script.min.js';
-        wp_enqueue_script(WPACU_PLUGIN_NAME . '-script', plugins_url($scriptRelPath, WPACU_PLUGIN_FILE), array('jquery'), $this->_assetVer($scriptRelPath));
+        wp_enqueue_script( WPACU_PLUGIN_ID . '-script', plugins_url($scriptRelPath, WPACU_PLUGIN_FILE), array('jquery'), $this->_assetVer($scriptRelPath));
     }
 
     /**

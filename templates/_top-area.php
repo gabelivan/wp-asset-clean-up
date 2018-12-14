@@ -27,6 +27,11 @@ $wpacu_top_area_links = array(
 	    'title' => 'Bulk Unloaded',
 	    'page'  => 'wpassetcleanup_bulk_unloads'
     ),
+    'admin.php?page=wpassetcleanup_tools' => array(
+	    'icon' => '<span class="dashicons dashicons-admin-tools"></span>',
+	    'title' => 'Tools',
+	    'page' => 'wpassetcleanup_tools'
+    ),
     'admin.php?page=wpassetcleanup_license' => array(
         'icon' => '<span class="dashicons dashicons-awards"></span>',
         'title' => 'License',
@@ -37,13 +42,7 @@ $wpacu_top_area_links = array(
         'title' => 'Help',
         'page' => 'wpassetcleanup_get_help'
     ),
-    'admin.php?page=wpassetcleanup_feature_request' => array(
-	    'icon' => '<span class="dashicons dashicons-plus"></span>',
-	    'title' => 'Feature Request',
-	    'page' => 'wpassetcleanup_feature_request',
-	    'target' => '_blank'
-    ),
-	// [wpacu_lite]
+    // [wpacu_lite]
     'admin.php?page=wpassetcleanup_go_pro' => array(
 	    'icon' => '<span class="dashicons dashicons-star-filled"></span>',
 	    'title' => 'Go Pro',

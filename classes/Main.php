@@ -205,7 +205,7 @@ class Main
 		if ( $this->settings['dashboard_show'] == 1 ) {
 			// Send an AJAX request to get the list of loaded scripts and styles and print it nicely
 			add_action(
-				'wp_ajax_' . WPACU_PLUGIN_NAME . '_get_loaded_assets',
+				'wp_ajax_' . WPACU_PLUGIN_ID . '_get_loaded_assets',
 				array( $this, 'ajaxGetJsonListCallback' )
 			);
 
@@ -276,8 +276,8 @@ class Main
 
         if (isset($obj->public) && $obj->public > 0) {
             add_meta_box(
-                WPACU_PLUGIN_NAME.'_asset_list',
-                __('Asset CleanUp', WPACU_PLUGIN_NAME),
+	            WPACU_PLUGIN_ID . '_asset_list',
+                __('Asset CleanUp', WPACU_PLUGIN_TEXT_DOMAIN),
                 array($this, 'renderMetaBoxContent'),
                 $postType,
                 'advanced',
@@ -307,7 +307,7 @@ class Main
 
         if ($getAssets) {
             // Add an nonce field so we can check for it later.
-            wp_nonce_field(WPACU_PLUGIN_NAME . '_meta_box', WPACU_PLUGIN_NAME . '_nonce');
+            wp_nonce_field( WPACU_PLUGIN_ID . '_meta_box', WPACU_PLUGIN_ID . '_nonce');
         }
 
         $data = array();
@@ -585,13 +585,13 @@ class Main
             || ($homepageClass->data['show_on_front'] === 'page' && $postId)
         ) {
             $exceptionsListJson = get_post_meta(
-                $postId, '_' . WPACU_PLUGIN_NAME . '_load_exceptions',
+                $postId, '_' . WPACU_PLUGIN_ID . '_load_exceptions',
                 true
             );
         } elseif ($type === 'front_page') {
             // The home page could also be the list of the latest blog posts
             $exceptionsListJson = get_option(
-                WPACU_PLUGIN_NAME . '_front_page_load_exceptions'
+	            WPACU_PLUGIN_ID . '_front_page_load_exceptions'
             );
         } elseif ($type === 'for_pro' && Main::wpacuProEnabled()) {
 	        // [wpacu_pro]
@@ -627,7 +627,7 @@ class Main
     public function getGlobalUnload()
     {
         $existingListEmpty = array('styles' => array(), 'scripts' => array());
-        $existingListJson  = get_option(WPACU_PLUGIN_NAME.'_global_unload');
+        $existingListJson  = get_option( WPACU_PLUGIN_ID . '_global_unload');
 
         $existingListData = $this->existingList($existingListJson, $existingListEmpty);
 
@@ -644,7 +644,7 @@ class Main
     {
         $existingListEmpty = array('styles' => array(), 'scripts' => array());
 
-        $existingListAllJson = get_option(WPACU_PLUGIN_NAME.'_bulk_unload');
+        $existingListAllJson = get_option( WPACU_PLUGIN_ID . '_bulk_unload');
 
         if (! $existingListAllJson) {
             return $existingListEmpty;
@@ -816,7 +816,7 @@ class Main
                as they are loaded only when you (or other admin) manage the assets, never for your website visitors */
             $skipStyles = array(
                 'admin-bar',
-                WPACU_PLUGIN_NAME . '-style'
+	            WPACU_PLUGIN_ID . '-style'
             );
 
             if (is_admin_bar_showing()) {
@@ -874,7 +874,7 @@ class Main
                as they are loaded only when you (or other admin) manage the assets, never for your website visitors */
             $skipScripts = array(
                 'admin-bar',
-                WPACU_PLUGIN_NAME.'-script'
+	            WPACU_PLUGIN_ID . '-script'
             );
 
             foreach ($manageScripts as $handle) {
@@ -1311,9 +1311,9 @@ class Main
         if (empty($this->assetsRemoved)) {
             // For Home Page (latest blog posts)
             if ($postId < 1 && ($isInAdminPageViaAjax || Misc::isHomePage())) {
-                $this->assetsRemoved = get_option(WPACU_PLUGIN_NAME . '_front_page_no_load');
+                $this->assetsRemoved = get_option( WPACU_PLUGIN_ID . '_front_page_no_load');
             } elseif ($postId > 0) {
-                $this->assetsRemoved = get_post_meta($postId, '_' . WPACU_PLUGIN_NAME . '_no_load', true);
+                $this->assetsRemoved = get_post_meta($postId, '_' . WPACU_PLUGIN_ID . '_no_load', true);
             }
 
 	        // [wpacu_pro]
@@ -1479,7 +1479,7 @@ class Main
      */
     public static function isSettingsPage()
     {
-        return (array_key_exists('page', $_GET) && $_GET['page'] === WPACU_PLUGIN_NAME.'_settings');
+        return (array_key_exists('page', $_GET) && $_GET['page'] === WPACU_PLUGIN_ID . '_settings');
     }
 
 	/**

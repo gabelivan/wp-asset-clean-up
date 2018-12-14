@@ -16,14 +16,11 @@ class Settings
 		'dom_get_type',
         'frontend_show',
 
-		'input_style',
-
-		// [wpacu_pro]
 		'assets_list_layout',
-		// [wpacu_pro]
-
         'assets_list_layout_areas_status',
         'assets_list_inline_code_status',
+
+		'input_style',
 
         'hide_core_files',
         'test_mode',
@@ -40,6 +37,26 @@ class Settings
      */
     public $currentSettings = array();
 
+	/**
+	 * @var array
+	 */
+	public static $defaultSettings = array(
+	    // Show the assets list within the Dashboard, while they are hidden in the front-end view
+	    'dashboard_show' => '1',
+
+	    // Direct AJAX call by default (not via WP Remote Post)
+        'dom_get_type'   => 'direct',
+
+	    'assets_list_layout'              => 'default',
+	    'assets_list_layout_areas_status' => 'expanded',
+	    'assets_list_inline_code_status'  => 'expanded',
+
+	    'input_style' => 'enhanced',
+
+	    // Starting from v1.2.8.6 (lite), WordPress core files are hidden in the assets list as a default setting
+	    'hide_core_files' => '1'
+    );
+
     /**
      * @var array
      */
@@ -55,8 +72,8 @@ class Settings
         // This is triggered BEFORE "initAfterPluginsLoaded" from 'Main' class
         add_action('plugins_loaded', array($this, 'saveSettings'), 9);
 
-        if (array_key_exists('page', $_GET) && $_GET['page'] === 'wpassetcleanup_settings') {
-	        add_action('admin_notices', array($this, 'notices'));
+        if (Misc::getVar('get', 'page') === WPACU_PLUGIN_ID . '_settings') {
+	        add_action('wpacu_admin_notices', array($this, 'notices'));
         }
     }
 
@@ -71,7 +88,7 @@ class Settings
     	if ($settings['dashboard_show'] != 1 && $settings['frontend_show'] != 1) {
 		    ?>
 		    <div class="notice notice-warning">
-				<p><span style="color: #ffb900;" class="dashicons dashicons-info"></span>&nbsp;<?php _e('It looks like you have both "Manage in the Dashboard?" and "Manage in the Front-end?" inactive. The plugin still works fine and any assets you have selected for unload are not loaded. However, if you want to manage the assets in any page, you need to have at least one of the view options enabled.', WPACU_PLUGIN_NAME); ?></p>
+				<p><span style="color: #ffb900;" class="dashicons dashicons-info"></span>&nbsp;<?php _e('It looks like you have both "Manage in the Dashboard?" and "Manage in the Front-end?" inactive. The plugin still works fine and any assets you have selected for unload are not loaded. However, if you want to manage the assets in any page, you need to have at least one of the view options enabled.', WPACU_PLUGIN_TEXT_DOMAIN); ?></p>
 		    </div>
 		    <?php
 	    }
@@ -79,8 +96,8 @@ class Settings
 	    // After "Save changes" is clicked
         if ($this->status['updated']) {
             ?>
-            <div class="notice notice-success">
-                <?php _e('The settings were successfully updated.', WPACU_PLUGIN_NAME); ?>
+            <div class="notice notice-success is-dismissible">
+                <p><span class="dashicons dashicons-yes"></span> <?php _e('The settings were successfully updated.', WPACU_PLUGIN_TEXT_DOMAIN); ?></p>
             </div>
             <?php
         }
@@ -94,7 +111,7 @@ class Settings
         if (! empty($_POST) && array_key_exists('wpacu_settings_page', $_POST)) {
 	        check_admin_referer('wpacu_settings_update');
 
-            $data = Misc::getVar('post', WPACU_PLUGIN_NAME . '_settings', array());
+            $data = Misc::getVar('post', WPACU_PLUGIN_ID . '_settings', array());
             $this->update($data);
         }
     }
@@ -137,16 +154,18 @@ class Settings
             return true;
         }
 
+        // [wpacu_lite]
         // Prior to 1.2.4.4
-        if (get_option(WPACU_PLUGIN_NAME.'_frontend_show') == 1) {
+        if ( get_option( WPACU_PLUGIN_ID . '_frontend_show') == 1) {
             // Put it in the main settings option
             $settings = $this->getAll();
             $settings['frontend_show'] = 1;
             $this->update($settings);
 
-            delete_option(WPACU_PLUGIN_NAME.'_frontend_show');
+            delete_option( WPACU_PLUGIN_ID . '_frontend_show');
             return true;
         }
+	    // [/wpacu_lite]
 
         return false;
     }
@@ -160,8 +179,9 @@ class Settings
             return $this->currentSettings;
         }
 
-        $settingsOption = get_option(WPACU_PLUGIN_NAME.'_settings');
+        $settingsOption = get_option(WPACU_PLUGIN_ID . '_settings');
 
+        // If there's already a record in the database
         if ($settingsOption !== '' && is_string($settingsOption)) {
             $settings = (array)json_decode($settingsOption);
 
@@ -180,14 +200,20 @@ class Settings
             }
         }
 
-        // Keep the keys with empty values
-        $list = array();
+	    // No record in the database? Set the default values
+	    // That could be because no changes were done on the "Settings" page
+	    // OR a full reset of the plugin (via "Tools") was performed
+
+        $defaultSettings = self::$defaultSettings;
 
         foreach ($this->settingsKeys as $settingsKey) {
-            $list[$settingsKey] = '';
+	        if (! array_key_exists($settingsKey, $defaultSettings)) {
+		        // Keep the keys with empty values to avoid notice errors
+		        $defaultSettings[$settingsKey] = '';
+	        }
         }
 
-        return $list;
+        return $defaultSettings;
     }
 
     /**
@@ -197,8 +223,24 @@ class Settings
     {
 	    $wpacuUpdate = new Update;
 
-	    $disableJQueryMigrate = isset($_POST[WPACU_PLUGIN_NAME.'_global_unloads']['disable_jquery_migrate']);
-	    $disableCommentReply = isset($_POST[WPACU_PLUGIN_NAME.'_global_unloads']['disable_comment_reply']);
+	    $settingsNotNull = array();
+
+	    foreach ($settings as $settingKey => $settingValue) {
+	        if ($settingValue !== '') {
+		        $settingsNotNull[$settingKey] = $settingValue;
+            }
+        }
+
+	    if (json_encode(self::$defaultSettings) === json_encode($settingsNotNull)) {
+	        // Do not keep a record in the database (no point of having an extra entry)
+            // if the submitted values are the same as the default ones
+	        delete_option(WPACU_PLUGIN_ID . '_settings');
+		    $this->status['updated'] = true;
+		    return;
+        }
+
+	    $disableJQueryMigrate = isset($_POST[ WPACU_PLUGIN_ID . '_global_unloads']['disable_jquery_migrate']);
+	    $disableCommentReply = isset($_POST[ WPACU_PLUGIN_ID . '_global_unloads']['disable_comment_reply']);
 
 	    /*
 	     * Add element(s) to the global unload rules
@@ -238,7 +280,7 @@ class Settings
 	        $wpacuUpdate->removeEverywhereUnloads(array(), $removeFromUnloadList);
         }
 
-        update_option(WPACU_PLUGIN_NAME . '_settings', json_encode($settings), 'no');
+        update_option(WPACU_PLUGIN_ID . '_settings', json_encode($settings), 'no');
         $this->status['updated'] = true;
     }
 }

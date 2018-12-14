@@ -106,7 +106,7 @@ if (! isset($data)) {
         <div style="margin: 10px 0;">
             <button class="wpacu_update_btn"
                     type="submit"
-                    name="submit"><span class="dashicons dashicons-update"></span> <?php esc_attr_e('UPDATE', WPACU_PLUGIN_NAME); ?></button>
+                    name="submit"><span class="dashicons dashicons-update"></span> <?php esc_attr_e('UPDATE', WPACU_PLUGIN_TEXT_DOMAIN); ?></button>
         </div>
 
         <p align="right"><small>Powered by <?php echo WPACU_PLUGIN_TITLE; ?> (lite version), version <?php echo WPACU_PLUGIN_VERSION; ?></small></p>

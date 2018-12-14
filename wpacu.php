@@ -2,13 +2,13 @@
 /*
  * Plugin Name: Asset CleanUp: Page Speed Booster
  * Plugin URI: https://wordpress.org/plugins/wp-asset-clean-up/
- * Version: 1.2.8.5
+ * Version: 1.2.8.6
  * Description: Prevent Chosen Scripts & Styles from loading in Posts/Pages to reduce HTTP Requests and have the website load faster
  * Author: Gabriel Livan
  * Author URI: http://gabelivan.com/
 */
 
-define('WPACU_PLUGIN_VERSION', '1.2.8.5');
+define('WPACU_PLUGIN_VERSION', '1.2.8.6');
 
 // Exit if accessed directly
 if (! defined('ABSPATH')) {
@@ -27,10 +27,11 @@ if (   defined('WPACU_PRO_NO_LITE_NEEDED') && WPACU_PRO_NO_LITE_NEEDED !== false
 	return;
 }
 
-define('WPACU_PLUGIN_NAME',  'wpassetcleanup');
-define('WPACU_PLUGIN_TITLE', 'Asset CleanUp');
-define('WPACU_PLUGIN_FILE',  __FILE__);
-define('WPACU_PLUGIN_BASE',  plugin_basename(WPACU_PLUGIN_FILE));
+define('WPACU_PLUGIN_ID',           'wpassetcleanup'); // unique prefix
+define('WPACU_PLUGIN_TEXT_DOMAIN',  'wp-asset-clean-up');
+define('WPACU_PLUGIN_TITLE',        'Asset CleanUp'); // a short version of the plugin name
+define('WPACU_PLUGIN_FILE',         __FILE__);
+define('WPACU_PLUGIN_BASE',         plugin_basename(WPACU_PLUGIN_FILE));
 
 // Do not load the plugin if the PHP version is below 5.3
 // If PHP_VERSION_ID is not defined, then PHP version is below 5.2.7, thus the plugin is not usable
@@ -58,7 +59,7 @@ if ($wpacuWrongPhp && is_admin()) { // Dashboard
     function wpAssetCleanUpWrongPhpNotice()
     {
         echo '<div class="error is-dismissible"><p>'.
-             __('<strong>'.WPACU_PLUGIN_TITLE.'</strong> requires <span style="color: green;"><strong>5.3+</strong> PHP version</span> installed. You have <strong>'.PHP_VERSION.'</strong>. If you\'re website is compatible with PHP 7+ (e.g. you can check with your developers or contact the hosting company), it\'s strongly recommended to upgrade for a better performance. The plugin has been deactivated.', WPACU_PLUGIN_NAME).
+             __('<strong>'.WPACU_PLUGIN_TITLE.'</strong> requires <span style="color: green;"><strong>5.3+</strong> PHP version</span> installed. You have <strong>'.PHP_VERSION.'</strong>. If you\'re website is compatible with PHP 7+ (e.g. you can check with your developers or contact the hosting company), it\'s strongly recommended to upgrade for a better performance. The plugin has been deactivated.', WPACU_PLUGIN_TEXT_DOMAIN) .
              '</p></div>';
 
         if (array_key_exists('active', $_GET)) {
@@ -69,15 +70,15 @@ if ($wpacuWrongPhp && is_admin()) { // Dashboard
     return;
 }
 
-define('WPACU_PLUGIN_DIR',                 __DIR__);
-define('WPACU_PLUGIN_CLASSES_PATH',        WPACU_PLUGIN_DIR.'/classes/');
-define('WPACU_PLUGIN_URL',                 plugins_url('', WPACU_PLUGIN_FILE));
+define('WPACU_PLUGIN_DIR',          __DIR__);
+define('WPACU_PLUGIN_CLASSES_PATH', WPACU_PLUGIN_DIR.'/classes/');
+define('WPACU_PLUGIN_URL',          plugins_url('', WPACU_PLUGIN_FILE));
 
 // Upgrade to Pro Sales Page
-define('WPACU_PLUGIN_GO_PRO_URL',          'https://gabelivan.com/items/wp-asset-cleanup-pro/');
-define('WPACU_PLUGIN_FEATURE_REQUEST_URL', 'https://gabelivan.com/asset-cleanup-lite-feature-request/');
+define('WPACU_PLUGIN_GO_PRO_URL',   'https://gabelivan.com/items/wp-asset-cleanup-pro/');
 
 // Global Values
-define('WPACU_LOAD_ASSETS_REQ_KEY',         WPACU_PLUGIN_NAME . '_load');
+define('WPACU_LOAD_ASSETS_REQ_KEY', WPACU_PLUGIN_ID . '_load');
 
+require_once WPACU_PLUGIN_DIR.'/freemius-load.php';
 require_once WPACU_PLUGIN_DIR.'/wpacu-load.php';

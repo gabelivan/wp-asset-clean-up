@@ -11,13 +11,15 @@ include_once '_top-area.php';
 // [wpacu_lite]
 $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_settings" class="go-pro-link-no-style"><span class="tooltip">Available for Pro users<br />Buy now to unlock all features!</span> <img width="20" height="20" src="'.WPACU_PLUGIN_URL.'/assets/icons/icon-lock.svg" valign="top" alt="" /></a> &nbsp; ';
 // [/wpacu_lite]
+
+do_action('wpacu_admin_notices');
 ?>
-<div class="wpacu-wrap <?php if ($data['input_style'] !== 'standard') { ?>wpacu-switch-enhanced<?php } else { ?>wpacu-switch-standard<?php } ?>">
+<div class="wpacu-wrap wpacu-settings-area <?php if ($data['input_style'] !== 'standard') { ?>wpacu-switch-enhanced<?php } else { ?>wpacu-switch-standard<?php } ?>">
     <form method="post" action="">
         <input type="hidden" name="wpacu_settings_page" value="1" />
-        <h2><?php _e('Plugin Usage Settings', WPACU_PLUGIN_NAME); ?></h2>
+        <h2><?php _e('Plugin Usage Settings', WPACU_PLUGIN_TEXT_DOMAIN); ?></h2>
 
-        <table class="form-table">
+        <table class="wpacu-form-table">
             <tr valign="top">
                 <th scope="row">
                     <label for="wpacu_dashboard">Manage in the Dashboard?</label>
@@ -27,7 +29,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
                     <input id="wpacu_dashboard"
                            type="checkbox"
                            <?php echo (($data['dashboard_show'] == 1) ? 'checked="checked"' : ''); ?>
-                           name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[dashboard_show]"
+                           name="<?php echo WPACU_PLUGIN_ID . '_settings'; ?>[dashboard_show]"
                            value="1" /> <span class="wpacu_slider wpacu_round"></span> </label>
                     &nbsp;
                     <small>This will show the list of assets in a meta box on edit the post (any type) / page within the Dashboard</small>
@@ -41,7 +43,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
                 <th scope="row">
                     <label for="wpacu_dom_get_type">Assets Retrieval Mode (if managed in the Dashboard)</label>
                 </th>
-                <td><select id="wpacu_dom_get_type" name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[dom_get_type]">
+                <td><select id="wpacu_dom_get_type" name="<?php echo WPACU_PLUGIN_ID . '_settings'; ?>[dom_get_type]">
                         <option <?php if ($data['dom_get_type'] === 'direct') { ?>selected="selected"<?php } ?> value="direct">Direct</option>
                         <option <?php if ($data['dom_get_type'] === 'wp_remote_post') { ?>selected="selected"<?php } ?> value="wp_remote_post">WP Remote Post</option>
                     </select>
@@ -60,7 +62,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
                         <input id="wpacu_frontend"
                                type="checkbox"
 					        <?php echo (($data['frontend_show'] == 1) ? 'checked="checked"' : ''); ?>
-                               name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[frontend_show]"
+                               name="<?php echo WPACU_PLUGIN_ID . '_settings'; ?>[frontend_show]"
                                value="1" /> <span class="wpacu_slider wpacu_round"></span> </label>
                     &nbsp;
                     <small>If you are logged in, this will make the list of assets show below the page that you view (either home page, a post or a page).</small>
@@ -76,7 +78,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
 			        <?php echo $availableForPro; ?>
                     <label>
                         <select id="wpacu_assets_list_layout"
-                                name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[assets_list_layout]">
+                                name="<?php echo WPACU_PLUGIN_ID . '_settings'; ?>[assets_list_layout]">
                             <option value="default">All Styles &amp; All Scripts * 2 separate lists (default)</option>
                             <option disabled="disabled" value="all">All Styles &amp; Scripts * 1 mixed list sorted by name (Pro Version)</option>
                         </select>
@@ -100,7 +102,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
                                 <input id="assets_list_layout_areas_status_expanded"
                                        <?php if (! $data['assets_list_layout_areas_status'] || $data['assets_list_layout_areas_status'] === 'expanded') { ?>checked="checked"<?php } ?>
                                        type="radio"
-                                       name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[assets_list_layout_areas_status]"
+                                       name="<?php echo WPACU_PLUGIN_ID . '_settings'; ?>[assets_list_layout_areas_status]"
                                        value="expanded"> Expanded (Default)
                             </label>
                         </li>
@@ -109,7 +111,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
                                 <input id="assets_list_layout_areas_status_contracted"
                                        <?php if ($data['assets_list_layout_areas_status'] === 'contracted') { ?>checked="checked"<?php } ?>
                                        type="radio"
-                                       name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[assets_list_layout_areas_status]"
+                                       name="<?php echo WPACU_PLUGIN_ID . '_settings'; ?>[assets_list_layout_areas_status]"
                                        value="contracted"> Contracted
                             </label>
                         </li>
@@ -131,7 +133,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
                                 <input id="assets_list_inline_code_status_expanded"
 						               <?php if (! $data['assets_list_inline_code_status'] || $data['assets_list_inline_code_status'] === 'expanded') { ?>checked="checked"<?php } ?>
                                        type="radio"
-                                       name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[assets_list_inline_code_status]"
+                                       name="<?php echo WPACU_PLUGIN_ID . '_settings'; ?>[assets_list_inline_code_status]"
                                        value="expanded"> Expanded (Default)
                             </label>
                         </li>
@@ -140,7 +142,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
                                 <input id="assets_list_inline_code_status_contracted"
 						               <?php if ($data['assets_list_inline_code_status'] === 'contracted') { ?>checked="checked"<?php } ?>
                                        type="radio"
-                                       name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[assets_list_inline_code_status]"
+                                       name="<?php echo WPACU_PLUGIN_ID . '_settings'; ?>[assets_list_inline_code_status]"
                                        value="contracted"> Contracted
                             </label>
                         </li>
@@ -164,7 +166,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
                                 <input id="input_style_enhanced"
 						               <?php if (! $data['input_style'] || $data['input_style'] === 'enhanced') { ?>checked="checked"<?php } ?>
                                        type="radio"
-                                       name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[input_style]"
+                                       name="<?php echo WPACU_PLUGIN_ID . '_settings'; ?>[input_style]"
                                        value="enhanced"> Enhanced iPhone Style (Default)
                             </label>
                         </li>
@@ -173,7 +175,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
                                 <input id="input_style_standard"
 						               <?php if ($data['input_style'] === 'standard') { ?>checked="checked"<?php } ?>
                                        type="radio"
-                                       name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[input_style]"
+                                       name="<?php echo WPACU_PLUGIN_ID . '_settings'; ?>[input_style]"
                                        value="standard"> Standard
                             </label>
                         </li>
@@ -193,7 +195,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
                         <input id="wpacu_hide_core_files"
                                type="checkbox"
 					        <?php echo (($data['hide_core_files'] == 1) ? 'checked="checked"' : ''); ?>
-                               name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[hide_core_files]"
+                               name="<?php echo WPACU_PLUGIN_ID . '_settings'; ?>[hide_core_files]"
                                value="1" /> <span class="wpacu_slider wpacu_round"></span> </label>
                     &nbsp;
                     <small>WordPress Core Files having handles such as 'jquery', 'wp-embed', 'comment-reply', 'dashicons' etc. should only be unloaded by experienced developers when they are convinced that are not needed in particular situations. It's better to leave them loaded if you have any doubts whether you need them or not. By hiding them in the assets management list, you will see a smaller assets list (easier to manage) and you will avoid updating by mistake any option (unload, async, defer) related to any core file.</small>
@@ -211,7 +213,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
                         <input id="wpacu_enable_test_mode"
                                type="checkbox"
 					        <?php echo (($data['test_mode'] == 1) ? 'checked="checked"' : ''); ?>
-                               name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[test_mode]"
+                               name="<?php echo WPACU_PLUGIN_ID . '_settings'; ?>[test_mode]"
                                value="1" /> <span class="wpacu_slider wpacu_round"></span> </label>
                     &nbsp;
                     <small>This is great for debugging when you're going through trial and error while removing unneeded CSS &amp; JavaScript on your website. Your visitors will load the website with all the settings &amp; assets loaded (just like it was before you activated the plugin).</small>
@@ -222,9 +224,9 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
 
         <hr />
 
-        <h2><?php _e('Site-Wide Unload For Common WordPress Core CSS &amp; JS Files', WPACU_PLUGIN_NAME); ?></h2>
+        <h2><?php _e('Site-Wide Unload For Common WordPress Core CSS &amp; JS Files', WPACU_PLUGIN_TEXT_DOMAIN); ?></h2>
 
-        <table class="form-table">
+        <table class="wpacu-form-table">
             <tr valign="top">
                 <th scope="row">
                     <label for="wpacu_disable_emojis">Disable Emojis Site-Wide?</label>
@@ -234,7 +236,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
                         <input id="wpacu_disable_emojis"
                                type="checkbox"
                                <?php echo (($data['disable_emojis'] == 1) ? 'checked="checked"' : ''); ?>
-                               name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[disable_emojis]"
+                               name="<?php echo WPACU_PLUGIN_ID . '_settings'; ?>[disable_emojis]"
                                value="1" /> <span class="wpacu_slider wpacu_round"></span> </label>
                     &nbsp;
                     <small>This will unload WordPress' Emojis (the smiley icons)</small>
@@ -250,7 +252,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
                     <label class="wpacu_switch">
                         <input id="wpacu_disable_jquery_migrate" type="checkbox"
 					        <?php echo (($data['disable_jquery_migrate'] == 1) ? 'checked="checked"' : ''); ?>
-                               name="<?php echo WPACU_PLUGIN_NAME.'_global_unloads'; ?>[disable_jquery_migrate]"
+                               name="<?php echo WPACU_PLUGIN_ID . '_global_unloads'; ?>[disable_jquery_migrate]"
                                value="1" /> <span class="wpacu_slider wpacu_round"></span> </label>
                     &nbsp;
                     <small>This will unload jQuery Migrate (<em>jquery-migrate(.min).js</em>)</small>
@@ -266,7 +268,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
                     <label class="wpacu_switch">
                         <input id="wpacu_disable_comment_reply" type="checkbox"
 					        <?php echo (($data['disable_comment_reply'] == 1) ? 'checked="checked"' : ''); ?>
-                               name="<?php echo WPACU_PLUGIN_NAME.'_global_unloads'; ?>[disable_comment_reply]"
+                               name="<?php echo WPACU_PLUGIN_ID . '_global_unloads'; ?>[disable_comment_reply]"
                                value="1" /> <span class="wpacu_slider wpacu_round"></span> </label>
                     &nbsp;
                     <small>This will unload Comment Reply (<em>/wp-includes/js/comment-reply(.min).js</em>)</small>
@@ -279,9 +281,9 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
         <p><em><strong>Note:</strong> The options that have a lock are available to Pro users. <a href="<?php echo WPACU_PLUGIN_GO_PRO_URL; ?>?utm_source=plugin_settings">Click here to upgrade!</a></em></p>
         <hr />
 
-        <h2><?php _e('Page Speed Score Booster: Extras', WPACU_PLUGIN_NAME); ?></h2>
+        <h2><?php _e('Page Speed Score Booster: Extras', WPACU_PLUGIN_TEXT_DOMAIN); ?></h2>
 
-        <table class="form-table">
+        <table class="wpacu-form-table">
             <tr valign="top">
                 <th scope="row">
                     <label for="wpacu_remove_query_strings">Remove Query Strings from CSS &amp; JS?</label>
@@ -291,7 +293,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
                     <label class="wpacu_switch wpacu_locked_for_pro">
                         <input id="wpacu_remove_query_strings" type="checkbox"
                                disabled="disabled"
-                               name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[remove_query_strings]"
+                               name="<?php echo WPACU_PLUGIN_ID . '_settings'; ?>[remove_query_strings]"
                                value="1" /> <span class="wpacu_slider wpacu_round"></span> </label>
                     &nbsp;
                     <small>This will remove everything that is appended after question mark (?) from the source of the CSS and JavaScript files * e.g. <em>/wp-plugins/custom-plugin-here/style.min.css<strong>?ver=1.4.2</strong></em> to <em>/wp-plugins/custom-plugin-here/style.min.css</em></small>
@@ -302,10 +304,10 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
 
         <hr />
 
-        <h2><?php _e('Cleanup unused elements within HEAD section', WPACU_PLUGIN_NAME); ?></h2>
+        <h2><?php _e('Cleanup unused elements within HEAD section', WPACU_PLUGIN_TEXT_DOMAIN); ?></h2>
         <p>There are elements that are enabled by default in many WordPress environments, but not necessary to be enabled. Cleanup the unnecessary code between <code>&lt;head&gt;</code> and <code>&lt;/head&gt;</code>.</p>
 
-        <table class="form-table">
+        <table class="wpacu-form-table">
             <!-- Remove "Really Simple Discovery (RSD)" link? -->
             <tr valign="top">
                 <th scope="row">
@@ -317,7 +319,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
                         <input id="wpacu_remove_rsd_link"
                                type="checkbox"
                                disabled="disabled"
-                               name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[remove_rsd_link]"
+                               name="<?php echo WPACU_PLUGIN_ID . '_settings'; ?>[remove_rsd_link]"
                                value="1" /> <span class="wpacu_slider wpacu_round"></span> </label>
                     &nbsp;
                     <code>&lt;link rel=&quot;EditURI&quot; type=&quot;application/rsd xml&quot; title=&quot;RSD&quot; href=&quot;http://yourwebsite.com/xmlrpc.php?rsd&quot; /&gt;</code>
@@ -336,7 +338,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
                         <input id="wpacu_remove_wlw_link"
                                type="checkbox"
                                disabled="disabled"
-                               name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[remove_wlw_link]"
+                               name="<?php echo WPACU_PLUGIN_ID . '_settings'; ?>[remove_wlw_link]"
                                value="1" /> <span class="wpacu_slider wpacu_round"></span> </label>
                     &nbsp;
                     <code>&lt;link rel=&quot;wlwmanifest&quot; type=&quot;application/wlwmanifest xml&quot; href=&quot;https://yourwebsite.com/asset-optimizer/wp-includes/wlwmanifest.xml&quot; /&gt;</code>
@@ -355,7 +357,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
                         <input id="wpacu_remove_rest_api_link"
                                type="checkbox"
                                disabled="disabled"
-                               name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[remove_rest_api_link]"
+                               name="<?php echo WPACU_PLUGIN_ID . '_settings'; ?>[remove_rest_api_link]"
                                value="1" /> <span class="wpacu_slider wpacu_round"></span> </label>
                     &nbsp;
                     <code>&lt;link rel=&#39;https://api.w.org/&#39; href=&#39;https://yourwebsite.com/wp-json/&#39; /&gt;</code>
@@ -374,7 +376,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
                         <input id="wpacu_remove_shortlink"
                                type="checkbox"
                                disabled="disabled"
-                               name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[remove_shortlink]"
+                               name="<?php echo WPACU_PLUGIN_ID . '_settings'; ?>[remove_shortlink]"
                                value="1" /> <span class="wpacu_slider wpacu_round"></span> </label>
                     &nbsp;
                     <code>&lt;link rel=&#39;shortlink&#39; href=&quot;https://yourdomain.com/?p=1&quot;&gt;</code>
@@ -393,7 +395,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
                         <input id="wpacu_remove_posts_rel_links"
                                type="checkbox"
                                disabled="disabled"
-                               name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[remove_posts_rel_links]"
+                               name="<?php echo WPACU_PLUGIN_ID . '_settings'; ?>[remove_posts_rel_links]"
                                value="1" /> <span class="wpacu_slider wpacu_round"></span> </label>
                     &nbsp;
                     <code>&lt;link rel=&#39;prev&#39; title=&#39;Title of adjacent post&#39; href=&#39;https://yourdomain.com/adjacent-post-slug-here/&#39; /&gt;</code>
@@ -412,7 +414,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
                         <input id="wpacu_remove_wp_version"
                                type="checkbox"
                                disabled="disabled"
-                               name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[remove_wp_version]"
+                               name="<?php echo WPACU_PLUGIN_ID . '_settings'; ?>[remove_wp_version]"
                                value="1" /> <span class="wpacu_slider wpacu_round"></span> </label>
                     &nbsp;
                     <code>&lt;meta name=&quot;generator&quot; content=&quot;WordPress 4.9.8&quot; /&gt;</code>
@@ -431,7 +433,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
                         <input id="wpacu_remove_generator_tag"
                                type="checkbox"
                                disabled="disabled"
-                               name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[remove_generator_tag]"
+                               name="<?php echo WPACU_PLUGIN_ID . '_settings'; ?>[remove_generator_tag]"
                                value="1" /> <span class="wpacu_slider wpacu_round"></span> </label>
                     &nbsp;
                     <code>e.g. &lt;meta name=&quot;generator&quot; content=&quot;Easy Digital Downloads v2.9.8&quot; /&gt;</code>
@@ -450,7 +452,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
                         <input id="wpacu_remove_main_feed_link"
                                type="checkbox"
                                disabled="disabled"
-                               name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[remove_main_feed_link]"
+                               name="<?php echo WPACU_PLUGIN_ID . '_settings'; ?>[remove_main_feed_link]"
                                value="1" /> <span class="wpacu_slider wpacu_round"></span> </label>
                     &nbsp;
                     <code>&lt;link rel=&quot;alternate&quot; type=&quot;application/rss xml&quot; title=&quot;Your Site Title &amp;raquo; Feed&quot; href=&quot;https://www.yourwebsite.com/feed/&quot; /&gt;</code>
@@ -469,7 +471,7 @@ $availableForPro = '<a href="'.WPACU_PLUGIN_GO_PRO_URL.'?utm_source=plugin_setti
                         <input id="wpacu_remove_comment_feed_link"
                                type="checkbox"
                                disabled="disabled"
-                               name="<?php echo WPACU_PLUGIN_NAME.'_settings'; ?>[remove_comment_feed_link]"
+                               name="<?php echo WPACU_PLUGIN_ID . '_settings'; ?>[remove_comment_feed_link]"
                                value="1" /> <span class="wpacu_slider wpacu_round"></span> </label>
                     &nbsp;
                     <code>e.g. &lt;link rel=&quot;alternate&quot; type=&quot;application/rss xml&quot; title=&quot;Your Website Title &amp;raquo; Comments Feed&quot; href=&quot;https://www.yourdomain.com/comments/feed/&quot; /&gt;</code>
