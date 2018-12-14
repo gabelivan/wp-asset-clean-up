@@ -66,13 +66,15 @@ class Tools
 
 		$this->resetChoice = $wpacuResetValue;
 
+		$resetStatus = false;
+
 		if ($wpacuResetValue === 'reset_everything') {
 			// `usermeta` and `termmeta` might have traces from the Pro version (if ever used)
 			foreach (array('postmeta', 'usermeta', 'termmeta') as $tableBaseName) {
 				$sqlQuery = <<<SQL
 DELETE FROM `{$wpdb->prefix}{$tableBaseName}` WHERE meta_key LIKE '_wpassetcleanup_%'
 SQL;
-				$wpdb->query($sqlQuery);
+				$resetStatus = $wpdb->query($sqlQuery);
 			}
 
 			$sqlQuery = <<<SQL
@@ -83,7 +85,17 @@ SQL;
 			$sqlQuery = <<<SQL
 DELETE FROM `{$wpdb->prefix}options` WHERE option_name='wpassetcleanup_settings'
 SQL;
-			$wpdb->query($sqlQuery);
+			$resetStatus = $wpdb->query($sqlQuery);
+        }
+
+		// Also make 'jQuery Migrate' and 'Comment Reply' core files to load again
+		// As they were enabled (not unloaded) in the default settings
+		if ($resetStatus !== false) {
+		    $wpacuUpdate = new Update();
+			$wpacuUpdate->removeEverywhereUnloads(
+                array(),
+                array('jquery-migrate' => 'remove', 'comment-reply' => 'remove')
+            );
         }
 
 		add_action('wpacu_admin_notices', array($this, 'resetDone'));

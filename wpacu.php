@@ -2,13 +2,13 @@
 /*
  * Plugin Name: Asset CleanUp: Page Speed Booster
  * Plugin URI: https://wordpress.org/plugins/wp-asset-clean-up/
- * Version: 1.2.8.6
+ * Version: 1.2.8.7
  * Description: Prevent Chosen Scripts & Styles from loading in Posts/Pages to reduce HTTP Requests and have the website load faster
  * Author: Gabriel Livan
  * Author URI: http://gabelivan.com/
 */
 
-define('WPACU_PLUGIN_VERSION', '1.2.8.6');
+define('WPACU_PLUGIN_VERSION', '1.2.8.7');
 
 // Exit if accessed directly
 if (! defined('ABSPATH')) {
