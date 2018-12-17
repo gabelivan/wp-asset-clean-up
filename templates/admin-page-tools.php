@@ -9,6 +9,8 @@ if (! isset($data)) {
 include_once '_top-area.php';
 
 do_action('wpacu_admin_notices');
+
+// TODO: Add a tab navigation menu with "Reset" as the default one and develop "System Info" functionality
 ?>
 <div class="wpacu-wrap wpacu-tools-area">
 	<div class="wpacu-tools-container">
@@ -20,6 +22,12 @@ do_action('wpacu_admin_notices');
 				<option data-id="wpacu-warning-reset-settings" value="reset_settings">Reset settings</option>
 				<option data-id="wpacu-warning-reset-everything" value="reset_everything">Reset everything: settings, all unloads (bulk &amp; individual) &amp; load exceptions</option>
 			</select>
+
+            <div id="wpacu-license-data-remove-area">
+                <label for="wpacu-remove-license-data">
+                   <input id="wpacu-remove-license-data" type="checkbox" name="wpacu-remove-license-data" value="1" /> Also remove license data in case the premium version was active at any point
+                </label>
+            </div>
 
 			<div id="wpacu-warning-read"><span class="dashicons dashicons-warning"></span> <strong>Please read carefully below what the chosen action does as this process is NOT reversible.</strong></div>
 

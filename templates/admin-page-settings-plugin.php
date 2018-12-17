@@ -296,7 +296,7 @@ do_action('wpacu_admin_notices');
                                name="<?php echo WPACU_PLUGIN_ID . '_settings'; ?>[remove_query_strings]"
                                value="1" /> <span class="wpacu_slider wpacu_round"></span> </label>
                     &nbsp;
-                    <small>This will remove everything that is appended after question mark (?) from the source of the CSS and JavaScript files * e.g. <em>/wp-plugins/custom-plugin-here/style.min.css<strong>?ver=1.4.2</strong></em> to <em>/wp-plugins/custom-plugin-here/style.min.css</em></small>
+                    <small>This will remove everything that is appended after question mark (?) from the source of the CSS and JavaScript files * e.g. <em>/wp-plugins/custom-plugin-here/style.min.css<strong>?ver=1.4.2</strong></em> to <em>/wp-plugins/custom-plugin-here/style.min.css</em> - this option will apply only to front-end view (not within the Dashboard)</small>
                     <p><small>Sometimes, query strings can cause caching issues (they are not cached by some proxy caching servers), thus, they can be removed. <a target="_blank" href="https://gtmetrix.com/remove-query-strings-from-static-resources.html">Read more</a>.</small></p>
                 </td>
             </tr>

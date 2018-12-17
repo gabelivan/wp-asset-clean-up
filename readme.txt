@@ -4,7 +4,7 @@ Tags: pagespeed, page speed, dequeue, performance, gtmetrix
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GJZCW6RD8ECS
 Requires at least: 4.0
 Tested up to: 5.0.1
-Stable tag: 1.2.8.7
+Stable tag: 1.2.8.8
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -131,6 +131,10 @@ If that's the case, then it's advisable to consult with a developer (ideally the
 4. Scripts (.JS) are selected for site-wide unload
 
 == Changelog ==
+= 1.2.8.8 =
+* Option to clean any license data after everything is reset in case the Pro version was used before on the same website
+* Removed "Opt In" option from the non-sensitive diagnostic tracking until it will get replaced with a smoother version
+
 = 1.2.8.7 =
 * Bug Fix: When settings are reset to their default values via "Tools", make sure 'jQuery Migrate' and 'Comment Reply' are loading again if added in the bulk (site-wide) unload list (as by default they were not unloaded)
 

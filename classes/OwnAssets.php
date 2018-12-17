@@ -28,8 +28,16 @@ class OwnAssets
         add_action('admin_enqueue_scripts', array($this, 'stylesAndScriptsForAdmin'));
         add_action('wp_enqueue_scripts', array($this, 'stylesAndScriptsForPublic'));
 
+        // Code only for the Dashboard
+        add_action('admin_head', array($this, 'inlineAdminCode'));
+
+        // Code for both the Dashboard and the Front-end view
         add_action('admin_head', array($this, 'inlineCode'));
         add_action('wp_head', array($this, 'inlineCode'));
+
+        // Rename ?ver= to ?wpacuversion to prevent other plugins from stripping "ver"
+	    add_filter('script_loader_src', array($this, 'ownAssetLoaderSrc'));
+	    add_filter('style_loader_src', array($this, 'ownAssetLoaderSrc'));
     }
 
 	/**
@@ -54,6 +62,20 @@ class OwnAssets
         <?php
     }
 
+	/**
+	 *
+	 */
+	public function inlineAdminCode()
+    {
+        ?>
+        <style type="text/css">
+            .opt-in-or-opt-out.wp-asset-clean-up {
+                display: none;
+            }
+        </style>
+        <?php
+    }
+
     /**
      *
      */
@@ -67,6 +89,14 @@ class OwnAssets
 
         $page = isset($_GET['page']) ? $_GET['page'] : '';
         $getPostId = isset($_GET['post']) ? (int)$_GET['post'] : '';
+
+	    if ( strpos($page, WPACU_PLUGIN_ID) === 0) {
+		    // Freemius / avoid flickering
+		    $freemiusStyleRelPath = '/freemius/assets/css/admin/connect.css';
+		    wp_enqueue_style( WPACU_PLUGIN_ID . '-freemius-connect',
+			    plugins_url( $freemiusStyleRelPath, WPACU_PLUGIN_FILE ), array(),
+			    $this->_assetVer( $freemiusStyleRelPath ) );
+	    }
 
         // Only load the plugin's assets when they are needed
         // This an example of assets that are correctly loaded in WordPress
@@ -275,6 +305,27 @@ HTML;
         }
 
         return $assetVer;
+    }
+
+	/**
+     * Prevent "?ver=" or "&ver=" from being stripped when loading plugin's own assets
+     * It will force them to refresh whenever there's a change in either of the files
+     *
+	 * @param $src
+	 *
+	 * @return mixed
+	 */
+	public function ownAssetLoaderSrc($src)
+    {
+        if (   strpos($src, '/wp-asset-clean-up/assets/script.min.js') !== false
+            || strpos($src, '/wp-asset-clean-up/assets/style.min.css') !== false ) {
+            $src = str_replace(
+                array('?ver=',          '&ver='),
+                array('?wpacuversion=', '&wpacuversion='),
+            $src);
+        }
+
+        return $src;
     }
 
 	/**

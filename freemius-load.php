@@ -19,6 +19,10 @@ if ( ! function_exists( 'wpassetcleanup_fs' )
 				'is_premium'     => false,
 				'has_addons'     => false,
 				'has_paid_plans' => false,
+
+				'enable_anonymous'  => true,
+				'anonymous_mode'    => true,
+
 				'menu'           => array(
 					'slug'           => WPACU_PLUGIN_ID . '_settings',
 					'override_exact' => true,

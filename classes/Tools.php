@@ -13,6 +13,11 @@ class Tools
 	public $resetChoice;
 
 	/**
+	 * @var bool
+	 */
+	public $licenseDataRemoved = false;
+
+	/**
 	 * Tools constructor.
 	 */
 	public function __construct()
@@ -78,9 +83,18 @@ SQL;
 			}
 
 			$sqlQuery = <<<SQL
-DELETE FROM `{$wpdb->prefix}options` WHERE option_name LIKE 'wpassetcleanup_%'
+DELETE FROM `{$wpdb->prefix}options`
+WHERE option_name LIKE 'wpassetcleanup_%'
+                  AND option_name NOT IN('wpassetcleanup_pro_license_key', 'wpassetcleanup_pro_license_status')
 SQL;
-			$wpdb->query($sqlQuery);
+			$resetStatus = $wpdb->query($sqlQuery);
+
+			// Remove the license data?
+			if (Misc::getVar('post', 'wpacu-remove-license-data') !== '') {
+				delete_option(WPACU_PLUGIN_ID . '_pro_license_key');
+				delete_option(WPACU_PLUGIN_ID . '_pro_license_status');
+				$this->licenseDataRemoved = true;
+			}
 		} elseif ($wpacuResetValue === 'reset_settings') {
 			$sqlQuery = <<<SQL
 DELETE FROM `{$wpdb->prefix}options` WHERE option_name='wpassetcleanup_settings'
@@ -112,6 +126,10 @@ SQL;
 			$msg = __('All the settings were reset to their default values.', WPACU_PLUGIN_TEXT_DOMAIN);
 		} elseif ($this->resetChoice === 'reset_everything') {
 			$msg = __('Everything was reset (including settings, individual &amp; bulk unloads, load exceptions) to the same point it was when you first activated the plugin', WPACU_PLUGIN_TEXT_DOMAIN);
+
+			if ($this->licenseDataRemoved) {
+				$msg .= '<span id="wpacu-license-data-removed-msg">'.__('Any license data was also removed, as you requested.').'</span>';
+			}
 		}
 		?>
 		<div class="updated notice wpacu-notice is-dismissible">
