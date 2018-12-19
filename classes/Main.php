@@ -925,6 +925,13 @@ class Main
 	            'plugin_settings' => $wpacuSettings->getAll()
             );
 
+	        $data['wpacu_page_just_updated'] = false;
+
+	        if (get_transient('wpacu_page_just_updated')) {
+		        $data['wpacu_page_just_updated'] = true;
+		        delete_transient('wpacu_page_just_updated');
+	        }
+
 	        // [wpacu_lite]
             if ($this->isUpdateable) {
             // [/wpacu_lite]

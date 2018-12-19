@@ -11,7 +11,7 @@ if (! isset($data)) {
     <div id="wpacu_wrap_assets">
         <?php
         if ($data['is_updateable']) {
-	        if (defined('WPACU_PAGE_JUST_UPDATED')) {
+	        if ($data['wpacu_page_just_updated']) {
 		        $updateClass = new \WpAssetCleanUp\Update;
 		        ?>
                 <div class="wpacu-updated-frontend"><em>

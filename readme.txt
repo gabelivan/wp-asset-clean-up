@@ -4,7 +4,7 @@ Tags: pagespeed, page speed, dequeue, performance, gtmetrix
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GJZCW6RD8ECS
 Requires at least: 4.0
 Tested up to: 5.0.1
-Stable tag: 1.2.8.8
+Stable tag: 1.2.8.9
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -122,7 +122,7 @@ In case the assets are not loading for you, please write me on the forum and I w
 
 = I do not know or I'm not sure which assets to unload on my pages. What should I do? =
 
-If that's the case, then it's advisable to consult with a developer (ideally the person who helped you with your website) to give you assistance in unloading the unused assets.
+With the recently released "Test Mode" feature, you can safely unload assets on your web pages without affecting the pages' functionality for the regular visitors. It will unload CSS & JavaScript files that you selected ONLY for yourself (logged-in administrator). That's recommended in case you have any doubts about whether you should applying a specific setting or unload any asset. Once you've been through the trial and error and your website is lighter, you can deactivate "Test Mode" and the changes will apply for everyone. Then, test the page speed score of your website :)
 
 == Screenshots ==
 1. When editing a post/page (custom post type as well) a meta box will load with the asset list
@@ -131,6 +131,11 @@ If that's the case, then it's advisable to consult with a developer (ideally the
 4. Scripts (.JS) are selected for site-wide unload
 
 == Changelog ==
+= 1.2.8.9 =
+* Only trigger specific actions when necessary to avoid the use of extra server resources
+* Make sure "ver" query string is stripped on request only for the front-end view; Avoid removing the license info from the database when resetting everything (unless the admin chooses to remove the license info too for a complete uninstall)
+* Updated the way temporary data is stored (from $_SESSION to WordPress transient) for more effective use of server resources
+
 = 1.2.8.8 =
 * Option to clean any license data after everything is reset in case the Pro version was used before on the same website
 * Removed "Opt In" option from the non-sensitive diagnostic tracking until it will get replaced with a smoother version

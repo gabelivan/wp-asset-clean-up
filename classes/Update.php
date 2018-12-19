@@ -67,7 +67,10 @@ HTML;
 	public function initAfterPluginsLoaded()
 	{
 		if (! is_admin() && Main::instance()->settings['frontend_show']) {
-			add_action( 'wp', array( $this, 'frontendUpdate' ), 9 );
+		    if (! empty($_POST)) {
+			    add_action( 'wp', array( $this, 'frontendUpdate' ), 9 );
+		    }
+
 			add_action( 'template_redirect', array( $this, 'redirectAfterFrontEndUpdate' ) );
 		}
 	}
@@ -79,13 +82,6 @@ HTML;
      */
     public function frontendUpdate()
     {
-	    @session_start();
-
-	    if (isset($_SESSION['wpacu_page_just_updated'])) {
-		    define('WPACU_PAGE_JUST_UPDATED', true);
-		    unset($_SESSION['wpacu_page_just_updated']);
-	    }
-
         $postId = 0;
 
         if (Main::instance()->currentPostId > 0) {
@@ -183,7 +179,7 @@ HTML;
 
 	    $location .= $extraParamsSign . http_build_query($paramsToAdd) . '#wpacu_wrap_assets';
 
-	    $_SESSION['wpacu_page_just_updated'] = true;
+	    set_transient('wpacu_page_just_updated', 1, 30);
 
 	    wp_safe_redirect($location);
     	exit();
