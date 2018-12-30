@@ -3,7 +3,7 @@ Contributors: gabelivan
 Tags: pagespeed, page speed, dequeue, performance, gtmetrix
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GJZCW6RD8ECS
 Requires at least: 4.0
-Tested up to: 5.0.1
+Tested up to: 5.0.2
 Stable tag: 1.2.8.9
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
@@ -122,7 +122,7 @@ In case the assets are not loading for you, please write me on the forum and I w
 
 = I do not know or I'm not sure which assets to unload on my pages. What should I do? =
 
-With the recently released "Test Mode" feature, you can safely unload assets on your web pages without affecting the pages' functionality for the regular visitors. It will unload CSS & JavaScript files that you selected ONLY for yourself (logged-in administrator). That's recommended in case you have any doubts about whether you should applying a specific setting or unload any asset. Once you've been through the trial and error and your website is lighter, you can deactivate "Test Mode" and the changes will apply for everyone. Then, test the page speed score of your website :)
+With the recently released "Test Mode" feature, you can safely unload assets on your web pages without affecting the pages' functionality for the regular visitors. It will unload CSS & JavaScript files that you selected ONLY for yourself (logged-in administrator). That's recommended in case you have any doubts about whether you should applying a specific setting or unload any asset. Once you've been through the trial and error and your website is lighter, you can deactivate "Test Mode", clear cache (if using a caching plugin) and the changes will apply for everyone. Then, test the page speed score of your website :)
 
 == Screenshots ==
 1. When editing a post/page (custom post type as well) a meta box will load with the asset list

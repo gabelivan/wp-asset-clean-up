@@ -67,9 +67,13 @@ class Main
     public $vars = array('woo_url_not_match' => false, 'is_woo_shop_page' => false);
 
     /**
+     * This is set to `true` only if "Manage in the Front-end?" is enabled in plugin's settings
+     * and the logged-in administrator with plugin activation privileges
+     * is outside the Dashboard viewing the pages like a visitor
+     *
      * @var bool
      */
-    public $isFrontendView = false;
+    public $isFrontendEditView = false;
 
     /**
      * @var array
@@ -171,11 +175,17 @@ class Main
 		    add_action( 'wp_print_footer_scripts', array( $this, 'filterStyles' ), 1 );
 	    }
 
-        // [wpacu_lite]
-	    if ( ! (defined('WPACU_PRO_HIDE_HTML_USAGE_COMMENT') && WPACU_PRO_HIDE_HTML_USAGE_COMMENT) ) {
+	    // This is recommended to keep active for Lite users as it helps spread the word about the plugin
+	    // To remove the notice, consider upgrading to PRO
+
+	    // If you still want to remove it, consider adding the following code in your wp-config (WordPress root file)
+	    // define('WPACU_HIDE_HTML_USAGE_COMMENT', true);
+	    if (   ! (defined('WPACU_PRO_HIDE_HTML_USAGE_COMMENT') && WPACU_PRO_HIDE_HTML_USAGE_COMMENT)
+	        && ! (defined('WPACU_HIDE_HTML_USAGE_COMMENT') && WPACU_HIDE_HTML_USAGE_COMMENT) ) {
 		    $this->wpacuUsageNotice();
 	    }
-	    // [/wpacu_lite]
+
+	    $this->wpacuHtmlNoticeForAdmin();
     }
 
 	/**
@@ -224,9 +234,9 @@ class Main
      */
     public function setVarsBeforeUpdate()
     {
-        $this->isFrontendView = ($this->settings['frontend_show'] && Menu::userCanManageAssets()
-            && !isset($_REQUEST[WPACU_LOAD_ASSETS_REQ_KEY])
-            && !is_admin());
+        $this->isFrontendEditView = ( $this->settings['frontend_show'] && Menu::userCanManageAssets()
+                                      && !isset($_REQUEST[WPACU_LOAD_ASSETS_REQ_KEY])
+                                      && !is_admin());
 
         // it will update $this->isUpdateable;
         $this->getCurrentPostId();
@@ -695,10 +705,10 @@ class Main
             return;
         }
 
-        $isFrontEndView = $this->isFrontendView;
-        $isDashboardView = (!$isFrontEndView && array_key_exists(WPACU_LOAD_ASSETS_REQ_KEY, $_REQUEST));
+        $isFrontEndEditView = $this->isFrontendEditView;
+        $isDashboardEditView = (!$isFrontEndEditView && array_key_exists(WPACU_LOAD_ASSETS_REQ_KEY, $_REQUEST));
 
-        if (!$isFrontEndView && !$isDashboardView) {
+        if (!$isFrontEndEditView && !$isDashboardEditView) {
             return;
         }
 
@@ -756,7 +766,7 @@ class Main
 	    $manageStyles = $wp_styles->done;
 	    $manageScripts = $wp_scripts->done;
 
-	    if ($isFrontEndView) {
+	    if ($isFrontEndEditView) {
 	    	if (isset($this->wpAllStyles['queue']) && ! empty($this->wpAllStyles)) {
 			    $manageStyles = $this->wpAllStyles['queue'];
 		    }
@@ -807,7 +817,7 @@ class Main
 		 */
 	    $stylesList = $wp_styles->registered;
 
-	    if ($isFrontEndView) {
+	    if ($isFrontEndEditView) {
 		    $stylesList = $stylesBeforeUnload['registered'];
 	    }
 
@@ -865,7 +875,7 @@ class Main
         */
 	    $scriptsList = $wp_scripts->registered;
 
-	    if ($isFrontEndView) {
+	    if ($isFrontEndEditView) {
 		    $scriptsList = $scriptsBeforeUnload['registered'];
 	    }
 
@@ -915,7 +925,7 @@ class Main
         }
 
         // Front-end View while admin is logged in
-        if ($isFrontEndView) {
+        if ($isFrontEndEditView) {
 	        $wpacuSettings = new Settings();
 
             $data = array(
@@ -1003,7 +1013,7 @@ class Main
             $data['total_scripts'] = ! empty($data['all']['scripts']) ? count($data['all']['scripts']) : 0;
 
             $this->parseTemplate('settings-frontend', $data, true);
-        } elseif ($isDashboardView) {
+        } elseif ($isDashboardEditView) {
             // AJAX call (not the classic WP one) from the WP Dashboard
             echo self::START_DEL
                 .base64_encode(json_encode($list)).
@@ -1605,17 +1615,33 @@ class Main
 	 */
 	public function wpacuUsageNotice()
 	{
-		// Trigger only in the front-end view
-		if (is_admin()) {
-			return;
-		}
-
 		add_action('wp_loaded', function() {
 			ob_start(function($htmlSource) {
+				// If user is within the Dashboard or logged in (could be in the front-end view)
+				// do not show the usage notice, spread the word for new visitors
+				if (is_admin() || is_user_logged_in()) {
+					return $htmlSource;
+				}
+
 				$altCleanHtmlSource = trim($htmlSource);
 
 				if (strtolower(substr($altCleanHtmlSource, -7)) === '</html>') {
-					$htmlSource .= "\n" . '<!-- This website is optimized by Asset CleanUp: Page Speed Booster. Do you want to have a faster loading website? Learn more here: https://wordpress.org/plugins/wp-asset-clean-up/ -->';
+					$extraParams = '';
+
+					if (defined('WP_CONTENT_URL')) {
+						$urlPieces = parse_url( WP_CONTENT_URL );
+						$shortSource = isset($urlPieces['host']) ? str_ireplace('www.', '', $urlPieces['host']) : '';
+
+						if (strpos($shortSource, '.') !== false) {
+							list($shortSource) = explode('.', $shortSource);
+						}
+
+						if ($shortSource) {
+							$extraParams = '?utm_source=' . $shortSource . '&utm_medium=website_html_comment';
+						}
+					}
+
+					$htmlSource .= "\n" . '<!-- This website is optimized by Asset CleanUp: Page Speed Booster. Do you want to have a faster loading website? Learn more here: https://wordpress.org/plugins/wp-asset-clean-up/'.$extraParams.' -->';
 				}
 
 				return $htmlSource;
@@ -1623,4 +1649,45 @@ class Main
 		});
 	}
 	// [wpacu_lite]
+
+	/**
+	 * Make administrator more aware if "TEST MODE" is enabled or not
+	 */
+	public function wpacuHtmlNoticeForAdmin()
+	{
+		add_action('wp_loaded', function() {
+			ob_start(function($htmlSource) {
+				if ( ! (Menu::userCanManageAssets() && ! is_admin())) {
+					return $htmlSource;
+				}
+
+				$altCleanHtmlSource = trim($htmlSource);
+
+				if (strtolower(substr($altCleanHtmlSource, -7)) === '</html>') {
+					if (Main::instance()->settings['test_mode']) {
+						$consoleMessage = __('Asset CleanUp: "TEST MODE" ENABLED (any settings or unloads will be visible ONLY to you, the logged-in administrator)', WPACU_PLUGIN_TEXT_DOMAIN);
+						$testModeNotice = __('"Test Mode" is ENABLED. Any settings or unloads will be visible ONLY to you, the logged-in administrator.', WPACU_PLUGIN_TEXT_DOMAIN);
+					} else {
+						$consoleMessage = __('Asset CleanUp: "LIVE MODE" (test mode is not enabled, thus, all the plugin changes are visible for everyone: you, the logged-in administrator and the regular visitors)', WPACU_PLUGIN_TEXT_DOMAIN);
+						$testModeNotice = __('The website is in LIVE MODE as "Test Mode" is not enabled. All the plugin changes are visible for everyone: logged-in administrators and regular visitors.', WPACU_PLUGIN_TEXT_DOMAIN);
+					}
+
+					$htmlCommentNote = __('NOTE: These "Asset CleanUp: Page Speed Booster" messages are only shown to you, the HTML comment is not visible for the regular visitor.', WPACU_PLUGIN_TEXT_DOMAIN);
+
+					$htmlSource .= <<<HTML
+<!--
+{$htmlCommentNote}
+
+{$testModeNotice}
+-->
+<script type="text/javascript">
+console.log('{$consoleMessage}');
+</script>
+HTML;
+				}
+
+				return $htmlSource;
+			});
+		});
+	}
 }
