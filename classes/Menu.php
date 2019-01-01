@@ -22,7 +22,7 @@ class Menu
      */
     public function __construct()
     {
-    	self::$slug = WPACU_PLUGIN_ID . '_settings';
+    	self::$slug = WPACU_PLUGIN_ID . '_getting_started';
 
         add_action('admin_menu', array($this, 'activeMenu'));
 
@@ -47,11 +47,20 @@ class Menu
             __('Asset CleanUp', WPACU_PLUGIN_TEXT_DOMAIN),
 	        self::$capability,
             self::$slug,
-            array(new Settings, 'settingsPage'),
+            array(new Info, 'gettingStarted'),
 	        WPACU_PLUGIN_URL.'/assets/icons/icon-asset-cleanup.png'
         );
 
-        add_submenu_page(
+	    add_submenu_page(
+		    self::$slug,
+		    __('Settings', WPACU_PLUGIN_TEXT_DOMAIN),
+		    __('Settings', WPACU_PLUGIN_TEXT_DOMAIN),
+		    self::$capability,
+		    WPACU_PLUGIN_ID . '_settings',
+		    array(new Settings, 'settingsPage')
+	    );
+
+	    add_submenu_page(
             self::$slug,
             __('Home Page', WPACU_PLUGIN_TEXT_DOMAIN),
             __('Home Page', WPACU_PLUGIN_TEXT_DOMAIN),
@@ -127,7 +136,7 @@ class Menu
 	    );
 
         // Rename first item from the menu which has the same title as the menu page
-        $GLOBALS['submenu'][self::$slug][0][0] = esc_attr__('Settings', WPACU_PLUGIN_TEXT_DOMAIN);
+        $GLOBALS['submenu'][self::$slug][0][0] = esc_attr__('Getting Started', WPACU_PLUGIN_TEXT_DOMAIN);
     }
 
 	/**

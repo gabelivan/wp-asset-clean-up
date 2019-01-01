@@ -68,7 +68,7 @@ do_action('wpacu_admin_notices');
 	            ?>
                 <input type="hidden" name="wpacu-get-system-info" value="1" />
 
-                <textarea disabled="disabled" style="color: rgba(51,51,51,.9); white-space: pre; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; width: 80%; max-width: 100%;"
+                <textarea disabled="disabled" style="color: rgba(51,51,51,1); background: #eee; white-space: pre; font-family: Menlo, Monaco, Consolas, 'Courier New', monospace; width: 80%; max-width: 100%;"
                           rows="20"><?php echo $data['system_info']; ?></textarea>
 
                 <p><button name="submit"

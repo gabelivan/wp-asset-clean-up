@@ -4,7 +4,7 @@ Tags: pagespeed, page speed, dequeue, performance, gtmetrix
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GJZCW6RD8ECS
 Requires at least: 4.0
 Tested up to: 5.0.2
-Stable tag: 1.2.8.9
+Stable tag: 1.2.9
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -12,7 +12,7 @@ Make your website load FASTER by preventing specific scripts (.JS) & styles (.CS
 
 == Description ==
 * Make your web pages load FASTER with **Asset CleanUp: Page Speed Booster**
-* Faster page load = Happier Visitors = More Conversions
+* Faster page load = Happier Visitors = More Conversions = More Revenue
 
 There are often times when you are using a theme and a number of plugins which are enabled and run on the same page. However, you don't need to use all of them and to improve the speed of your website and make the HTML source code cleaner (convenient for debugging purposes), it's better to prevent those styles and scripts from loading.
 
@@ -131,6 +131,10 @@ With the recently released "Test Mode" feature, you can safely unload assets on 
 4. Scripts (.JS) are selected for site-wide unload
 
 == Changelog ==
+= 1.2.9 =
+* Added "System Info" to "Tools" page to fetch information about the WordPress environment in case something needs debugged
+* Added "Getting Started" page to make things easier for anyone who doesn't understand how the plugin works
+
 = 1.2.8.9 =
 * Only trigger specific actions when necessary to avoid the use of extra server resources
 * Make sure "ver" query string is stripped on request only for the front-end view; Avoid removing the license info from the database when resetting everything (unless the admin chooses to remove the license info too for a complete uninstall)

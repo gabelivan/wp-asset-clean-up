@@ -11,6 +11,9 @@ class Plugin
 	 */
 	public function __construct()
 	{
+		register_activation_hook(WPACU_PLUGIN_FILE, array($this, 'whenActivated'));
+		add_action('admin_init', array($this, 'redirectToGettingStarted'));
+
 		// [wpacu_lite]
 		// Admin footer text: Ask the user to review the plugin
 		add_filter('admin_footer_text', array($this, 'adminFooter'), 1, 1);
@@ -27,7 +30,8 @@ class Plugin
 	 */
 	public function actionLinks($links)
 	{
-		$links['settings'] = '<a href="admin.php?page=' . WPACU_PLUGIN_ID . '_settings">' . __('Settings', WPACU_PLUGIN_TEXT_DOMAIN) . '</a>';
+		$links['getting_started'] = '<a href="admin.php?page=' . WPACU_PLUGIN_ID . '_getting_started">' . __('Getting Started', WPACU_PLUGIN_TEXT_DOMAIN) . '</a>';
+		$links['settings']        = '<a href="admin.php?page=' . WPACU_PLUGIN_ID . '_settings">'        . __('Settings',        WPACU_PLUGIN_TEXT_DOMAIN) . '</a>';
 
 		// [wpacu_lite]
 		$allPlugins = get_plugins();
@@ -57,4 +61,31 @@ class Plugin
 		return $text;
 	}
 	// [/wpacu_lite]
+
+	/**
+	 *
+	 */
+	public function whenActivated()
+	{
+		// Is the plugin activated for the first time? Prepare for the redirection to "Getting Started"
+		if (! get_option(WPACU_PLUGIN_ID.'_do_activation_redirect_first_time')) {
+			add_option(WPACU_PLUGIN_ID.'_do_activation_redirect_first_time', 1, 'no');
+			set_transient(WPACU_PLUGIN_ID . '_redirect_after_activation', 1, 15);
+		}
+	}
+
+	/**
+	 *
+	 */
+	public function redirectToGettingStarted()
+	{
+		if (get_transient(WPACU_PLUGIN_ID . '_redirect_after_activation')) {
+			// Remove it as only one redirect is needed (first time the plugin is activated)
+			delete_transient(WPACU_PLUGIN_ID . '_redirect_after_activation');
+			
+			// Do the 'first activation time'' redirection
+			wp_redirect(admin_url('admin.php?page=' . WPACU_PLUGIN_ID . '_getting_started'));
+			exit();
+		}
+	}
 }

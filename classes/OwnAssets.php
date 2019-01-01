@@ -47,7 +47,7 @@ class OwnAssets
     {
         ?>
         <style type="text/css">
-            .menu-top.toplevel_page_wpassetcleanup_settings .wp-menu-image > img { width: 26px; position: absolute; left: 8px; top: -4px; }
+            .menu-top.toplevel_page_wpassetcleanup_getting_started .wp-menu-image > img { width: 26px; position: absolute; left: 8px; top: -4px; }
 
             <?php if (is_admin_bar_showing()) { ?>
                 #wp-admin-bar-wpacu-test-mode span.dashicons { width: 15px; height: 15px; font-family: 'Dashicons', Arial, "Times New Roman", "Bitstream Charter", Times, serif; }

@@ -230,6 +230,10 @@ class Tools
 	 */
 	public function downloadSystemInfo()
     {
+	    if (! Menu::userCanManageAssets()) {
+		    exit();
+	    }
+
 	    \check_admin_referer('wpacu_get_system_info');
 
 	    $date = date('j-M-Y');
@@ -292,6 +296,8 @@ WHERE option_name LIKE 'wpassetcleanup_%'
                   AND option_name NOT IN('wpassetcleanup_pro_license_key', 'wpassetcleanup_pro_license_status')
 SQL;
 			$resetStatus = $wpdb->query($sqlQuery);
+
+			delete_option(WPACU_PLUGIN_ID.'_do_activation_redirect_first_time');
 
 			// Remove the license data?
 			if (Misc::getVar('post', 'wpacu-remove-license-data') !== '') {
