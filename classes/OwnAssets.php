@@ -45,21 +45,35 @@ class OwnAssets
 	 */
 	public function inlineCode()
     {
-        ?>
-        <style type="text/css">
-            .menu-top.toplevel_page_wpassetcleanup_getting_started .wp-menu-image > img { width: 26px; position: absolute; left: 8px; top: -4px; }
+        if (is_admin_bar_showing()) {
+	        ?>
+            <style type="text/css">
+                #wp-admin-bar-wpacu-test-mode span.dashicons {
+                    width: 15px;
+                    height: 15px;
+                    font-family: 'Dashicons', Arial, "Times New Roman", "Bitstream Charter", Times, serif;
+                }
 
-            <?php if (is_admin_bar_showing()) { ?>
-                #wp-admin-bar-wpacu-test-mode span.dashicons { width: 15px; height: 15px; font-family: 'Dashicons', Arial, "Times New Roman", "Bitstream Charter", Times, serif; }
-                #wp-admin-bar-wpacu-test-mode > a:first-child strong { font-weight: bolder; color: #76f203; }
-                #wp-admin-bar-wpacu-test-mode > a:first-child:hover { color: #00b9eb; }
-                #wp-admin-bar-wpacu-test-mode > a:first-child:hover strong { color: #00b9eb; }
+                #wp-admin-bar-wpacu-test-mode > a:first-child strong {
+                    font-weight: bolder;
+                    color: #76f203;
+                }
+
+                #wp-admin-bar-wpacu-test-mode > a:first-child:hover {
+                    color: #00b9eb;
+                }
+
+                #wp-admin-bar-wpacu-test-mode > a:first-child:hover strong {
+                    color: #00b9eb;
+                }
 
                 /* Add some spacing below the last text */
-                #wp-admin-bar-wpacu-test-mode-info-2 { padding-bottom: 8px !important; }
-            <?php } ?>
-        </style>
-        <?php
+                #wp-admin-bar-wpacu-test-mode-info-2 {
+                    padding-bottom: 8px !important;
+                }
+            </style>
+	        <?php
+        }
     }
 
 	/**
@@ -69,6 +83,8 @@ class OwnAssets
     {
         ?>
         <style type="text/css">
+            .menu-top.toplevel_page_wpassetcleanup_getting_started .wp-menu-image > img { width: 26px; position: absolute; left: 8px; top: -4px; }
+
             .opt-in-or-opt-out.wp-asset-clean-up {
                 display: none;
             }
@@ -108,7 +124,7 @@ class OwnAssets
             $this->loadPluginAssets = true;
         }
 
-        if ( strpos($page, WPACU_PLUGIN_ID) === 0) {
+        if (strpos($page, WPACU_PLUGIN_ID) === 0) {
             $this->loadPluginAssets = true;
         }
 
