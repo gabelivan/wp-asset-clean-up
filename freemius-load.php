@@ -21,7 +21,7 @@ if ( ! function_exists( 'wpassetcleanup_fs' )
 				'has_paid_plans' => false,
 				'anonymous_mode' => true,
 				'menu'           => array(
-					'slug'           => WPACU_PLUGIN_ID . '_getting_started',
+					'slug'           => WPACU_ADMIN_PAGE_ID_START,
 					'override_exact' => true,
 					'account'        => false,
 					'contact'        => false,
@@ -40,7 +40,7 @@ if ( ! function_exists( 'wpassetcleanup_fs' )
 	do_action('wpassetcleanup_fs_loaded');
 
 	function wpassetcleanup_fs_settings_url() {
-		return admin_url('admin.php?page='.WPACU_PLUGIN_ID . '_getting_started');
+		return admin_url('admin.php?page='.WPACU_ADMIN_PAGE_ID_START);
 	}
 
 	wpassetcleanup_fs()->add_filter('connect_url', WPACU_PLUGIN_ID.'_fs_settings_url');

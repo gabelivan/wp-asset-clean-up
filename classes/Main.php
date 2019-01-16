@@ -401,7 +401,7 @@ class Main
 
         $allScripts = $wp_scripts;
 
-        if (isset($allScripts->registered) && ! empty($allScripts->registered)) {
+        if ($allScripts !== null && ! empty($allScripts->registered)) {
             $i = $this->lastScriptPos;
 
             foreach ($allScripts->registered as $handle => $value) {
@@ -526,7 +526,7 @@ class Main
 
 	    $allStyles = $wp_styles;
 
-	    if (! empty($allStyles) && isset($allStyles->registered)) {
+	    if ($allStyles !== null && isset($allStyles->registered)) {
 		    $i = $this->lastStylePos;
 
 		    foreach ($allStyles->registered as $handle => $value) {
@@ -1504,7 +1504,12 @@ class Main
 	 */
 	public function doDisableEmojis()
     {
-    	if ($this->preventUnloadAssets()) {
+    	/*
+    	   DO NOT disable Emojis if the following apply:
+    	   - Test Mode Enabled & Admin Logged in
+	       - The user is within the admin panel (Dashboard)
+    	*/
+    	if ($this->preventUnloadAssets() || is_admin()) {
 	        return;
 	    }
 

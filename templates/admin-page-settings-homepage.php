@@ -56,7 +56,7 @@ if ($data['show_on_front'] === 'page') {
 
         <p><?php _e('Here you can unload assets that are loading on the home page. "Front page displays" (from "Settings" &#187; "Reading") is set to either "Your latest posts" (in "Settings" &#187; "Reading") OR a special layout (from a theme or plugin) was enabled. When you edit a page/post (e.g. "Posts" -&gt; "All Posts", "Pages" -&gt; "All Pages" etc.), you will see the list inside a meta box.', WPACU_PLUGIN_TEXT_DOMAIN); ?></p>
 
-        <p>The plugin uses <a target="_blank" href="https://codex.wordpress.org/Function_Reference/is_front_page">is_front_page()</a> and <a href="https://codex.wordpress.org/Conditional_Tags#The_Main_Page">is_home()</a> WordPress functions to check if the visitor is on the home page. Note that the setting will also apply to pages such as <code>/page/2</code> <code>page/3</code> etc. in case the latest blog posts are paginated.</p>
+        <p>Note that any changes will also apply to pages such as <code>/page/2</code> <code>page/3</code> etc. in case the latest blog posts are paginated.</p>
 
         <div id="wpacu_meta_box_content">
             <img src="<?php echo admin_url(); ?>/images/spinner.gif" align="top" width="20" height="20" alt="" />&nbsp;

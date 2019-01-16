@@ -14,7 +14,7 @@ $listAreaStatus = $data['plugin_settings']['assets_list_layout_areas_status'];
 ?>
 <div class="wpacu-contract-expand-area">
     <div class="col-left">
-        <h4>&#10141; Total enqueued files: <strong><?php echo (int)$data['total_styles'] + (int)$data['total_scripts']; ?></strong></h4>
+        <h4>&#10141; Total enqueued files (including core files): <strong><?php echo (int)$data['total_styles'] + (int)$data['total_scripts']; ?></strong></h4>
     </div>
     <div class="col-right">
         <a href="#" id="wpacu-assets-contract-all" class="wpacu-wp-button wpacu-wp-button-secondary">Contract Both Areas</a>&nbsp;
@@ -25,7 +25,7 @@ $listAreaStatus = $data['plugin_settings']['assets_list_layout_areas_status'];
 
 <div class="wpacu-assets-collapsible-wrap wpacu-wrap-styles">
     <a class="wpacu-assets-collapsible <?php if ($listAreaStatus !== 'contracted') { ?>wpacu-assets-collapsible-active<?php } ?>" href="#wpacu-assets-styles-collapsible-content">
-        <span class="dashicons dashicons-admin-appearance"></span> &nbsp; <?php _e('Styles (.css files)', WPACU_PLUGIN_TEXT_DOMAIN); ?> &#10141; Total: <?php echo $data['total_styles']; ?>
+        <span class="dashicons dashicons-admin-appearance"></span> &nbsp; <?php _e('Styles (.css files)', WPACU_PLUGIN_TEXT_DOMAIN); ?> &#10141; Total (+ core files): <?php echo $data['total_styles']; ?>
     </a>
 
     <div id="wpacu-assets-styles-collapsible-content"
@@ -87,7 +87,7 @@ $listAreaStatus = $data['plugin_settings']['assets_list_layout_areas_status'];
 
 <div class="wpacu-assets-collapsible-wrap wpacu-wrap-scripts">
     <a class="wpacu-assets-collapsible <?php if ($listAreaStatus !== 'contracted') { ?>wpacu-assets-collapsible-active<?php } ?>" href="#wpacu-assets-scripts-collapsible-content">
-        <span class="dashicons dashicons-media-code"></span> &nbsp; <?php _e('Scripts (.js files)', WPACU_PLUGIN_TEXT_DOMAIN); ?> &#10141; Total: <?php echo $data['total_scripts']; ?>
+        <span class="dashicons dashicons-media-code"></span> &nbsp; <?php _e('Scripts (.js files)', WPACU_PLUGIN_TEXT_DOMAIN); ?> &#10141; Total (+ core files): <?php echo $data['total_scripts']; ?>
     </a>
 
     <div id="wpacu-assets-scripts-collapsible-content"

@@ -34,18 +34,29 @@ class Tools
 	{
 		$this->wpacuFor = Misc::getVar('request', 'wpacu_for', $this->wpacuFor);
 
-		add_action('plugins_loaded', function() {
-			if ( array_key_exists( 'wpacu-tools-reset', $_POST ) && $_POST['wpacu-tools-reset'] && is_admin() ) {
-				$this->doReset();
-			}
-		});
-
-		add_action('admin_init', function() {
-			if ( array_key_exists( 'wpacu-get-system-info', $_POST ) && $_POST['wpacu-get-system-info'] ) {
-				$this->downloadSystemInfo();
-			}
-        });
+		add_action('plugins_loaded', array($this, 'afterPluginsLoaded'));
+		add_action('admin_init',     array($this, 'onAdminInit'));
 	}
+
+	/**
+	 *
+	 */
+	public function afterPluginsLoaded()
+    {
+	    if ( array_key_exists( 'wpacu-tools-reset', $_POST ) && $_POST['wpacu-tools-reset'] && is_admin() ) {
+		    $this->doReset();
+	    }
+    }
+
+	/**
+	 *
+	 */
+	public function onAdminInit()
+    {
+	    if ( array_key_exists( 'wpacu-get-system-info', $_POST ) && $_POST['wpacu-get-system-info'] ) {
+		    $this->downloadSystemInfo();
+	    }
+    }
 
 	/**
 	 *

@@ -58,6 +58,10 @@ new \WpAssetCleanUp\Plugin;
 // Admin Bar (Top Area of the website when user is logged in)
 new \WpAssetCleanUp\AdminBar();
 
+// Trigger only in the front-end view for guests (regular visitors, not logged-in)
+$wpacuOptimizeCss = new \WpAssetCleanUp\OptimizeCss();
+$wpacuOptimizeCss->init();
+
 if (is_admin()) {
 	new \WpAssetCleanUp\Tools();
 }

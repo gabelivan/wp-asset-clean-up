@@ -9,7 +9,7 @@ if (! isset($data)) {
 include_once '_top-area.php';
 
 // [wpacu_lite]
-$availableForPro = '<span class="tooltip">Available for Pro users<br />Click to upgrade!</span> <img style="opacity: 0.4;" width="20" height="20" src="'.WPACU_PLUGIN_URL.'/assets/icons/icon-lock.svg" valign="top" alt="" />';
+$availableForPro = '<span class="wpacu-tooltip">Available for Pro users<br />Click to upgrade!</span> <img style="opacity: 0.4;" width="20" height="20" src="'.WPACU_PLUGIN_URL.'/assets/icons/icon-lock.svg" valign="top" alt="" />';
 // [/wpacu_lite]
 ?>
 

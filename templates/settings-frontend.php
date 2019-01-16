@@ -15,12 +15,13 @@ if (! isset($data)) {
 		        $updateClass = new \WpAssetCleanUp\Update;
 		        ?>
                 <div class="wpacu-updated-frontend"><em>
-				        <?php if (\WpAssetCleanUp\Misc::isHomePage()) {
-					        echo $updateClass->updateDoneMsg['homepage'];
-				        } else {
-					        echo $updateClass->updateDoneMsg['page'];
-				        } ?>
-                    </em></div>
+                    <?php if (\WpAssetCleanUp\Misc::isHomePage()) {
+                        echo $updateClass->updateDoneMsg['homepage'];
+                    } else {
+                        echo $updateClass->updateDoneMsg['page'];
+                    } ?>
+                    </em>
+                </div>
 		        <?php
 	        }
 
@@ -34,7 +35,10 @@ if (! isset($data)) {
                 if ($wpRocketSettings['cache_logged_user'] == 1) {
 	                ?>
                     <div class="wpacu-warning">
-                        <strong><span class="dashicons dashicons-warning"></span> Important:</strong> You have enabled "<em>Enable caching for logged-in WordPress users</em>" in WP Rocket's Cache area. This could cause some issues with Asset CleanUp retrieving an outdated (cached) asset list below. If you experience issues such as unsaved settings or viewing assets from plugins that are disabled, consider using Asset CleanUp only in the Dashboard area (option "Manage in the Dashboard?" has to be enabled in plugin's settings).
+                        <strong><span class="dashicons dashicons-warning"></span> Important:</strong> You have enabled "<em>Enable caching for logged-in WordPress users</em>" in WP Rocket's Cache area.
+                        This could cause some issues with Asset CleanUp retrieving an outdated (cached) asset list below.
+                        If you experience issues such as unsaved settings or viewing assets from plugins that are disabled, consider using Asset CleanUp only in the Dashboard area (option "Manage in the Dashboard?" has to be enabled in plugin's settings).
+                        <!-- @TODO: Make sure to instruct the user to append a query string to the URL bar to load an uncached version of the plugin OR find a solution to force page reload (non-cached) -->
                     </div>
                     <div class="clearfix"></div>
 	                <?php

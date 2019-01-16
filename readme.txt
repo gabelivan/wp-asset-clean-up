@@ -1,10 +1,10 @@
 === Asset CleanUp: Page Speed Booster ===
 Contributors: gabelivan
 Tags: pagespeed, page speed, dequeue, performance, gtmetrix
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7GJZCW6RD8ECS
-Requires at least: 4.0
-Tested up to: 5.0.2
-Stable tag: 1.2.9
+Donate link: https://gabelivan.com/items/wp-asset-cleanup-pro/?utm_source=wp_org_lite&utm_medium=donate
+Requires at least: 4.4
+Tested up to: 5.0.3
+Stable tag: 1.2.9.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -131,6 +131,11 @@ With the recently released "Test Mode" feature, you can safely unload assets on 
 4. Scripts (.JS) are selected for site-wide unload
 
 == Changelog ==
+= 1.2.9.1 =
+* "Combined Loaded CSS" feature (concatenates all the remaining loaded stylesheets within the HEAD section of the page and saves them into one file) to reduce HTTP requests even further
+* Improved "Getting Started" area
+* Made "Settings" as the default page where you (the administrator user) is redirected when activating the plugin for the first time
+
 = 1.2.9 =
 * Added "System Info" to "Tools" page to fetch information about the WordPress environment in case something needs debugged
 * Added "Getting Started" page to make things easier for anyone who doesn't understand how the plugin works

@@ -48,28 +48,35 @@ class OwnAssets
         if (is_admin_bar_showing()) {
 	        ?>
             <style type="text/css">
-                #wp-admin-bar-wpacu-test-mode span.dashicons {
+                #wp-admin-bar-assetcleanup-parent span.dashicons {
                     width: 15px;
                     height: 15px;
-                    font-family: 'Dashicons', Arial, "Times New Roman", "Bitstream Charter", Times, serif;
+                    font-family: 'Dashicons', Arial, "Times New Roman", "Bitstream Charter", Times, serif !important;
                 }
 
-                #wp-admin-bar-wpacu-test-mode > a:first-child strong {
+                #wp-admin-bar-assetcleanup-parent > a:first-child strong {
                     font-weight: bolder;
                     color: #76f203;
                 }
 
-                #wp-admin-bar-wpacu-test-mode > a:first-child:hover {
+                #wp-admin-bar-assetcleanup-parent > a:first-child:hover {
                     color: #00b9eb;
                 }
 
-                #wp-admin-bar-wpacu-test-mode > a:first-child:hover strong {
+                #wp-admin-bar-assetcleanup-parent > a:first-child:hover strong {
                     color: #00b9eb;
+                }
+
+                #wp-admin-bar-assetcleanup-test-mode-info {
+                    margin-top: 5px !important;
+                    margin-bottom: -8px !important;
+                    padding-top: 3px !important;
+                    border-top: 1px solid #ffffff52;
                 }
 
                 /* Add some spacing below the last text */
-                #wp-admin-bar-wpacu-test-mode-info-2 {
-                    padding-bottom: 8px !important;
+                #wp-admin-bar-assetcleanup-test-mode-info-2 {
+                    padding-bottom: 3px !important;
                 }
             </style>
 	        <?php
@@ -84,10 +91,7 @@ class OwnAssets
         ?>
         <style type="text/css">
             .menu-top.toplevel_page_wpassetcleanup_getting_started .wp-menu-image > img { width: 26px; position: absolute; left: 8px; top: -4px; }
-
-            .opt-in-or-opt-out.wp-asset-clean-up {
-                display: none;
-            }
+            .opt-in-or-opt-out.wp-asset-clean-up { display: none; }
         </style>
         <?php
     }
@@ -181,13 +185,13 @@ class OwnAssets
     {
         global $post, $pagenow;
 
-        $page = isset($_GET['page']) ? $_GET['page'] : '';
+	    $page =  Misc::getVar('get', 'page');
 
         $getPostId = (isset($_GET['post'], $_GET['action']) && $_GET['action'] === 'edit' && $pagenow === 'post.php') ? (int)$_GET['post'] : '';
 
         $postId = isset($post->ID) ? $post->ID : 0;
 
-        if ($getPostId > 0 && $getPostId != $postId) {
+        if ($getPostId > 0 && $getPostId !== $postId) {
             $postId = $getPostId;
         }
 

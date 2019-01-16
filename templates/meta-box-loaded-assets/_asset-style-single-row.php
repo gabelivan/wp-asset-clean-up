@@ -18,7 +18,7 @@ $isBulkUnloaded   = ($data['row']['global_unloaded'] || $data['row']['is_post_ty
 			<?php
 			if ($isCoreFile && ! $hideCoreFiles) {
 				?>
-				<span class="dashicons dashicons-warning wordpress-core-file"><span class="tooltip">WordPress Core File<br />Not sure if needed or not? In this case, it's better to leave it loaded to avoid breaking the website.</span></span>
+				<span class="dashicons dashicons-warning wordpress-core-file"><span class="wpacu-tooltip">WordPress Core File<br />Not sure if needed or not? In this case, it's better to leave it loaded to avoid breaking the website.</span></span>
 				<?php
 			}
 			?>
@@ -190,7 +190,7 @@ $isBulkUnloaded   = ($data['row']['global_unloaded'] || $data['row']['is_post_ty
                    href="#">Show / Hide</a>
                 <div class="wpacu-assets-inline-code-collapsible-content <?php if ($inlineCodeStatus !== 'contracted') { echo 'wpacu-open'; } ?>">
                     <div>
-                        <p style="margin-bottom: 15px;">
+                        <p style="margin-bottom: 15px; line-height: normal !important;">
                             <?php foreach ($data['row']['extra_data_css_list'] as $extraDataCSS) {
                                 echo '<em>'.htmlspecialchars($extraDataCSS).'</em>'.'<br />';
                             }
@@ -213,7 +213,7 @@ $isBulkUnloaded   = ($data['row']['global_unloaded'] || $data['row']['is_post_ty
 		}
 
 		// [wpacu_lite]
-		$extraInfo[] = '<strong>'.__('File Size:', WPACU_PLUGIN_TEXT_DOMAIN) . '</strong> <a href="' . WPACU_PLUGIN_GO_PRO_URL . '?utm_source=manage_asset&utm_medium=file_size" class="go-pro-link-no-style"><span class="tooltip">Upgrade to Pro and unlock all features</span><img width="20" height="20" src="' . WPACU_PLUGIN_URL . '/assets/icons/icon-lock.svg" valign="top" alt="" /> Pro Version</a>';
+		$extraInfo[] = '<strong>'.__('File Size:', WPACU_PLUGIN_TEXT_DOMAIN) . '</strong> <a href="' . WPACU_PLUGIN_GO_PRO_URL . '?utm_source=manage_asset&utm_medium=file_size" class="go-pro-link-no-style"><span class="wpacu-tooltip">Upgrade to Pro and unlock all features</span><img width="20" height="20" src="' . WPACU_PLUGIN_URL . '/assets/icons/icon-lock.svg" valign="top" alt="" /> Pro Version</a>';
 		// [/wpacu_lite]
 
 		if (! empty($extraInfo)) {

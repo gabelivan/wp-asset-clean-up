@@ -18,7 +18,7 @@ $isBulkUnloaded   = ($data['row']['global_unloaded'] || $data['row']['is_post_ty
 			<?php
 			if ($isCoreFile && ! $hideCoreFiles) {
             ?>
-				<span class="dashicons dashicons-warning wordpress-core-file"><span class="tooltip">WordPress Core File<br />Not sure if needed or not? In this case, it's better to leave it loaded to avoid breaking the website.</span></span>
+				<span class="dashicons dashicons-warning wordpress-core-file"><span class="wpacu-tooltip">WordPress Core File<br />Not sure if needed or not? In this case, it's better to leave it loaded to avoid breaking the website.</span></span>
             <?php
 			}
 			?>
@@ -190,7 +190,9 @@ $isBulkUnloaded   = ($data['row']['global_unloaded'] || $data['row']['is_post_ty
                    href="#">Show / Hide</a>
                 <div class="wpacu-assets-inline-code-collapsible-content <?php if ($inlineCodeStatus !== 'contracted') { echo 'wpacu-open'; } ?>">
                     <div>
-                        <p style="margin-top: -7px !important;"><em><?php echo strip_tags($data['row']['extra_data_js']); ?></em></p>
+                        <p style="margin-top: -7px !important; line-height: normal !important;">
+                            <em><?php echo strip_tags($data['row']['extra_data_js']); ?></em>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -212,7 +214,7 @@ $isBulkUnloaded   = ($data['row']['global_unloaded'] || $data['row']['is_post_ty
 		}
 
 		// [wpacu_lite]
-		$extraInfo[] = '<strong>'.__('File Size:', WPACU_PLUGIN_TEXT_DOMAIN) . '</strong> <a class="go-pro-link-no-style" href="' . WPACU_PLUGIN_GO_PRO_URL . '?utm_source=manage_asset&utm_medium=file_size"><span class="tooltip">Upgrade to Pro and unlock all features</span><img width="20" height="20" src="' . WPACU_PLUGIN_URL . '/assets/icons/icon-lock.svg" valign="top" alt="" /> Pro Version</a>';
+		$extraInfo[] = '<strong>'.__('File Size:', WPACU_PLUGIN_TEXT_DOMAIN) . '</strong> <a class="go-pro-link-no-style" href="' . WPACU_PLUGIN_GO_PRO_URL . '?utm_source=manage_asset&utm_medium=file_size"><span class="wpacu-tooltip">Upgrade to Pro and unlock all features</span><img width="20" height="20" src="' . WPACU_PLUGIN_URL . '/assets/icons/icon-lock.svg" valign="top" alt="" /> Pro Version</a>';
 		// [/wpacu_lite]
 
 		if (! empty($extraInfo)) {
@@ -226,7 +228,7 @@ $isBulkUnloaded   = ($data['row']['global_unloaded'] || $data['row']['is_post_ty
 				<p>If loaded (not unloaded by any of the rules above), apply the following attributes: <em><a class="go-pro-link-no-style" href="<?php echo WPACU_PLUGIN_GO_PRO_URL; ?>">* this option is available in Pro version</a></em></p>
 
 				<ul class="wpacu-script-attributes-settings wpacu-first">
-					<li><a class="go-pro-link-no-style" href="<?php echo WPACU_PLUGIN_GO_PRO_URL; ?>"><span class="tooltip wpacu-larger">This feature is available in the premium version of the plugin.<br /> Click here to upgrade to Pro!</span><img width="20" height="20" src="<?php echo WPACU_PLUGIN_URL; ?>/assets/icons/icon-lock.svg" valign="top" alt="" /></a>&nbsp; <strong>async</strong> &#10230;</li>
+					<li><a class="go-pro-link-no-style" href="<?php echo WPACU_PLUGIN_GO_PRO_URL; ?>"><span class="wpacu-tooltip wpacu-larger">This feature is available in the premium version of the plugin.<br /> Click here to upgrade to Pro!</span><img width="20" height="20" src="<?php echo WPACU_PLUGIN_URL; ?>/assets/icons/icon-lock.svg" valign="top" alt="" /></a>&nbsp; <strong>async</strong> &#10230;</li>
 					<li><label for="async_none_<?php echo $data['row']['obj']->handle; ?>"><input disabled="disabled" id="async_none_<?php echo $data['row']['obj']->handle; ?>" type="radio" name="wpacu_async[<?php echo $data['row']['obj']->handle; ?>]" value="none" />none (default)</label></li>
 					<li><label for="async_on_this_page_<?php echo $data['row']['obj']->handle; ?>"><input disabled="disabled" id="async_on_this_page_<?php echo $data['row']['obj']->handle; ?>" type="radio" name="wpacu_async[<?php echo $data['row']['obj']->handle; ?>]" value="on_this_page" />on this page</label></li>
 					<li><label for="async_everywhere_<?php echo $data['row']['obj']->handle; ?>"><input disabled="disabled" id="async_everywhere_<?php echo $data['row']['obj']->handle; ?>" type="radio" name="wpacu_async[<?php echo $data['row']['obj']->handle; ?>]" value="everywhere" />everywhere</label></li>
@@ -234,7 +236,7 @@ $isBulkUnloaded   = ($data['row']['global_unloaded'] || $data['row']['is_post_ty
 
 
 				<ul class="wpacu-script-attributes-settings">
-					<li><a class="go-pro-link-no-style" href="<?php echo WPACU_PLUGIN_GO_PRO_URL; ?>"><span class="tooltip wpacu-larger">This feature is available in the premium version of the plugin.<br /> Click here to upgrade to Pro!</span><img width="20" height="20" src="<?php echo WPACU_PLUGIN_URL; ?>/assets/icons/icon-lock.svg" valign="top" alt="" /></a>&nbsp; <strong>defer</strong> &#10230;</li>
+					<li><a class="go-pro-link-no-style" href="<?php echo WPACU_PLUGIN_GO_PRO_URL; ?>"><span class="wpacu-tooltip wpacu-larger">This feature is available in the premium version of the plugin.<br /> Click here to upgrade to Pro!</span><img width="20" height="20" src="<?php echo WPACU_PLUGIN_URL; ?>/assets/icons/icon-lock.svg" valign="top" alt="" /></a>&nbsp; <strong>defer</strong> &#10230;</li>
 					<li><label for="defer_none_<?php echo $data['row']['obj']->handle; ?>"><input disabled="disabled" id="defer_none_<?php echo $data['row']['obj']->handle; ?>" type="radio" name="wpacu_defer[<?php echo $data['row']['obj']->handle; ?>]" value="none" />none (default)</label></li>
 					<li><label for="defer_on_this_page_<?php echo $data['row']['obj']->handle; ?>"><input disabled="disabled" id="defer_on_this_page_<?php echo $data['row']['obj']->handle; ?>" type="radio" name="wpacu_defer[<?php echo $data['row']['obj']->handle; ?>]" value="on_this_page" />on this page</label></li>
 					<li><label for="defer_everywhere_<?php echo $data['row']['obj']->handle; ?>"><input disabled="disabled" id="defer_everywhere_<?php echo $data['row']['obj']->handle; ?>" type="radio" name="wpacu_defer[<?php echo $data['row']['obj']->handle; ?>]" value="everywhere" />everywhere</label></li>

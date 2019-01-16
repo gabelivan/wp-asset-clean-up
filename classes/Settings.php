@@ -25,6 +25,9 @@ class Settings
         'hide_core_files',
         'test_mode',
 
+        // Combine loaded CSS (remaining ones after unloading the useless ones) into one file
+        'combine_loaded_css',
+
         'disable_emojis',
 
 		// Stored in 'wpassetcleanup_global_unload' option
@@ -221,6 +224,12 @@ class Settings
      */
     public function update($settings)
     {
+        // 'Combine Loaded CSS Files' activated? Make sure the cache directories and other files are there
+        // /wp-content/cache/asset-cleanup/
+        if ($settings['combine_loaded_css'] !== '') {
+            Plugin::createCacheFoldersFiles();
+        }
+
 	    $wpacuUpdate = new Update;
 
 	    $settingsNotNull = array();
