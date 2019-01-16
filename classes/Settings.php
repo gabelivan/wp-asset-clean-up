@@ -224,7 +224,7 @@ class Settings
      */
     public function update($settings)
     {
-        $this->clearAllCache();
+        self::clearAllCache();
 
 	    $wpacuUpdate = new Update;
 
