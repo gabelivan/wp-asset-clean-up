@@ -224,11 +224,7 @@ class Settings
      */
     public function update($settings)
     {
-        // 'Combine Loaded CSS Files' activated? Make sure the cache directories and other files are there
-        // /wp-content/cache/asset-cleanup/
-        if ($settings['combine_loaded_css'] !== '') {
-            Plugin::createCacheFoldersFiles();
-        }
+        $this->clearAllCache();
 
 	    $wpacuUpdate = new Update;
 
@@ -291,5 +287,26 @@ class Settings
 
         update_option(WPACU_PLUGIN_ID . '_settings', json_encode($settings), 'no');
         $this->status['updated'] = true;
+    }
+
+	/**
+	 *
+	 */
+	public static function clearAllCache()
+    {
+        // "Combined CSS Loaded" transients
+        $optimizeCss = new OptimizeCss();
+        $optimizeCss->clearAllCacheTransients();
+
+        // "WP Rocket" cache
+        /*
+        add_action('init', function() {
+	        if ( function_exists( 'rocket_clean_domain' ) ) {
+		        try {
+			        @rocket_clean_domain();
+		        } catch ( \Exception $e ) {}
+	        }
+        });
+        */
     }
 }

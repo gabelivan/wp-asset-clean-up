@@ -259,6 +259,9 @@ HTML;
         // Any bulk unloads or removed? (e.g. all pages of a certain post type)
         $this->saveToBulkUnloads();
         $this->removeBulkUnloads();
+
+        // Clear all cache
+        Settings::clearAllCache();
     }
 
     /**
@@ -291,6 +294,9 @@ HTML;
 	    add_action('wpacu_admin_notices', array($this, 'homePageUpdated'));
 
 	    $this->frontEndUpdateFor['homepage'] = true;
+
+	    // Clear all cache
+	    Settings::clearAllCache();
     }
 
 	/**

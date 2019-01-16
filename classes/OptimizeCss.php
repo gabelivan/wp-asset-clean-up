@@ -25,7 +25,7 @@ class OptimizeCss
 	/**
 	 * @var float|int
 	 */
-	public static $transientExpiresIn = 60 * 60 * 8; // 8 hours in seconds
+	public static $transientExpiresIn = 60 * 60 * 12; // 8 hours in seconds
 
 	/**
 	 * OptimizeCss constructor.
@@ -62,7 +62,9 @@ class OptimizeCss
 			}
 
 			$this->transientCssName = self::$transientCssNamePrefix . md5( $toMdFive );
-			add_action( 'delete_transient_' . $this->transientCssName, array( $this, 'clearCssCacheFile' ) );
+
+			// @TODO: Remove cached CSS files after a while making sure no caching system still loads the old file
+			//add_action( 'delete_transient_' . $this->transientCssName, array( $this, 'clearTransientCssCacheFile' ) );
 		}
 	}
 
@@ -569,7 +571,8 @@ SQL;
 			// nothing is left by chance to make sure the right transients gets deleted
 			if (strlen($sqlResult['option_name']) === $optionNameValidLength) {
 				delete_transient( str_replace( '_transient_', '', $sqlResult['option_name'] ) );
-				$this->removeCachedCssFile( $sqlResult['option_value'] );
+				// @TODO: Remove cached CSS files after a while making sure no caching system still loads the old file
+				//$this->removeCachedCssFile( $sqlResult['option_value'] );
 			}
 		}
 
@@ -581,7 +584,8 @@ SQL;
 	/**
 	 * Triggers in the front-end view only for the current viewed page
 	 */
-	public function clearCssCacheFile()
+	/*
+	public function clearTransientCssCacheFile()
 	{
 		$optionValue = get_transient($this->transientCssName);
 
@@ -589,10 +593,12 @@ SQL;
 			$this->removeCachedCssFile($optionValue);
 		}
 	}
+	*/
 
 	/**
 	 * @param $optionValue
 	 */
+	/*
 	public function removeCachedCssFile($optionValue)
 	{
 		$optionValueArray  = json_decode($optionValue, ARRAY_A);
@@ -605,4 +611,5 @@ SQL;
 			@unlink($fullLocalPathToCachedCssFile);
 		}
 	}
+	*/
 }
