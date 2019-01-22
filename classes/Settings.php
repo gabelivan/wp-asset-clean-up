@@ -50,13 +50,16 @@ class Settings
 	    // Direct AJAX call by default (not via WP Remote Post)
         'dom_get_type'   => 'direct',
 
-	    'assets_list_layout'              => 'default',
+		// Since v1.2.9.3 (lite), the default value is "by-location" (All Styles & All Scripts - By Location (Theme, Plugins, Custom & External))
+		// Prior to that it's "two-lists" (All Styles & All Scripts - 2 separate lists)
+	    'assets_list_layout'              => 'by-location',
+
 	    'assets_list_layout_areas_status' => 'expanded',
-	    'assets_list_inline_code_status'  => 'expanded',
+	    'assets_list_inline_code_status'  => 'contracted',
 
 	    'input_style' => 'enhanced',
 
-	    // Starting from v1.2.8.6 (lite), WordPress core files are hidden in the assets list as a default setting
+	    // Since v1.2.8.6 (lite), WordPress core files are hidden in the assets list as a default setting
 	    'hide_core_files' => '1'
     );
 

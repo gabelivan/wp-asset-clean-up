@@ -4,7 +4,7 @@ Tags: pagespeed, page speed, dequeue, performance, gtmetrix
 Donate link: https://gabelivan.com/items/wp-asset-cleanup-pro/?utm_source=wp_org_lite&utm_medium=donate
 Requires at least: 4.4
 Tested up to: 5.0.3
-Stable tag: 1.2.9.1
+Stable tag: 1.2.9.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -46,7 +46,7 @@ Give Asset CleanUp a try! If you want to unlock more features, you can <a href="
 * If you're planning to use the Lite version of the plugin:
 
 1. Go to "Plugins" -> "Add New" -> "Upload Plugin" and attach the downloaded ZIP archive from the plugin's page or use the "Search plugins..." form on the right side and look for "asset cleanup"
-2. Install and activate the plugin (if server's PHP version is below 5.3, it will show you an error and activation will not be made).
+2. Install and activate the plugin (if server's PHP version is below 5.4, it will show you an error and activation will not be made).
 3. Edit any Page / Post / Custom Post Type and you will see a meta box called "Asset CleanUp" which will load the list of all the loaded .CSS and .JS files. Alternatively, you will be able to manage the assets list in the front-end view as well (at the bottom of the pages) if you've enabled "Manage in the Front-end?" in plugin's settings page.
 4. To unload the assets for the home page, go to "Asset CleanUp" menu on the left panel of the Dashboard and click "Home Page".
 
@@ -58,7 +58,7 @@ Give Asset CleanUp a try! If you want to unlock more features, you can <a href="
 == Frequently Asked Questions ==
 = What PHP version is required for this plugin to work? =
 
-5.3+ - I strongly recommend you to use PHP 7+, if you're website is compatible with it, as it's much faster and it will make a big difference in terms of back-end speed.
+5.4+ - I strongly recommend you to use PHP 7+, if you're website is fully compatible with it, as it's much faster than any PHP 5.* and it will make a big difference for your website's backend speed.
 
 = How do I know if my website’s page loading speed is slow and needs improvement? =
 There are various ways to check the speed of a website and this is in relation to the following: front-end (the part of the website visible to your visitors), back-end (PHP code, server-side optimization), hosting company, CDN (Content Delivery Network) setup, files loaded (making sure CSS, JS, Images, Fonts, and other elements are properly optimized when processed by the visitor’s browser).
@@ -131,7 +131,16 @@ With the recently released "Test Mode" feature, you can safely unload assets on 
 4. Scripts (.JS) are selected for site-wide unload
 
 == Changelog ==
+= 1.2.9.3 =
+* New sorting by location (default) option in "Assets List Layout" setting
+* Cache transients are also cleared when resetting everything
+* Changed plugin's default settings ("Inline code associated with this handle" is contracted by default)
+
+= 1.2.9.2 =
+* WooCommerce & WP Rocket Compatibility - Bug Fix: When both WooCommerce and WP Rocket are active and an administrator user is logged-in and tries to place an order, the "Sorry, your session is expired." message is returned
+
 = 1.2.9.1 =
+* PHP 5.4+ minimum required to use the plugin
 * "Combined Loaded CSS" feature (concatenates all the remaining loaded stylesheets within the HEAD section of the page and saves them into one file) to reduce HTTP requests even further
 * Improved "Getting Started" area
 * Made "Settings" as the default page where you (the administrator user) is redirected when activating the plugin for the first time

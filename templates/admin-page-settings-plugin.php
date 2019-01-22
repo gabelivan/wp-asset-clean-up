@@ -102,12 +102,12 @@ do_action('wpacu_admin_notices');
                     <label for="wpacu_assets_list_layout">Assets List Layout</label>
                 </th>
                 <td>
-			        <?php echo $availableForPro; ?>
                     <label>
                         <select id="wpacu_assets_list_layout"
                                 name="<?php echo WPACU_PLUGIN_ID . '_settings'; ?>[assets_list_layout]">
-                            <option value="default">All Styles &amp; All Scripts * 2 separate lists (default)</option>
-                            <option disabled="disabled" value="all">All Styles &amp; Scripts * 1 mixed list sorted by name (Pro Version)</option>
+                            <option <?php if ($data['assets_list_layout'] === 'by-location') { echo 'selected="selected"'; } ?> value="by-location">All Styles &amp; Scripts &#10230; One list grouped by location (themes, plugins, core &amp; external)</option>
+                            <option <?php if (in_array($data['assets_list_layout'], array('two-lists', 'default'))) { echo 'selected="selected"'; } ?> value="two-lists">All Styles + All Scripts &#10230; Two lists</option>
+                            <option disabled="disabled" value="all">All Styles &amp; Scripts &#10230; One list (Pro Version)</option>
                         </select>
                     </label>
 

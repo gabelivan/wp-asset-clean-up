@@ -212,7 +212,7 @@ class Main
 
 		// Do not load the meta box nor do any AJAX calls
 		// if the asset management is not enabled for the Dashboard
-		if ( $this->settings['dashboard_show'] == 1 ) {
+		if ( $this->settings['dashboard_show'] == 1 && is_admin() ) {
 			// Send an AJAX request to get the list of loaded scripts and styles and print it nicely
 			add_action(
 				'wp_ajax_' . WPACU_PLUGIN_ID . '_get_loaded_assets',
@@ -950,7 +950,13 @@ class Main
                 $data['all']['scripts'] = $list['scripts'];
                 $data['all']['styles']  = $list['styles'];
 
-                $this->fetchUrl         = Misc::getPageUrl($this->getCurrentPostId());
+	            if ($data['plugin_settings']['assets_list_layout'] === 'by-location') {
+		            $data['all'] = Sorting::appendLocation($data['all']);
+	            } else {
+		            $data['all'] = Sorting::sortListByAlpha($data['all']);
+	            }
+
+	            $this->fetchUrl         = Misc::getPageUrl($this->getCurrentPostId());
 
                 $data['fetch_url']      = $this->fetchUrl;
 
@@ -1089,8 +1095,8 @@ class Main
                 );
             }
 
-            // The list of assets could not be retrieved via "WP Remove Post" for this server
-	        // Print out the response to make the user aware about it
+            // The list of assets could not be retrieved via "WP Remote Post" for this server
+	        // Print out the 'error' response to make the user aware about it
             if (! $wpacuList) {
             	$data = array(
             		'is_dashboard_view' => true,
@@ -1112,7 +1118,13 @@ class Main
 
         $data['all'] = (array)json_decode($json);
 
-        // This value is needed to determine the location of an asset (HEAD OR BODY)
+	    if ($data['plugin_settings']['assets_list_layout'] === 'by-location') {
+		    $data['all'] = Sorting::appendLocation($data['all']);
+	    } else {
+		    $data['all'] = Sorting::sortListByAlpha($data['all']);
+	    }
+
+	    // This value is needed to determine the location of an asset (HEAD OR BODY)
         if ($contents !== '') {
             $data['contents'] = base64_decode($contents);
         }

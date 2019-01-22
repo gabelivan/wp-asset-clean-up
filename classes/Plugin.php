@@ -8,11 +8,15 @@ namespace WpAssetCleanUp;
 class Plugin
 {
 	/**
+	 * The functions below are only called within the Dashboard
+	 *
 	 * Plugin constructor.
 	 */
 	public function __construct()
 	{
 		register_activation_hook(WPACU_PLUGIN_FILE, array($this, 'whenActivated'));
+
+		// After fist time activation
 		add_action('admin_init', array($this, 'redirectToStartingPage'));
 
 		// [wpacu_lite]
@@ -86,33 +90,33 @@ HTACCESS;
 
 
 		if (! is_dir($cacheCssDir)) {
-			mkdir($cacheCssDir, 0755, true);
+			@mkdir($cacheCssDir, 0755, true);
 		}
 
 		if (! is_file($cacheCssDir . 'index.php')) {
 			// /wp-content/cache/asset-cleanup/cache/css/index.php
-			file_put_contents( $cacheCssDir . 'index.php', $emptyPhpFileContents );
+			@file_put_contents( $cacheCssDir . 'index.php', $emptyPhpFileContents );
 		}
 
 		if (! is_dir($cacheCssDir . 'logged-in')) {
-			mkdir( $cacheCssDir . 'logged-in', 0755 );
+			@mkdir( $cacheCssDir . 'logged-in', 0755 );
 		}
 
 		if (! is_file($cacheCssDir . 'logged-in/index.php')) {
 			// /wp-content/cache/asset-cleanup/cache/css/logged-in/index.html
-			file_put_contents( $cacheCssDir . 'logged-in/index.php', $emptyPhpFileContents );
+			@file_put_contents( $cacheCssDir . 'logged-in/index.php', $emptyPhpFileContents );
 		}
 
 		$htAccessFilePath = dirname($cacheCssDir) . '/.htaccess';
 
 		if (! is_file($htAccessFilePath)) {
 			// /wp-content/cache/asset-cleanup/.htaccess
-			file_put_contents( $htAccessFilePath, $htAccessContents );
+			@file_put_contents( $htAccessFilePath, $htAccessContents );
 		}
 
 		if (! is_file(dirname($cacheCssDir) . '/index.php')) {
 			// /wp-content/cache/asset-cleanup/index.php
-			file_put_contents( dirname( $cacheCssDir ) . '/index.php', $emptyPhpFileContents );
+			@file_put_contents( dirname( $cacheCssDir ) . '/index.php', $emptyPhpFileContents );
 		}
 	}
 

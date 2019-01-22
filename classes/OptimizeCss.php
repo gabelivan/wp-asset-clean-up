@@ -13,11 +13,6 @@ class OptimizeCss
 	public static $relPathCssCacheDir = '/cache/asset-cleanup/css/'; // keep trailing slash at the end
 
 	/**
-	 * @var
-	 */
-	public $transientCssName;
-
-	/**
 	 * @var string
 	 */
 	public static $transientCssNamePrefix = 'wpacu_css_';
@@ -25,7 +20,12 @@ class OptimizeCss
 	/**
 	 * @var float|int
 	 */
-	public static $transientExpiresIn = 60 * 60 * 12; // 8 hours in seconds
+	private static $_transientExpiresIn = 60 * 60 * 12; // 8 hours in seconds
+
+	/**
+	 * @var
+	 */
+	private $_transientCssName;
 
 	/**
 	 * OptimizeCss constructor.
@@ -36,13 +36,17 @@ class OptimizeCss
 		add_action('after_switch_theme',         array($this, 'clearAllCacheTransients'));
 
 		// Is WP Rocket's page cache cleared? Clear Asset CleanUp's CSS cache files too
-		add_action('before_rocket_clean_domain', array($this, 'clearAllCacheTransients'));
+		if (array_key_exists('action', $_GET) && $_GET['action'] === 'purge_cache') {
+			add_action( 'before_rocket_clean_domain', array( $this, 'clearAllCacheTransients' ) );
+		}
 
 		// Is the CSS cache transient deleted? Remove the cached CSS file too
 		// The action below is triggered prior to transient deletion and ONLY in the front-end view (not within the Dashboard)
 		add_action('plugins_loaded', array($this, 'afterPluginsLoaded'));
 
-		add_action('admin_post_assetcleanup_clear_assets_cache', array($this, 'clearAllCacheTransients'));
+		add_action('admin_post_assetcleanup_clear_assets_cache', function() {
+			$this->clearAllCacheTransients(true);
+		});
 	}
 
 	/**
@@ -61,10 +65,11 @@ class OptimizeCss
 				}
 			}
 
-			$this->transientCssName = self::$transientCssNamePrefix . md5( $toMdFive );
+			$this->_transientCssName = self::$transientCssNamePrefix . md5( $toMdFive );
 
 			// @TODO: Remove cached CSS files after a while making sure no caching system still loads the old file
-			//add_action( 'delete_transient_' . $this->transientCssName, array( $this, 'clearTransientCssCacheFile' ) );
+			// @TODO: Maybe adding to "Tools" page would be an option
+			//add_action( 'delete_transient_' . $this->transientCssName, array( $this, 'clearCssCacheFile' ) );
 		}
 	}
 
@@ -295,7 +300,7 @@ HTML;
 					);
 				}
 
-				$assetContent = file_get_contents($localAssetsPath);
+				$assetContent = @file_get_contents($localAssetsPath);
 
 				if ($assetContent) {
 					$finalAssetsContents .= $this->maybeFixCssBackgroundUrls($assetContent, $pathToAssetDir . '/') . "\n\n";
@@ -331,7 +336,7 @@ HTML;
 			return array();
 		}
 
-		$optionValue = get_transient($this->transientCssName);
+		$optionValue = get_transient($this->_transientCssName);
 
 		if ($optionValue) {
 			$optionValueArray = json_decode($optionValue, ARRAY_A);
@@ -370,7 +375,7 @@ HTML;
 			)
 		);
 
-		set_transient($this->transientCssName, $optionValue, self::$transientExpiresIn);
+		set_transient($this->_transientCssName, $optionValue, self::$_transientExpiresIn);
 	}
 
 	/**
@@ -383,7 +388,7 @@ HTML;
 			return;
 		}
 
-		delete_transient($this->transientCssName);
+		delete_transient($this->_transientCssName);
 	}
 
 	/**
@@ -400,7 +405,7 @@ HTML;
 			$cssContent
 		);
 
-		// Avoid Background URLs starting with "data" or "http" as they do not need to have the path updated
+		// Avoid Background URLs starting with "data" or "http" as they do not need to have a path updated
 		preg_match_all('/url\((?![\'"]?(?:data|http):)[\'"]?([^\'"\)]*)[\'"]?\)/i', $cssContent, $matches, PREG_PATTERN_ORDER);
 
 		// If it start with forward slash (/), it doesn't need fix, just skip it
@@ -521,14 +526,14 @@ HTML;
 		// Always in the front-end view
 		// Do not combine if there's a POST request as there could be assets loading conditionally
 		// that might not be needed when the page is accessed without POST, making the final CSS file larger
-		if (is_admin() || ! empty($_POST) || array_key_exists('wpacu_no_css_combine', $_GET)) {
+		if (! empty($_POST) || array_key_exists('wpacu_no_css_combine', $_GET) || is_admin()) {
 			return false; // Do not combine
 		}
 
 		$pluginSettings = Main::instance()->settings;
 
 		if ($pluginSettings['test_mode']) {
-			return false; // Do not combine anything is "Test Mode" is ON
+			return false; // Do not combine anything if "Test Mode" is ON
 		}
 
 		if ($pluginSettings['combine_loaded_css'] === '') {
@@ -548,10 +553,14 @@ HTML;
 	}
 
 	/**
-	 *
+	 * @param bool $redirectAfter
 	 */
-	public function clearAllCacheTransients()
+	public function clearAllCacheTransients($redirectAfter = false)
 	{
+		if ($this->doNotClearAllCache()) {
+			return;
+		}
+
 		global $wpdb;
 
 		// First, select all and get the combined CSS file names in order to be deleted
@@ -576,16 +585,35 @@ SQL;
 			}
 		}
 
-		if ( wp_get_referer() ) {
+		if ( $redirectAfter && wp_get_referer() ) {
 			wp_safe_redirect( wp_get_referer() );
 		}
+	}
+
+	/**
+	 * Prevent clear cache function in the following situations
+	 *
+	 * @return bool
+	 */
+	public function doNotClearAllCache()
+	{
+		// WooCommerce GET or AJAX call
+		if (array_key_exists('wc-ajax', $_GET) && $_GET['wc-ajax']) {
+			return true;
+		}
+
+		if (defined('WC_DOING_AJAX') && WC_DOING_AJAX === true) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
 	 * Triggers in the front-end view only for the current viewed page
 	 */
 	/*
-	public function clearTransientCssCacheFile()
+	public function clearCssCacheFile()
 	{
 		$optionValue = get_transient($this->transientCssName);
 

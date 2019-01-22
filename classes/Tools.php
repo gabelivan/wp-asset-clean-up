@@ -316,6 +316,16 @@ SQL;
 				delete_option(WPACU_PLUGIN_ID . '_pro_license_status');
 				$this->licenseDataRemoved = true;
 			}
+
+			// Remove cache transients
+            $transientLikeOne = '_transient_timeout_'.OptimizeCss::$transientCssNamePrefix;
+			$transientLikeTwo = '_transient_'.OptimizeCss::$transientCssNamePrefix;
+
+			$sqlQuery = <<<SQL
+DELETE FROM `{$wpdb->prefix}options`
+       WHERE option_name LIKE '{$transientLikeOne}%' OR option_name LIKE '{$transientLikeTwo}%'
+SQL;
+			$wpdb->query($sqlQuery);
 		} elseif ($wpacuResetValue === 'reset_settings') {
 			$sqlQuery = <<<SQL
 DELETE FROM `{$wpdb->prefix}options` WHERE option_name='wpassetcleanup_settings'

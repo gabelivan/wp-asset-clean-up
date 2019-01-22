@@ -15,7 +15,8 @@ $isBulkUnloaded   = ($data['row']['global_unloaded'] || $data['row']['is_post_ty
     <td valign="top">
         <p class="wpacu_handle">
             <label for="style_<?php echo $data['row']['obj']->handle; ?>"><?php _e('Handle:', WPACU_PLUGIN_TEXT_DOMAIN); ?> <strong><span style="color: green;"><?php echo $data['row']['obj']->handle; ?></span></strong></label>
-			<?php
+	        <?php if (isset($data['view_by_location'])) { echo '&nbsp;<em>* Stylesheet (.css)</em>'; } ?>
+            <?php
 			if ($isCoreFile && ! $hideCoreFiles) {
 				?>
 				<span class="dashicons dashicons-warning wordpress-core-file"><span class="wpacu-tooltip">WordPress Core File<br />Not sure if needed or not? In this case, it's better to leave it loaded to avoid breaking the website.</span></span>
@@ -184,7 +185,8 @@ $isBulkUnloaded   = ($data['row']['global_unloaded'] || $data['row']['is_post_ty
 		<?php }
 
 		if (! empty($data['row']['extra_data_css_list'])) { ?>
-			<div><strong><?php _e('Inline styling associated with the handle:', WPACU_PLUGIN_TEXT_DOMAIN); ?></strong>
+			<div>
+                <?php _e('Inline styling associated with the handle:', WPACU_PLUGIN_TEXT_DOMAIN); ?>
                 <a class="wpacu-assets-inline-code-collapsible"
                    <?php if ($inlineCodeStatus !== 'contracted') { echo 'wpacu-assets-inline-code-collapsible-active'; } ?>
                    href="#">Show / Hide</a>
@@ -213,7 +215,9 @@ $isBulkUnloaded   = ($data['row']['global_unloaded'] || $data['row']['is_post_ty
 		}
 
 		// [wpacu_lite]
-		$extraInfo[] = '<strong>'.__('File Size:', WPACU_PLUGIN_TEXT_DOMAIN) . '</strong> <a href="' . WPACU_PLUGIN_GO_PRO_URL . '?utm_source=manage_asset&utm_medium=file_size" class="go-pro-link-no-style"><span class="wpacu-tooltip">Upgrade to Pro and unlock all features</span><img width="20" height="20" src="' . WPACU_PLUGIN_URL . '/assets/icons/icon-lock.svg" valign="top" alt="" /> Pro Version</a>';
+		if (isset($data['row']['obj']->src) && $data['row']['obj']->src) {
+		    $extraInfo[] = '<strong>'.__('File Size:', WPACU_PLUGIN_TEXT_DOMAIN) . '</strong> <a href="' . WPACU_PLUGIN_GO_PRO_URL . '?utm_source=manage_asset&utm_medium=file_size" class="go-pro-link-no-style"><span class="wpacu-tooltip">Upgrade to Pro and unlock all features</span><img width="20" height="20" src="' . WPACU_PLUGIN_URL . '/assets/icons/icon-lock.svg" valign="top" alt="" /> Pro Version</a>';
+		}
 		// [/wpacu_lite]
 
 		if (! empty($extraInfo)) {

@@ -1,6 +1,6 @@
 <?php
 if (! isset($data)) {
-	exit;
+	exit; // no direct access
 }
 
 foreach ($data['all']['styles'] as $obj) {
@@ -49,8 +49,28 @@ foreach ($data['all']['styles'] as $obj) {
 	$data['row']['class'] .= ' style_'.$data['row']['obj']->handle;
 
 	// Load Template
-	echo \WpAssetCleanUp\Main::instance()->parseTemplate(
-        '/meta-box-loaded-assets/_asset-style-single-row',
-        $data
-    );
+	$templateRowOutput = \WpAssetCleanUp\Main::instance()->parseTemplate(
+		'/meta-box-loaded-assets/_asset-style-single-row',
+		$data
+	);
+
+	if (isset($data['rows_build_array']) && $data['rows_build_array']) {
+		$uniqueHandle = $data['row']['obj']->handle;
+
+		if (array_key_exists($uniqueHandle, $data['rows_assets'])) {
+			$uniqueHandle .= 1; // make sure each key is unique
+		}
+
+		if (isset($data['rows_by_location']) && $data['rows_by_location']) {
+			$data['rows_assets']
+	          [$data['row']['obj']->locationMain]
+			    [$data['row']['obj']->locationChild]
+			        [$uniqueHandle]
+					  ['style']= $templateRowOutput;
+		} else {
+			$data['rows_assets'][$uniqueHandle] = $templateRowOutput;
+		}
+	} else {
+		echo $templateRowOutput;
+	}
 }

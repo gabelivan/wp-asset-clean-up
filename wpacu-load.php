@@ -52,9 +52,6 @@ new WpAssetCleanUp\Misc;
 // Menu
 new \WpAssetCleanUp\Menu;
 
-// Plugin (Various Hooks)
-new \WpAssetCleanUp\Plugin;
-
 // Admin Bar (Top Area of the website when user is logged in)
 new \WpAssetCleanUp\AdminBar();
 
@@ -63,5 +60,6 @@ $wpacuOptimizeCss = new \WpAssetCleanUp\OptimizeCss();
 $wpacuOptimizeCss->init();
 
 if (is_admin()) {
+	new \WpAssetCleanUp\Plugin;
 	new \WpAssetCleanUp\Tools();
 }

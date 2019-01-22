@@ -114,10 +114,16 @@ if (isset($data['page_template'])) {
     </div>
 <?php
 }
+
+if($data['plugin_settings']['assets_list_layout'] === 'by-location') {
+	$viewAssetsMode = 'by-location';
+} else {
+	$viewAssetsMode = 'default';
+}
 ?>
 <div class="<?php if ($data['plugin_settings']['input_style'] !== 'standard') { ?>wpacu-switch-enhanced<?php } else { ?>wpacu-switch-standard<?php } ?>">
     <?php
-	include_once __DIR__.'/meta-box-loaded-assets/view-default.php';
+    include_once __DIR__.'/meta-box-loaded-assets/view-'.$viewAssetsMode.'.php';
 	?>
 </div>
 <?php
