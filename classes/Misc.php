@@ -324,4 +324,109 @@ class Misc
 
 	    return $defaultValue;
     }
+
+	/**
+	 * @param bool $onlyTransient
+	 *
+	 * @return array|bool|mixed|object
+	 */
+	public static function fetchActivePluginsIcons($onlyTransient = false)
+    {
+    	$activePluginsIconsJson = get_transient('wpacu_active_plugins_icons');
+
+    	if ($activePluginsIconsJson) {
+		    $activePluginsIcons = @json_decode($activePluginsIconsJson, ARRAY_A);
+	    }
+
+    	if (! empty($activePluginsIcons) && is_array($activePluginsIcons)) {
+    		return $activePluginsIcons;
+	    }
+
+    	// Do not fetch the icons from the WordPress.org repository if only transient was required
+    	if ($onlyTransient) {
+    		return false;
+	    }
+
+	    $allActivePlugins = get_option('active_plugins');
+
+	    if (empty($allActivePlugins)) {
+	    	return false;
+	    }
+
+	    foreach ($allActivePlugins as $activePlugin) {
+	    	if (strpos($activePlugin, '/') === false) {
+	    		continue;
+		    }
+
+	    	list($pluginSlug) = explode('/', $activePlugin);
+
+	    	// Avoid the calls to WordPress.org as much as possible
+		    // as it would decrease the resources and timing to fetch the data we need
+
+	    	// not relevant to check Asset CleanUp's plugin info in this case
+	    	if (in_array($pluginSlug, array('wp-asset-clean-up', 'wp-asset-clean-up-pro'))) {
+	    		continue;
+		    }
+
+	    	// no readme.txt file in the plugin's root folder? skip it
+			if (! file_exists(WP_PLUGIN_DIR.'/'.$pluginSlug.'/readme.txt')) {
+				continue;
+			}
+
+		    $payload = array(
+			    'action'  => 'plugin_information',
+			    'request' => serialize( (object) array(
+				    'slug'   => $pluginSlug,
+				    'fields' => array(
+					    'tags'          => false,
+					    'icons'         => true, // that's what will get fetched
+					    'sections'      => false,
+					    'description'   => false,
+					    'tested'        => false,
+					    'requires'      => false,
+					    'rating'        => false,
+					    'downloaded'    => false,
+					    'downloadlink'  => false,
+					    'last_updated'  => false,
+					    'homepage'      => false,
+					    'compatibility' => false,
+					    'ratings'       => false,
+					    'added'         => false,
+					    'donate_link'   => false
+				    ),
+			    ) ),
+		    );
+
+		    $body = @wp_remote_post('http://api.wordpress.org/plugins/info/1.0/', array('body' => $payload));
+
+		    if (! (isset($body['body']) && is_serialized($body['body']))) {
+		        continue;
+		    }
+
+		    $pluginInfo = @unserialize($body['body']);
+
+		    if (! isset($pluginInfo->name, $pluginInfo->icons)) {
+		    	continue;
+		    }
+
+		    if (empty($pluginInfo->icons)) {
+		    	continue;
+		    }
+
+		    $firstIconKey = array_key_first($pluginInfo->icons);
+		    $pluginIcon = $pluginInfo->icons[$firstIconKey];
+
+		    if ($pluginIcon !== '') {
+			    $activePluginsIcons[$pluginSlug] = $pluginIcon;
+		    }
+	    }
+
+	    if (empty($activePluginsIcons)) {
+	    	return false;
+	    }
+
+	    set_transient('wpacu_active_plugins_icons', json_encode($activePluginsIcons), 86400 * 7); // expires in 7 days
+
+	    return $activePluginsIcons;
+    }
 }

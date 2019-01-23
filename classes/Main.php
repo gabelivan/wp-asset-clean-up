@@ -115,6 +115,28 @@ class Main
 	 */
 	public $isAjaxCall = false;
 
+	/**
+	 * @var array
+	 */
+	public $skipStyles = array(
+		'admin-bar', // The top admin bar
+		WPACU_PLUGIN_ID . '-style', // Asset CleanUp Styling (for admin use only)
+        'yoast-seo-adminbar', // Yoast "WordPress SEO" plugin
+        'autoptimize-toolbar',
+        'query-monitor'
+
+    );
+
+	/**
+	 * @var array
+	 */
+	public $skipScripts = array(
+		'admin-bar',
+		WPACU_PLUGIN_ID . '-script',
+        'autoptimize-toolbar',
+        'query-monitor'
+	);
+
     /**
      * @var Main|null
      */
@@ -184,6 +206,10 @@ class Main
 	        && ! (defined('WPACU_HIDE_HTML_USAGE_COMMENT') && WPACU_HIDE_HTML_USAGE_COMMENT) ) {
 		    $this->wpacuUsageNotice();
 	    }
+
+        add_action( 'admin_footer', array( $this, 'ajaxFetchActivePluginsJsFooterCode' ) );
+	    add_action( 'wp_ajax_' . WPACU_PLUGIN_ID . '_fetch_active_plugins_icons',
+		    array( $this, 'ajaxFetchActivePluginsIcons' ) );
 
 	    $this->wpacuHtmlNoticeForAdmin();
     }
@@ -712,6 +738,11 @@ class Main
             return;
         }
 
+        if ($isFrontEndEditView && array_key_exists('elementor-preview', $_GET) && $_GET['elementor-preview']) {
+            echo '<div class="wpacu-warning"><p><span class="dashicons dashicons-info"></span>&nbsp;'._e('Asset CleanUp front-end management is not enabled when previewed via Elementor plugin.', WPACU_PLUGIN_TEXT_DOMAIN).'</p></div>';
+            return;
+        }
+
         // Prevent plugins from altering the DOM
         add_filter('w3tc_minify_enable', '__return_false');
 
@@ -824,17 +855,12 @@ class Main
         if (! empty($stylesList)) {
             /* These styles below are used by this plugin (except admin-bar) and they should not show in the list
                as they are loaded only when you (or other admin) manage the assets, never for your website visitors */
-            $skipStyles = array(
-                'admin-bar',
-	            WPACU_PLUGIN_ID . '-style'
-            );
-
             if (is_admin_bar_showing()) {
-                $skipStyles[] = 'dashicons';
+                $this->skipStyles[] = 'dashicons';
             }
 
             foreach ($manageStyles as $handle) {
-                if (in_array($handle, $skipStyles) || (! isset($stylesList[$handle]))) {
+                if (in_array($handle, $this->skipStyles) || (! isset($stylesList[$handle]))) {
                     continue;
                 }
 
@@ -882,13 +908,8 @@ class Main
         if (! empty($scriptsList)) {
             /* These scripts below are used by this plugin (except admin-bar) and they should not show in the list
                as they are loaded only when you (or other admin) manage the assets, never for your website visitors */
-            $skipScripts = array(
-                'admin-bar',
-	            WPACU_PLUGIN_ID . '-script'
-            );
-
             foreach ($manageScripts as $handle) {
-                if (in_array($handle, $skipScripts) || (! isset($scriptsList[$handle]))) {
+                if (in_array($handle, $this->skipScripts) || (! isset($scriptsList[$handle]))) {
                     continue;
                 }
 
@@ -1192,6 +1213,52 @@ class Main
 
         exit;
     }
+
+	/**
+	 * @return void
+	 */
+	public function ajaxFetchActivePluginsIcons()
+    {
+	    if (! isset($_POST['action'])) {
+	    	return;
+	    }
+
+	    if (! Menu::userCanManageAssets()) {
+		    return;
+	    }
+
+	    $activePluginsIcons = Misc::fetchActivePluginsIcons();
+
+	    if ($activePluginsIcons) {
+	    	echo print_r($activePluginsIcons, true)."\n";
+	    	exit;
+	    }
+    }
+
+	/**
+	 *
+	 */
+	public function ajaxFetchActivePluginsJsFooterCode()
+	{
+		if (! Menu::userCanManageAssets()) {
+			return;
+		}
+
+		if (get_transient('wpacu_active_plugins_icons')) {
+			return;
+		}
+		?>
+		<script type="text/javascript" >
+            jQuery(document).ready(function($) {
+	            jQuery.post(ajaxurl, {
+                    'action': '<?php echo WPACU_PLUGIN_ID.'_fetch_active_plugins_icons'; ?>',
+                }, function(response) {
+	                console.log(response);
+	            });
+            });
+		</script>
+		<?php
+	}
 
     /**
      * @param $data

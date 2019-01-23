@@ -48,6 +48,8 @@ $listAreaStatus = $data['plugin_settings']['assets_list_layout_areas_status'];
 	    $allPlugins = get_plugins();
 	    $allThemes  = wp_get_themes();
 
+	    $allActivePluginsIcons = \WpAssetCleanUp\Misc::fetchActivePluginsIcons(true);
+
 	    $locationsText = array(
             'plugins'  => '<span class="dashicons dashicons-admin-plugins"></span> From Plugins (.css &amp; .js)',
             'themes'   => '<span class="dashicons dashicons-admin-appearance"></span> From Themes (.css &amp; .js)',
@@ -90,7 +92,7 @@ $listAreaStatus = $data['plugin_settings']['assets_list_layout_areas_status'];
                         <?php foreach ($values as $locationChild => $values2) { ?>
                             <?php if ($locationChild !== 'none') {
                                 if ($locationMain === 'plugins') {
-                                    $locationChildText = \WpAssetCleanUp\Info::getPluginInfo($locationChild, $allPlugins);
+                                    $locationChildText = \WpAssetCleanUp\Info::getPluginInfo($locationChild, $allPlugins, $allActivePluginsIcons);
                                 } elseif ($locationMain === 'themes') {
 			                        $locationChildText = \WpAssetCleanUp\Info::getThemeInfo($locationChild, $allThemes);
 		                        } else {

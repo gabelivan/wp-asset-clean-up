@@ -317,13 +317,24 @@ SQL;
 				$this->licenseDataRemoved = true;
 			}
 
-			// Remove cache transients
-            $transientLikeOne = '_transient_timeout_'.OptimizeCss::$transientCssNamePrefix;
-			$transientLikeTwo = '_transient_'.OptimizeCss::$transientCssNamePrefix;
+			// Remove Asset CleanUp's cache transients
+            $transientLikes = array(
+	            '_transient_timeout_'.OptimizeCss::$transientCssNamePrefix,
+	            '_transient_'.OptimizeCss::$transientCssNamePrefix,
+                '_transient_timeout_wpacu_',
+	            '_transient_wpacu_',
+            );
+
+            $transientLikesSql = '';
+
+            foreach ($transientLikes as $transientLike) {
+	            $transientLikesSql .= " option_name LIKE '%".$transientLike."%' OR ";
+            }
+
+			$transientLikesSql = rtrim($transientLikesSql, ' OR ');
 
 			$sqlQuery = <<<SQL
-DELETE FROM `{$wpdb->prefix}options`
-       WHERE option_name LIKE '{$transientLikeOne}%' OR option_name LIKE '{$transientLikeTwo}%'
+DELETE FROM `{$wpdb->prefix}options` WHERE {$transientLikesSql}
 SQL;
 			$wpdb->query($sqlQuery);
 		} elseif ($wpacuResetValue === 'reset_settings') {

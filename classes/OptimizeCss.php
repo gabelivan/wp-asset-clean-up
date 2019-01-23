@@ -508,7 +508,7 @@ HTML;
 		// e.g. staging1.domain.com and domain.com
 		// We need to make sure that the URI path is fetched correctly based on the host value from the $href
 		$siteDbUrl = get_option('siteurl');
-		$parseDbSiteUrl = parse_url(get_option('siteurl'));
+		$parseDbSiteUrl = parse_url($siteDbUrl);
 
 		$dbSiteUrlHost = $parseDbSiteUrl['host'];
 

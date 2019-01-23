@@ -51,14 +51,22 @@ class Info
 	/**
 	 * @param $locationChild
 	 * @param $allPlugins
+	 * @param $allActivePluginsIcons
 	 *
 	 * @return string
 	 */
-	public static function getPluginInfo($locationChild, $allPlugins)
+	public static function getPluginInfo($locationChild, $allPlugins, $allActivePluginsIcons)
 	{
 		foreach (array_keys($allPlugins) as $pluginFile) {
 			if (strpos($pluginFile, $locationChild.'/') === 0) {
-				return '<div class="icon-plugin-default"><div class="icon-area"></div></div> &nbsp; <span class="wpacu-child-location-name">'.$allPlugins[$pluginFile]['Name'].'</span>' . ' <span class="wpacu-child-location-version">v'.$allPlugins[$pluginFile]['Version'].'</span>';
+				$imageIconStyle = $classIconStyle = '';
+
+				if (isset($allActivePluginsIcons[$locationChild]) && $allActivePluginsIcons[$locationChild]) {
+					$classIconStyle = 'has-icon';
+					$imageIconStyle = 'style="background: transparent url(\''.$allActivePluginsIcons[$locationChild].'\') no-repeat 0 0; background-size: cover;"';
+				}
+
+				return '<div class="icon-plugin-default '.$classIconStyle.'"><div class="icon-area" '.$imageIconStyle.'></div></div> &nbsp; <span class="wpacu-child-location-name">'.$allPlugins[$pluginFile]['Name'].'</span>' . ' <span class="wpacu-child-location-version">v'.$allPlugins[$pluginFile]['Version'].'</span>';
 			}
 		}
 
