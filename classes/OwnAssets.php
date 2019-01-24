@@ -91,7 +91,7 @@ class OwnAssets
         ?>
         <style type="text/css">
             .menu-top.toplevel_page_wpassetcleanup_getting_started .wp-menu-image > img { width: 26px; position: absolute; left: 8px; top: -4px; }
-            .opt-in-or-opt-out.wp-asset-clean-up { display: none; }
+            .plugin-title .opt-in-or-opt-out.wp-asset-clean-up { display: none; }
         </style>
         <?php
     }
@@ -109,14 +109,6 @@ class OwnAssets
 
         $page = isset($_GET['page']) ? $_GET['page'] : '';
         $getPostId = isset($_GET['post']) ? (int)$_GET['post'] : '';
-
-	    if ( strpos($page, WPACU_PLUGIN_ID) === 0) {
-		    // Freemius / avoid flickering
-		    $freemiusStyleRelPath = '/freemius/assets/css/admin/connect.css';
-		    wp_enqueue_style( WPACU_PLUGIN_ID . '-freemius-connect',
-			    plugins_url( $freemiusStyleRelPath, WPACU_PLUGIN_FILE ), array(),
-			    $this->_assetVer( $freemiusStyleRelPath ) );
-	    }
 
         // Only load the plugin's assets when they are needed
         // This an example of assets that are correctly loaded in WordPress
