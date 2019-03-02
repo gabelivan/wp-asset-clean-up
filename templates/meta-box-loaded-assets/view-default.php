@@ -34,7 +34,7 @@ $listAreaStatus = $data['plugin_settings']['assets_list_layout_areas_status'];
             <?php
             if (! empty($data['all']['styles'])) {
                 ?>
-                <p><?php echo sprintf(__('The following styles are loading on this page. Please select the ones that are %sNOT NEEDED%s. If you are not sure which ones to unload, it is better to leave them enabled (unchecked) and consult with a developer about unloading the assets.', WPACU_PLUGIN_TEXT_DOMAIN), '<span style="color: #CC0000;"><strong>', '</strong></span>'); ?></p>
+                <p><?php echo sprintf(__('Please select the styles &amp; scripts that are %sNOT NEEDED%s from the list below. Not sure which ones to unload? 🤔 Use "Test Mode" (to make the changes apply only to you), while you are going through the trial &amp; error process.', WPACU_PLUGIN_TEXT_DOMAIN), '<span style="color: #CC0000;"><strong>', '</strong></span>'); ?></p>
                 <p><?php echo __('"Load in on this page (make exception)" will take effect when a bulk unload rule is used. Otherwise, the asset will load anyway unless you select it for unload.', WPACU_PLUGIN_TEXT_DOMAIN); ?></p>
                 <?php
 	            if ($data['plugin_settings']['hide_core_files']) {
@@ -44,7 +44,7 @@ $listAreaStatus = $data['plugin_settings']['assets_list_layout_areas_status'];
 		            <?php
 	            }
 
-                if ($data['core_styles_loaded'] && ! $data['plugin_settings']['hide_core_files']) {
+	            if ((isset($data['core_styles_loaded']) && $data['core_styles_loaded']) && ! $data['plugin_settings']['hide_core_files']) {
                     ?>
                     <div class="wpacu_note wpacu_warning"><em><?php
                             echo sprintf(
@@ -96,7 +96,7 @@ $listAreaStatus = $data['plugin_settings']['assets_list_layout_areas_status'];
         <?php
         if (! empty($data['all']['scripts'])) {
             ?>
-            <p><?php echo sprintf(__('The following scripts are loading on this page. Please select the ones that are %sNOT NEEDED%s. If you are not sure which ones to unload, it is better to leave them enabled and consult with a developer about unloading the assets.', WPACU_PLUGIN_TEXT_DOMAIN), '<span style="color: #CC0000;"><strong>', '</strong></span>'); ?></p>
+            <p><?php echo sprintf(__('Please select the styles &amp; scripts that are %sNOT NEEDED%s from the list below. Not sure which ones to unload? Use "Test Mode" (to make the changes apply only to you), while you are going through the trial &amp; error process.', WPACU_PLUGIN_TEXT_DOMAIN), '<span style="color: #CC0000;"><strong>', '</strong></span>'); ?></p>
             <p><?php echo __('"Load in on this page (make exception)" will take effect when a bulk unload rule is used. Otherwise, the asset will load anyway unless you select it for unload.', WPACU_PLUGIN_TEXT_DOMAIN); ?></p>
             <?php
             if ($data['plugin_settings']['hide_core_files']) {
@@ -106,8 +106,8 @@ $listAreaStatus = $data['plugin_settings']['assets_list_layout_areas_status'];
                 <?php
             }
 
-            if ($data['core_scripts_loaded'] && ! $data['plugin_settings']['hide_core_files']) {
-                ?>
+	        if ((isset($data['core_scripts_loaded']) && $data['core_scripts_loaded']) && ! $data['plugin_settings']['hide_core_files']) {
+            ?>
                 <div class="wpacu_note wpacu_warning"><em><?php
                         echo sprintf(
                             __('JavaScript files that are marked with %s are part of WordPress core files. Be careful if you decide to unload them! If you are not sure what to do, just leave them loaded by default and consult with a developer.', WPACU_PLUGIN_TEXT_DOMAIN),

@@ -2,18 +2,22 @@
 /*
  * Plugin Name: Asset CleanUp: Page Speed Booster
  * Plugin URI: https://wordpress.org/plugins/wp-asset-clean-up/
- * Version: 1.2.9.3
- * Description: Prevent Chosen Scripts & Styles from loading in Posts/Pages to reduce HTTP Requests and have the website load faster
+ * Version: 1.3.2.2
+ * Description: Unload Chosen Scripts & Styles from Posts/Pages to reduce HTTP Requests, Combine/Minify CSS/JS files
  * Author: Gabriel Livan
  * Author URI: http://gabelivan.com/
 */
 
-define('WPACU_PLUGIN_VERSION', '1.2.9.3');
+define('WPACU_PLUGIN_VERSION', '1.3.2.2');
 
 // Exit if accessed directly
 if (! defined('ABSPATH')) {
     exit;
 }
+
+//removeIf(development)
+	//echo 'just a test';
+//endRemoveIf(development)
 
 // Premium plugin version already exists, is it active?
 // Do not load the LITE version as it's pointless

@@ -61,7 +61,10 @@ class Sorting
 	public static function appendLocation($list)
 	{
 		$pluginsUrl = plugins_url();
-		//$currentTheme = wp_get_theme();
+
+		//removeIf(development)
+			//$currentTheme = wp_get_theme();
+		//endRemoveIf(development)
 
 		$urlsToThemeDirs = array();
 
@@ -77,25 +80,34 @@ class Sorting
 		}
 
 		$urlsToThemeDirs = array_unique($urlsToThemeDirs);
-		//echo '<pre>'; print_r($urlsToThemeDirs);
 
-		/*
-		$relPluginsPath = dirname(str_replace(ABSPATH, '', WPACU_PLUGIN_DIR)).'/';
+		//removeIf(development)
+			//echo '<pre>'; print_r($urlsToThemeDirs);
 
-		if ($relPluginsPath{0} !== '/') {
-			$relPluginsPath = '/'.$relPluginsPath;
-		}
-		*/
+			/*
+			$relPluginsPath = dirname(str_replace(ABSPATH, '', WPACU_PLUGIN_DIR)).'/';
 
-		//$locations = array();
+			if ($relPluginsPath{0} !== '/') {
+				$relPluginsPath = '/'.$relPluginsPath;
+			}
+			*/
+		//endRemoveIf(development)
+
+		//removeIf(development)
+			//$locations = array();
+		//endRemoveIf(development)
 
 		foreach (array('styles', 'scripts') as $assetType) {
 			foreach ( $list[$assetType] as $indexNo => $asset ) {
-				/*
-				if (! (isset($asset->src) && $asset->src)) {
-					continue;
-				}
-				*/
+
+				//removeIf(development)
+					/*
+					if (! (isset($asset->src) && $asset->src)) {
+						continue;
+					}
+					*/
+				//endRemoveIf(development)
+
 				$src = isset($asset->src) ? $asset->src : '';
 
 				if (strpos($src,'/wp-includes/') === 0) {
@@ -115,25 +127,34 @@ class Sorting
 					$asset->locationMain  = 'plugins';
 					$asset->locationChild = $pluginDir;
 
-					//$locations[ $assetsKey ][] = $asset;
+					//removeIf(development)
+						//$locations[ $assetsKey ][] = $asset;
+					//endRemoveIf(development)
 				} else {
 					$isWithinThemes = false;
 
 					foreach ( $urlsToThemeDirs as $urlToThemeDir ) {
 						$srcRel = str_replace(site_url(),'', $src);
-						//echo $src . ' - '. $urlToThemeDir. ' = '.stripos( $src, $urlToThemeDir ).'<br />';
+
+						//removeIf(development)
+							//echo $src . ' - '. $urlToThemeDir. ' = '.stripos( $src, $urlToThemeDir ).'<br />';
+						//endRemoveIf(development)
 
 						if ( strpos( $srcRel, $urlToThemeDir ) !== false ) {
 							$isWithinThemes = true;
 
+							//removeIf(development)
 							//echo $urlToThemeDir.'<br />';
+							//endRemoveIf(development)
 
 							$themeDir = substr(strrchr(trim($urlToThemeDir, '/'), '/'), 1);
 
 							$asset->locationMain  = 'themes';
 							$asset->locationChild = $themeDir;
 							break;
-							//$locations['themes'] [$themeDir] [ $assetsKey ][] = $asset;
+							//removeIf(development)
+								//$locations['themes'] [$themeDir] [ $assetsKey ][] = $asset;
+							//endRemoveIf(development)
 						}
 					}
 
@@ -142,7 +163,9 @@ class Sorting
 						// Outside "themes", "plugins" and "wp-includes"
 						$asset->locationMain  = 'external';
 						$asset->locationChild = 'none';
-						//$locations['external'][$assetsKey][] = $asset;
+						//removeIf(development)
+							//$locations['external'][$assetsKey][] = $asset;
+						//endRemoveIf(development)
 					}
 				}
 

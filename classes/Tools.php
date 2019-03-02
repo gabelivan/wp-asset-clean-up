@@ -144,7 +144,7 @@ class Tools
 	    // Must-use plugins.
 	    // NOTE: MU plugins can't show updates!
 	    $muplugins = get_mu_plugins();
-	    if ( count( $muplugins ) > 0 && ! empty( $muplugins ) ) {
+	    if ( ! empty( $muplugins ) && count( $muplugins ) > 0 ) {
 		    $return .= "\n" . '# Must-Use Plugins ("mu-plugins" directory)' . "\n";
 
 		    foreach ( $muplugins as $plugin => $plugin_data ) {
@@ -162,7 +162,7 @@ class Tools
 		    if ( ! in_array( $plugin_path, $active_plugins, true ) ) {
 			    continue;
 		    }
-		    $update  = ( array_key_exists( $plugin_path, $updates ) ) ? ' (new version available - ' . $updates[ $plugin_path ]->update->new_version . ')' : '';
+		    $update  = array_key_exists($plugin_path, $updates) ? ' (new version available - ' . $updates[ $plugin_path ]->update->new_version . ')' : '';
 		    $return .= $plugin['Name'] . ': ' . $plugin['Version'] . $update . "\n";
 	    }
 
@@ -173,7 +173,7 @@ class Tools
 		    if ( in_array( $plugin_path, $active_plugins, true ) ) {
 			    continue;
 		    }
-		    $update  = ( array_key_exists( $plugin_path, $updates ) ) ? ' (new version available - ' . $updates[ $plugin_path ]->update->new_version . ')' : '';
+		    $update  = array_key_exists($plugin_path, $updates) ? ' (new version available - ' . $updates[ $plugin_path ]->update->new_version . ')' : '';
 		    $return .= $plugin['Name'] . ': ' . $plugin['Version'] . $update . "\n";
 	    }
 
@@ -189,7 +189,7 @@ class Tools
 			    if ( ! array_key_exists( $plugin_base, $active_plugins ) ) {
 				    continue;
 			    }
-			    $update  = ( array_key_exists( $plugin_path, $updates ) ) ? ' (new version available - ' . $updates[ $plugin_path ]->update->new_version . ')' : '';
+			    $update  = array_key_exists($plugin_path, $updates) ? ' (new version available - ' . $updates[ $plugin_path ]->update->new_version . ')' : '';
 			    $plugin  = get_plugin_data( $plugin_path );
 			    $return .= $plugin['Name'] . ': ' . $plugin['Version'] . $update . "\n";
 		    }
@@ -290,15 +290,13 @@ class Tools
 
 		$this->resetChoice = $wpacuResetValue;
 
-		$resetStatus = false;
-
 		if ($wpacuResetValue === 'reset_everything') {
 			// `usermeta` and `termmeta` might have traces from the Pro version (if ever used)
 			foreach (array('postmeta', 'usermeta', 'termmeta') as $tableBaseName) {
 				$sqlQuery = <<<SQL
 DELETE FROM `{$wpdb->prefix}{$tableBaseName}` WHERE meta_key LIKE '_wpassetcleanup_%'
 SQL;
-				$resetStatus = $wpdb->query($sqlQuery);
+				$wpdb->query($sqlQuery);
 			}
 
 			$sqlQuery = <<<SQL
@@ -306,7 +304,7 @@ DELETE FROM `{$wpdb->prefix}options`
 WHERE option_name LIKE 'wpassetcleanup_%'
                   AND option_name NOT IN('wpassetcleanup_pro_license_key', 'wpassetcleanup_pro_license_status')
 SQL;
-			$resetStatus = $wpdb->query($sqlQuery);
+			$wpdb->query($sqlQuery);
 
 			delete_option(WPACU_PLUGIN_ID.'_do_activation_redirect_first_time');
 
@@ -318,44 +316,59 @@ SQL;
 			}
 
 			// Remove Asset CleanUp's cache transients
-            $transientLikes = array(
-	            '_transient_timeout_'.OptimizeCss::$transientCssNamePrefix,
-	            '_transient_'.OptimizeCss::$transientCssNamePrefix,
-                '_transient_timeout_wpacu_',
-	            '_transient_wpacu_',
-            );
+            $this->clearAllCacheTransients();
 
-            $transientLikesSql = '';
-
-            foreach ($transientLikes as $transientLike) {
-	            $transientLikesSql .= " option_name LIKE '%".$transientLike."%' OR ";
-            }
-
-			$transientLikesSql = rtrim($transientLikesSql, ' OR ');
-
-			$sqlQuery = <<<SQL
-DELETE FROM `{$wpdb->prefix}options` WHERE {$transientLikesSql}
-SQL;
-			$wpdb->query($sqlQuery);
+			// Refers to the plugins' icons shown when viewing assets list by location is enabled
+			delete_transient('wpacu_active_plugins_icons');
 		} elseif ($wpacuResetValue === 'reset_settings') {
 			$sqlQuery = <<<SQL
 DELETE FROM `{$wpdb->prefix}options` WHERE option_name='wpassetcleanup_settings'
 SQL;
-			$resetStatus = $wpdb->query($sqlQuery);
+			$wpdb->query($sqlQuery);
         }
 
 		// Also make 'jQuery Migrate' and 'Comment Reply' core files to load again
 		// As they were enabled (not unloaded) in the default settings
-		if ($resetStatus !== false) {
-		    $wpacuUpdate = new Update();
-			$wpacuUpdate->removeEverywhereUnloads(
-                array(),
-                array('jquery-migrate' => 'remove', 'comment-reply' => 'remove')
-            );
-        }
+        $wpacuUpdate = new Update();
+        $wpacuUpdate->removeEverywhereUnloads(
+            array(),
+            array('jquery-migrate' => 'remove', 'comment-reply' => 'remove')
+        );
 
 		add_action('wpacu_admin_notices', array($this, 'resetDone'));
 	}
+
+	/**
+	 * Remove Asset CleanUp's Cache Transients
+	 */
+	public function clearAllCacheTransients()
+    {
+        global $wpdb;
+
+	    // Remove Asset CleanUp's cache transients
+	    $transientLikes = array(
+		    '_transient_wpacu_css_',
+		    '_transient_wpacu_js_'
+	    );
+
+	    $transientLikesSql = '';
+
+	    foreach ($transientLikes as $transientLike) {
+		    $transientLikesSql .= " option_name LIKE '%".$transientLike."%' OR ";
+	    }
+
+	    $transientLikesSql = rtrim($transientLikesSql, ' OR ');
+
+	    $sqlQuery = <<<SQL
+SELECT option_name FROM `{$wpdb->prefix}options` WHERE {$transientLikesSql}
+SQL;
+	    $transientsToClear = $wpdb->get_col($sqlQuery);
+
+	    foreach ($transientsToClear as $transientToClear) {
+	        $transientNameToClear = str_replace('_transient_', '', $transientToClear);
+		    delete_transient($transientNameToClear);
+	    }
+    }
 
 	/**
 	 *

@@ -40,6 +40,25 @@ if (! $metaBoxLoadedFine) {
     exit;
 }
 
+$pageTemplateInfoOutput = '';
+
+if (isset($data['page_template'])) {
+    ob_start();
+
+	if (isset($data['all_page_templates'][$data['page_template']])) { ?>
+        <u><?php echo $data['all_page_templates'][$data['page_template']]; ?></u>
+	<?php } ?>
+
+    (<?php echo $data['page_template'];
+
+	if (isset($data['page_template_path'])) {
+		echo '&nbsp; &#10230; &nbsp;<em>'.$data['page_template_path'].'</em>';
+	}
+	?>)
+	<?php
+	$pageTemplateInfoOutput = ob_get_clean();
+}
+
 if (\WpAssetCleanUp\Misc::isHomePage()) {
     ?>
     <p><strong><span style="color: #0f6cab;" class="dashicons dashicons-admin-home"></span> You are currently viewing the home page.</strong></p>
@@ -82,37 +101,19 @@ elseif ($data['bulk_unloaded_type'] === 'post_type') {
 	<?php if ($isWooPage) { ?>
         <img src="<?php echo $iconShown; ?>" alt="" style="height: 40px !important; margin-top: -6px; margin-right: 5px;" align="middle" /> <strong>WooCommerce</strong>
     <?php } ?>
-        <strong><?php if (! $iconShown) { ?><span style="color: #0f6cab;" class="dashicons dashicons-admin-<?php echo $dashIconPart; ?>"></span> <?php } ?> <u><?php echo $data['post_type']; ?></u> <?php if ($data['post_type'] !== 'post') {  echo 'post'; } ?> type.</strong></p>
+        <strong><?php if (! $iconShown) { ?><span style="color: #0f6cab;" class="dashicons dashicons-admin-<?php echo $dashIconPart; ?>"></span> <?php } ?> <u><?php echo $data['post_type']; ?></u> <?php if ($data['post_type'] !== 'post') {  echo 'post'; } ?> type.</strong>
+        <?php echo $pageTemplateInfoOutput; ?>
+    </p>
     <?php
 }
 
 if (! is_404()) {
 	?>
     <div class="wpacu_verified">
-        <strong>Verified Page:</strong> <a target="_blank"
+        <strong>Page URL:</strong> <a target="_blank"
                                            href="<?php echo $data['fetch_url']; ?>"><span><?php echo $data['fetch_url']; ?></span></a>
     </div>
 	<?php
-}
-
-if (isset($data['page_template'])) {
-    ?>
-    <div>
-        <strong><?php if ($data['post_type'] === 'page') { echo 'Page'; } elseif ($data['post_type'] === 'post') { echo 'Post'; } ?>
-            Template:</strong>
-	    <?php
-	    if (isset($data['all_page_templates'][$data['page_template']])) { ?>
-            <u><?php echo $data['all_page_templates'][$data['page_template']]; ?></u>
-	    <?php } ?>
-
-        (<?php echo $data['page_template'];
-
-	    if (isset($data['page_template_path'])) {
-		    echo '&nbsp; &#10230; &nbsp;<em>'.$data['page_template_path'].'</em>';
-	    }
-	    ?>)
-    </div>
-<?php
 }
 
 if($data['plugin_settings']['assets_list_layout'] === 'by-location') {

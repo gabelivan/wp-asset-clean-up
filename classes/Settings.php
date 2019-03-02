@@ -1,6 +1,8 @@
 <?php
 namespace WpAssetCleanUp;
 
+use WpAssetCleanUp\OptimiseAssets\OptimizeCommon;
+
 /**
  * Class Settings
  * @package WpAssetCleanUp
@@ -12,6 +14,8 @@ class Settings
 	 */
 	public $settingsKeys = array(
 		// Stored in 'wpassetcleanup_settings'
+        'wiki_read',
+
 		'dashboard_show',
 		'dom_get_type',
         'frontend_show',
@@ -25,14 +29,47 @@ class Settings
         'hide_core_files',
         'test_mode',
 
-        // Combine loaded CSS (remaining ones after unloading the useless ones) into one file
+		// Combine loaded CSS (remaining ones after unloading the useless ones) into fewer files
         'combine_loaded_css',
+		'combine_loaded_css_exceptions',
+		'combine_loaded_css_for_admin_only',
+
+		// Combine loaded JS (remaining ones after unloading the useless ones) into fewer files
+		'combine_loaded_js',
+		'combine_loaded_js_exceptions',
+		'combine_loaded_js_for_admin_only',
+		'combine_loaded_js_defer_body', // Applies defer="defer" to the combined file(s) within BODY tag
+
+		// Minify each loaded CSS (remaining ones after unloading the useless ones)
+		'minify_loaded_css',
+		'minify_loaded_css_exceptions',
+
+		// Minify each loaded JS (remaining ones after unloading the useless ones)
+		'minify_loaded_js',
+		'minify_loaded_js_exceptions',
 
         'disable_emojis',
 
 		// Stored in 'wpassetcleanup_global_unload' option
         'disable_jquery_migrate',
-        'disable_comment_reply'
+        'disable_comment_reply',
+
+		// <head> CleanUp
+		'remove_rsd_link',
+		'remove_wlw_link',
+		'remove_rest_api_link',
+		'remove_shortlink',
+		'remove_posts_rel_links',
+		'remove_wp_version',
+
+		// all "generator" meta tags including the WordPress version
+		'remove_generator_tag',
+
+		// RSS Feed Links
+		'remove_main_feed_link',
+		'remove_comment_feed_link',
+
+		'disable_xmlrpc'
     );
 
     /**
@@ -56,6 +93,9 @@ class Settings
 
 	    'assets_list_layout_areas_status' => 'expanded',
 	    'assets_list_inline_code_status'  => 'contracted',
+
+	    'minify_loaded_css_exceptions' => '(.*?).min.css',
+	    'minify_loaded_js_exceptions'  => '(.*?).min.js',
 
 	    'input_style' => 'enhanced',
 
@@ -197,6 +237,12 @@ class Settings
                 foreach ($this->settingsKeys as $settingsKey) {
                     if (! array_key_exists($settingsKey, $settings)) {
                         $settings[$settingsKey] = '';
+
+                        // If it doesn't exist, it was never saved
+                        // Make sure the default value is added to the textarea
+                        if ($settingsKey === 'minify_loaded_css_exceptions') {
+	                        $settings[$settingsKey] = self::$defaultSettings['minify_loaded_css_exceptions'];
+                        }
                     }
                 }
 
@@ -227,7 +273,7 @@ class Settings
      */
     public function update($settings)
     {
-        self::clearAllCache();
+	    OptimizeCommon::clearAllCache();
 
 	    $wpacuUpdate = new Update;
 
@@ -290,26 +336,5 @@ class Settings
 
         update_option(WPACU_PLUGIN_ID . '_settings', json_encode($settings), 'no');
         $this->status['updated'] = true;
-    }
-
-	/**
-	 *
-	 */
-	public static function clearAllCache()
-    {
-        // "Combined CSS Loaded" transients
-        $optimizeCss = new OptimizeCss();
-        $optimizeCss->clearAllCacheTransients();
-
-        // "WP Rocket" cache
-        /*
-        add_action('init', function() {
-	        if ( function_exists( 'rocket_clean_domain' ) ) {
-		        try {
-			        @rocket_clean_domain();
-		        } catch ( \Exception $e ) {}
-	        }
-        });
-        */
     }
 }

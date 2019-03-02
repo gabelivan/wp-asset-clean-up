@@ -38,15 +38,18 @@ if (! isset($data)) {
                         <strong><span class="dashicons dashicons-warning"></span> Important:</strong> You have enabled "<em>Enable caching for logged-in WordPress users</em>" in WP Rocket's Cache area.
                         This could cause some issues with Asset CleanUp retrieving an outdated (cached) asset list below.
                         If you experience issues such as unsaved settings or viewing assets from plugins that are disabled, consider using Asset CleanUp only in the Dashboard area (option "Manage in the Dashboard?" has to be enabled in plugin's settings).
-                        <!-- @TODO: Make sure to instruct the user to append a query string to the URL bar to load an uncached version of the plugin OR find a solution to force page reload (non-cached) -->
+                        <!--
+                        //removeIf(development)
+                        @TODO: Make sure to instruct the user to append a query string to the URL bar to load an uncached version of the plugin OR find a solution to force page reload (non-cached)
+                        //endRemoveIf(development)
+                        -->
                     </div>
                     <div class="clearfix"></div>
 	                <?php
                 }
             }
         ?>
-            <p><small>* this area is shown only for the admin users and if "Manage in the Front-end?" was selected in the plugin's settings</small></p>
-            <p><small>* 'admin-bar' and 'wpassetcleanup-style' are not included as they are irrelevant since they are used by the plugin for this area</small></p>
+            <p><small>This area is shown only for the admin users and if "Manage in the Front-end?" was selected in the plugin's settings. Handles such as 'admin-bar' and 'wpassetcleanup-style' are not included as they are irrelevant since they are used by the plugin for this area.</small></p>
             <?php
             if ($data['is_woo_shop_page']) {
                 ?>
@@ -62,9 +65,11 @@ if (! isset($data)) {
                 <?php
             }
 
-	        // [wpacu_pro]
-	        do_action('wpacu_pro_frontend_before_asset_list');
-	        // [/wpacu_pro]
+	        //removeIf(development)
+                // [wpacu_pro]
+                //do_action('wpacu_pro_frontend_before_asset_list');
+                // [/wpacu_pro]
+	        //endRemoveIf(development)
 
             require_once 'meta-box-loaded.php';
         } else {

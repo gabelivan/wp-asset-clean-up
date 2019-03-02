@@ -15,10 +15,12 @@ class OwnAssets
      */
     public $loadPluginAssets = false; // default
 
+	//removeIf(development)
 	/**
 	 * @var bool
 	 */
-	public $isTaxonomyEditPage = false;
+	//public $isTaxonomyEditPage = false;
+    //endRemoveIf(development)
 
 	/**
 	 *
@@ -107,7 +109,7 @@ class OwnAssets
             return;
         }
 
-        $page = isset($_GET['page']) ? $_GET['page'] : '';
+	    $page =  Misc::getVar('get', 'page');
         $getPostId = isset($_GET['post']) ? (int)$_GET['post'] : '';
 
         // Only load the plugin's assets when they are needed
@@ -124,9 +126,13 @@ class OwnAssets
             $this->loadPluginAssets = true;
         }
 
+	    //removeIf(development)
+        /*
 	    if ($this->isTaxonomyEditPage()) {
 		    $this->loadPluginAssets = true;
 	    }
+        */
+	    //endRemoveIf(development)
 
         if (! $this->loadPluginAssets) {
             return;
@@ -156,6 +162,11 @@ class OwnAssets
         if (! is_admin_bar_showing() && ! Main::instance()->settings['frontend_show']) {
             return;
         }
+
+	    // Do not load any CSS & JS belonging to Asset CleanUp if in "Elementor" preview
+	    if (array_key_exists('elementor-preview', $_GET) && $_GET['elementor-preview'] && Main::instance()->isFrontendEditView) {
+		    return;
+	    }
 
         $this->enqueuePublicStyles();
         $this->enqueuePublicScripts();
@@ -191,9 +202,11 @@ class OwnAssets
             $postId = 0; // for home page
         }
 
-        // Not home page (posts list) nor Taxonomy Edit Page? Does it have a post ID?
+	    //removeIf(development)
+        /*
+        // Not home page (posts list)? Does it have a post ID?
         // See if the individual post is published to continue
-        if ($postId > 0 && (! $this->isTaxonomyEditPage())) {
+        if ($postId > 0) {
             $postStatus = get_post_status($postId);
 
             if (! $postStatus) {
@@ -205,6 +218,8 @@ class OwnAssets
                 return;
             }
         }
+        */
+	    //endRemoveIf(development)
 
         $scriptRelPath = '/assets/script.min.js';
 
@@ -340,9 +355,11 @@ HTML;
         return $src;
     }
 
+	//removeIf(development)
 	/**
 	 * @return bool
 	 */
+	/*
 	public function isTaxonomyEditPage()
     {
         if ((!$this->isTaxonomyEditPage)
@@ -354,4 +371,6 @@ HTML;
 
         return $this->isTaxonomyEditPage;
     }
+	*/
+	//endRemoveIf(development)
 }

@@ -43,9 +43,6 @@ $wpacuUpdate->init();
 $wpacuSettings = new WpAssetCleanUp\Settings;
 $wpacuSettings->init();
 
-// HomePage
-new WpAssetCleanUp\HomePage;
-
 // Various functions
 new WpAssetCleanUp\Misc;
 
@@ -55,9 +52,26 @@ new \WpAssetCleanUp\Menu;
 // Admin Bar (Top Area of the website when user is logged in)
 new \WpAssetCleanUp\AdminBar();
 
-// Trigger only in the front-end view for guests (regular visitors, not logged-in)
-$wpacuOptimizeCss = new \WpAssetCleanUp\OptimizeCss();
+/*
+ * Trigger the CSS & JS combination only in the front-end view in certain conditions (not within the Dashboard)
+ */
+// Common functions for both CSS & JS combinations
+$wpacuOptimizeCommon = new \WpAssetCleanUp\OptimiseAssets\OptimizeCommon();
+$wpacuOptimizeCommon->init();
+
+// Combine/Minify CSS Files Setup
+$wpacuOptimizeCss = new \WpAssetCleanUp\OptimiseAssets\OptimizeCss();
 $wpacuOptimizeCss->init();
+new \WpAssetCleanUp\OptimiseAssets\MinifyCss();
+
+// Combine/Minify JS Files Setup
+$wpacuOptimizeJs = new \WpAssetCleanUp\OptimiseAssets\OptimizeJs();
+$wpacuOptimizeJs->init();
+new \WpAssetCleanUp\OptimiseAssets\MinifyJs();
+
+// <head> Clean up
+$cleanUp = new \WpAssetCleanUp\CleanUp();
+$cleanUp->init();
 
 if (is_admin()) {
 	new \WpAssetCleanUp\Plugin;

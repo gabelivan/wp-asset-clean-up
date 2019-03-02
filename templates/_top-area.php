@@ -12,19 +12,23 @@ $wpacu_top_area_links = array(
         'title' => 'Settings',
         'page' => 'wpassetcleanup_settings'
     ),
-    'admin.php?page=wpassetcleanup_home_page'    => array(
-        'icon' => '<span class="dashicons dashicons-admin-home"></span>',
-	    'title' => 'Homepage',
-	    'page'  => 'wpassetcleanup_home_page',
+    'admin.php?page=wpassetcleanup_assets_manager'    => array(
+        'icon' => '<span class="dashicons dashicons-media-code"></span>',
+	    'title' => 'CSS &amp; JavaScript Load Manager',
+	    'page'  => 'wpassetcleanup_assets_manager',
     ),
-    'admin.php?page=wpassetcleanup_pages_info'   => array(
-	    'icon' => '<span class="dashicons dashicons-info"></span>',
-	    'title' => 'Pages Info',
-	    'page'  => 'wpassetcleanup_pages_info'
+    //removeIf(development)
+    /*
+    'admin.php?page=wpassetcleanup_plugins_manager'    => array(
+	    'icon' => '<span class="dashicons dashicons-admin-plugins"></span>',
+	    'title' => 'Plugins Unloader',
+	    'page'  => 'wpassetcleanup_plugins_manager',
     ),
+    */
+	//endRemoveIf(development)
     'admin.php?page=wpassetcleanup_bulk_unloads' => array(
 	    'icon' => '<span class="dashicons dashicons-networking"></span>',
-	    'title' => 'Bulk Unloaded',
+	    'title' => 'Bulk Unloads',
 	    'page'  => 'wpassetcleanup_bulk_unloads'
     ),
     'admin.php?page=wpassetcleanup_tools' => array(

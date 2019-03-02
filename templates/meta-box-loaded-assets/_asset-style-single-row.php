@@ -25,6 +25,38 @@ $isBulkUnloaded   = ($data['row']['global_unloaded'] || $data['row']['is_post_ty
 			?>
 		</p>
 
+	    <?php if (isset($data['row']['obj']->src, $data['row']['obj']->srcHref) && $data['row']['obj']->src && $data['row']['obj']->srcHref) {
+	    $relSrc = str_replace(site_url(), '', $data['row']['obj']->src);
+	    ?>
+        <p><?php _e('Source:', WPACU_PLUGIN_TEXT_DOMAIN); ?> <a target="_blank" style="color: green;" href="<?php echo $data['row']['obj']->srcHref; ?>"><?php echo $relSrc; ?></a></p>
+	    <?php } ?>
+
+        <?php
+        $extraInfo = array();
+
+        if (! empty($data['row']['obj']->deps)) {
+	        $extraInfo[] = __('Depends on:', WPACU_PLUGIN_TEXT_DOMAIN) . ' ' . implode(', ', $data['row']['obj']->deps);
+        }
+
+        if ($data['row']['obj']->ver) {
+	        $extraInfo[] = __('Version:', WPACU_PLUGIN_TEXT_DOMAIN) . ' ' . $data['row']['obj']->ver;
+        }
+
+        if (isset($data['row']['obj']->position) && $data['row']['obj']->position !== '') {
+	        $extraInfo[] = __('Position:', WPACU_PLUGIN_TEXT_DOMAIN) . ' ' . (( $data['row']['obj']->position === 'head') ? 'HEAD' : 'BODY') . '<a class="go-pro-link-no-style" href="' . WPACU_PLUGIN_GO_PRO_URL . '?utm_source=manage_asset&utm_medium=change_css_position"><span class="wpacu-tooltip" style="width: 300px; margin-left: -146px;">Upgrade to Pro and change the location<br />of the CSS file (e.g. to BODY to reduce render-blocking or to HEAD for very early triggering)</span><img width="20" height="20" src="' . WPACU_PLUGIN_URL . '/assets/icons/icon-lock.svg" valign="top" alt="" /> Change it?</a>';
+        }
+
+        // [wpacu_lite]
+        if (isset($data['row']['obj']->src) && $data['row']['obj']->src) {
+	        $extraInfo[] = __('File Size:', WPACU_PLUGIN_TEXT_DOMAIN) . ' <a href="' . WPACU_PLUGIN_GO_PRO_URL . '?utm_source=manage_asset&utm_medium=file_size" class="go-pro-link-no-style"><span class="wpacu-tooltip">Upgrade to Pro and unlock all features</span><img width="20" height="20" src="' . WPACU_PLUGIN_URL . '/assets/icons/icon-lock.svg" valign="top" alt="" /> Pro Version</a>';
+        }
+        // [/wpacu_lite]
+
+        if (! empty($extraInfo)) {
+	        echo '<p>'.implode(' &nbsp;/&nbsp; ', $extraInfo).'</p>';
+        }
+        ?>
+
         <div <?php if (! $isBulkUnloaded) { ?>class="wrap_bulk_unload_options"<?php } ?>>
 		    <div class="wpacu_asset_options_wrap">
 			<ul class="wpacu_asset_options wpacu_exception_options_area" <?php if ($isBulkUnloaded) { echo 'style="display: none;"'; } ?>>
@@ -162,9 +194,11 @@ $isBulkUnloaded   = ($data['row']['global_unloaded'] || $data['row']['is_post_ty
         </div>
 
 		<?php
-		// [wpacu_pro]
-		do_action('wpacu_pro_bulk_unload_output', $data, $data['row']['obj'], 'css');
-		// [/wpacu_pro]
+		//removeIf(development)
+            // [wpacu_pro]
+            //do_action('wpacu_pro_bulk_unload_output', $data, $data['row']['obj'], 'css');
+            // [/wpacu_pro]
+		//endRemoveIf(development)
 		?>
 
 		<ul class="wpacu_asset_options wpacu_exception_options_area">
@@ -179,11 +213,7 @@ $isBulkUnloaded   = ($data['row']['global_unloaded'] || $data['row']['is_post_ty
 					Load it on this page (make exception<?php if (! $isBulkUnloaded) { echo ' * works only IF any of bulk rule above is selected'; } ?>)</label>
 			</li>
 		</ul>
-
-		<?php if (isset($data['row']['obj']->src, $data['row']['obj']->srcHref) && $data['row']['obj']->src && $data['row']['obj']->srcHref) { ?>
-			<p><strong><?php _e('Source:', WPACU_PLUGIN_TEXT_DOMAIN); ?></strong> <a target="_blank" href="<?php echo $data['row']['obj']->srcHref; ?>"><?php echo $data['row']['obj']->src; ?></a></p>
-		<?php }
-
+        <?php
 		if (! empty($data['row']['extra_data_css_list'])) { ?>
 			<div>
                 <?php _e('Inline styling associated with the handle:', WPACU_PLUGIN_TEXT_DOMAIN); ?>
@@ -202,26 +232,6 @@ $isBulkUnloaded   = ($data['row']['global_unloaded'] || $data['row']['is_post_ty
                 </div>
             </div>
 			<?php
-		}
-
-		$extraInfo = array();
-
-		if (! empty($data['row']['obj']->deps)) {
-			$extraInfo[] = '<strong>'.__('Depends on:', WPACU_PLUGIN_TEXT_DOMAIN) . '</strong> ' . implode(', ', $data['row']['obj']->deps);
-		}
-
-		if ($data['row']['obj']->ver) {
-			$extraInfo[] = '<strong>'.__('Version:', WPACU_PLUGIN_TEXT_DOMAIN) . '</strong> ' . $data['row']['obj']->ver;
-		}
-
-		// [wpacu_lite]
-		if (isset($data['row']['obj']->src) && $data['row']['obj']->src) {
-		    $extraInfo[] = '<strong>'.__('File Size:', WPACU_PLUGIN_TEXT_DOMAIN) . '</strong> <a href="' . WPACU_PLUGIN_GO_PRO_URL . '?utm_source=manage_asset&utm_medium=file_size" class="go-pro-link-no-style"><span class="wpacu-tooltip">Upgrade to Pro and unlock all features</span><img width="20" height="20" src="' . WPACU_PLUGIN_URL . '/assets/icons/icon-lock.svg" valign="top" alt="" /> Pro Version</a>';
-		}
-		// [/wpacu_lite]
-
-		if (! empty($extraInfo)) {
-			echo '<p>'.implode(' &nbsp;/&nbsp; ', $extraInfo).'</p>';
 		}
 		?>
 	</td>

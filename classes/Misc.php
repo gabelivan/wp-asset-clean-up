@@ -86,6 +86,27 @@ class Misc
     }
 
 	/**
+	 * @param $string
+	 * @param $endsWithString
+	 * @return bool
+	 */
+	public static function endsWith($string, $endsWithString)
+	{
+		$stringLen = strlen($string);
+		$endsWithStringLen = strlen($endsWithString);
+
+		if ($endsWithStringLen > $stringLen) {
+			return false;
+		}
+
+		return (substr_compare(
+			        $string,
+			        $endsWithString,
+			        $stringLen - $endsWithStringLen, $endsWithStringLen
+		        ) === 0);
+	}
+
+	/**
 	 * @return string
 	 */
 	public static function isHttpsSecure()
@@ -127,7 +148,9 @@ class Misc
             return self::_filterPageUrl(get_permalink($postId));
         }
 
+	    //removeIf(development)
         // For Pro Version (Dashboard view): category link, tag link, custom taxonomy etc.
+	    /*
         if (is_admin() && Main::instance()->wpacuProEnabled()) {
         	$wpacuOwnAssets = new OwnAssets();
 
@@ -140,6 +163,8 @@ class Misc
 		        return get_term_link($term, $taxonomy);
 	        }
         }
+	    */
+	    //endRemoveIf(development)
 
         // If it's not a singular page, nor the home page, continue...
 	    // It could be: Archive page (e.g. author, category, tag, date, custom taxonomy), Search page, 404 page etc.
@@ -413,8 +438,7 @@ class Misc
 		    	continue;
 		    }
 
-		    $firstIconKey = array_key_first($pluginInfo->icons);
-		    $pluginIcon = $pluginInfo->icons[$firstIconKey];
+		    $pluginIcon = array_shift($pluginInfo->icons);
 
 		    if ($pluginIcon !== '') {
 			    $activePluginsIcons[$pluginSlug] = $pluginIcon;
@@ -425,7 +449,7 @@ class Misc
 	    	return false;
 	    }
 
-	    set_transient('wpacu_active_plugins_icons', json_encode($activePluginsIcons), 86400 * 7); // expires in 7 days
+	    set_transient('wpacu_active_plugins_icons', json_encode($activePluginsIcons), 1209600); // in seconds
 
 	    return $activePluginsIcons;
     }

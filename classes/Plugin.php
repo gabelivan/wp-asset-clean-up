@@ -8,6 +8,11 @@ namespace WpAssetCleanUp;
 class Plugin
 {
 	/**
+	 *
+	 */
+	const RATE_URL = 'https://wordpress.org/support/plugin/wp-asset-clean-up/reviews/?filter=5#new-post';
+
+	/**
 	 * The functions below are only called within the Dashboard
 	 *
 	 * Plugin constructor.
@@ -26,6 +31,10 @@ class Plugin
 
 		// Show "Settings" and "Go Pro" as plugin action links
 		add_filter('plugin_action_links_'.WPACU_PLUGIN_BASE, array($this, 'actionLinks'));
+
+		//removeIf(development)
+		    //add_action('admin_notices', array($this, 'ratePluginMessage'));
+		//endRemoveIf(development)
 	}
 
 	// [wpacu_lite]
@@ -37,8 +46,7 @@ class Plugin
 	public function adminFooter($text)
 	{
 		if (isset($_GET['page']) && strpos($_GET['page'], WPACU_PLUGIN_ID) !== false) {
-			$reviewUrl = 'https://wordpress.org/support/plugin/wp-asset-clean-up/reviews/?filter=5#new-post';
-			$text = 'Thank you for using '.WPACU_PLUGIN_TITLE.' v'.WPACU_PLUGIN_VERSION.') <span class="dashicons dashicons-smiley"></span> &nbsp;&nbsp; If you like it, please <a target="_blank" href="'.$reviewUrl.'"><strong>rate</strong> '.WPACU_PLUGIN_TITLE.'</a> <a target="_blank" href="'.$reviewUrl.'"><span class="dashicons dashicons-wpacu dashicons-star-filled"></span><span class="dashicons dashicons-wpacu dashicons-star-filled"></span><span class="dashicons dashicons-wpacu dashicons-star-filled"></span><span class="dashicons dashicons-wpacu dashicons-star-filled"></span><span class="dashicons dashicons-wpacu dashicons-star-filled"></span></a> on WordPress.org to help me spread the word to the community.';
+			$text = 'Thank you for using '.WPACU_PLUGIN_TITLE.' v'.WPACU_PLUGIN_VERSION.') <span class="dashicons dashicons-smiley"></span> &nbsp;&nbsp; If you like it, please <a target="_blank" href="'.self::RATE_URL.'"><strong>rate</strong> '.WPACU_PLUGIN_TITLE.'</a> <a target="_blank" href="'.self::RATE_URL.'"><span class="dashicons dashicons-wpacu dashicons-star-filled"></span><span class="dashicons dashicons-wpacu dashicons-star-filled"></span><span class="dashicons dashicons-wpacu dashicons-star-filled"></span><span class="dashicons dashicons-wpacu dashicons-star-filled"></span><span class="dashicons dashicons-wpacu dashicons-star-filled"></span></a> on WordPress.org to help me spread the word to the community.';
 		}
 
 		return $text;
@@ -64,8 +72,12 @@ class Plugin
 		 *
 		 * /wp-content/cache/asset-cleanup/css/
 		 * /wp-content/cache/asset-cleanup/css/index.php
+		 *
 		 * /wp-content/cache/asset-cleanup/css/logged-in/
 		 * /wp-content/cache/asset-cleanup/css/logged-in/index.php
+		 *
+		 * /wp-content/cache/asset-cleanup/css/min/
+		 * /wp-content/cache/asset-cleanup/css/min/index.php
 		 */
 		self::createCacheFoldersFiles();
 	}
@@ -75,7 +87,7 @@ class Plugin
 	 */
 	public static function createCacheFoldersFiles()
 	{
-		$cacheCssDir = WP_CONTENT_DIR . OptimizeCss::$relPathCssCacheDir;
+		$cacheCssDir = WP_CONTENT_DIR . OptimiseAssets\OptimizeCss::$relPathCssCacheDir;
 
 		$emptyPhpFileContents = <<<TEXT
 <?php
@@ -94,29 +106,35 @@ HTACCESS;
 		}
 
 		if (! is_file($cacheCssDir . 'index.php')) {
-			// /wp-content/cache/asset-cleanup/cache/css/index.php
-			@file_put_contents( $cacheCssDir . 'index.php', $emptyPhpFileContents );
+			@file_put_contents($cacheCssDir . 'index.php', $emptyPhpFileContents);
 		}
 
 		if (! is_dir($cacheCssDir . 'logged-in')) {
-			@mkdir( $cacheCssDir . 'logged-in', 0755 );
+			@mkdir($cacheCssDir . 'logged-in', 0755);
+
+			if (! is_file($cacheCssDir . 'logged-in/index.php')) {
+				@file_put_contents($cacheCssDir . 'logged-in/index.php', $emptyPhpFileContents);
+			}
 		}
 
-		if (! is_file($cacheCssDir . 'logged-in/index.php')) {
-			// /wp-content/cache/asset-cleanup/cache/css/logged-in/index.html
-			@file_put_contents( $cacheCssDir . 'logged-in/index.php', $emptyPhpFileContents );
+		if (! is_dir($cacheCssDir . 'min')) {
+			@mkdir($cacheCssDir . 'min', 0755);
+
+			if (! is_file($cacheCssDir . 'min/index.php')) {
+				@file_put_contents($cacheCssDir . 'min/index.php', $emptyPhpFileContents);
+			}
+		}
+
+		// /wp-content/cache/asset-cleanup/index.php
+		if (! is_file(dirname($cacheCssDir) . '/index.php')) {
+			@file_put_contents(dirname($cacheCssDir).'/index.php', $emptyPhpFileContents);
 		}
 
 		$htAccessFilePath = dirname($cacheCssDir) . '/.htaccess';
 
+		// /wp-content/cache/asset-cleanup/.htaccess
 		if (! is_file($htAccessFilePath)) {
-			// /wp-content/cache/asset-cleanup/.htaccess
-			@file_put_contents( $htAccessFilePath, $htAccessContents );
-		}
-
-		if (! is_file(dirname($cacheCssDir) . '/index.php')) {
-			// /wp-content/cache/asset-cleanup/index.php
-			@file_put_contents( dirname( $cacheCssDir ) . '/index.php', $emptyPhpFileContents );
+			@file_put_contents($htAccessFilePath, $htAccessContents);
 		}
 	}
 
@@ -148,7 +166,7 @@ HTACCESS;
 		// [wpacu_lite]
 		$allPlugins = get_plugins();
 
-		// If the pro version is not installed (active or not), show the upgrade link
+		// If the Pro version is not installed (active or not), show the upgrade link
 		if (! array_key_exists('wp-asset-clean-up-pro/wpacu.php', $allPlugins)) {
 			$links['go_pro'] = '<a target="_blank" style="font-weight: bold;" href="'.WPACU_PLUGIN_GO_PRO_URL.'">Go Pro</a>';
 		}
@@ -156,4 +174,25 @@ HTACCESS;
 
 		return $links;
 	}
+
+	//removeIf(development)
+	/**
+	 *
+	 */
+	/*
+	public function ratePluginMessage()
+	{
+		?>
+		<div class="notice" style="background: white; border-left: 4px solid #008f9c; padding: 8px 20px 17px 15px;">
+			<p>Hey, I noticed you've been using Asset CleanUp for over 2 weeks and you already reduced the bloat on your website by stripping the useless CSS/JavaScript files - that's awesome! Could you please do me a BIG favor and give it a 5-star rating on WordPress.org? Just to help me spread the word and boost my motivation?<br />- <em>Gabriel Livan</em></p>
+			<ul style="padding-left: 20px; list-style: disc; margin-bottom: 0;">
+				<li><a target="_blank" href="<?php echo self::RATE_URL; ?>">Ok, you deserve it</a></li>
+				<li><a href="#">Nope, maybe later</a></li>
+				<li><a href="#">I already did</a></li>
+			</ul>
+		</div>
+		<?php
+	}
+	*/
+	//endRemoveIf(development)
 }

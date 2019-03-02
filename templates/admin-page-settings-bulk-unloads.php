@@ -17,8 +17,7 @@ $availableForPro = '<span class="wpacu-tooltip">Available for Pro users<br />Cli
 
 <h2><?php _e('Bulk Unloaded', WPACU_PLUGIN_TEXT_DOMAIN); ?></h2>
 
-<p>If you have used rules such as <em>"Unload everywhere"</em> or <em>"Unload on All Pages of <strong>post</strong> post type"</em> etc., then the assets will be shown here. Although, you can manage them when editing a page, post etc., this page will make things easier by seeing all the bulk unloads:</p>
-<p>A bulk unload is considered anything that is applied once and it has effect on multiple pages of the same kind or site-wide such as "Unload everywhere".</p>
+<p>This page collects all the assets that have bulk rules such as <em>"Unload everywhere"</em> or <em>"Unload on All Pages of <strong>post</strong> post type"</em> etc. Although, you can manage them when editing a page, post etc., this page will make it easier for you to view them in one place. Note that a bulk unload is considered anything that is applied once and it has effect on multiple pages of the same kind or site-wide.</>
 
 <nav class="nav-tab-wrapper">
     <a href="<?php echo admin_url('admin.php?page=wpassetcleanup_bulk_unloads'); ?>" class="nav-tab <?php if ($data['for'] === 'everywhere') { ?>nav-tab-active<?php } ?>">Everywhere</a>
@@ -244,26 +243,27 @@ $noAssetsToRemove = (empty($data['values']['styles']) && empty($data['values']['
     ?>
 
 <div class="wpacu-clearfix"></div>
-
-<p class="submit">
-    <?php
-    wp_nonce_field('wpacu_bulk_unloads_update');
-    ?>
-    <input type="submit"
-           name="submit"
-           id="submit"
-           <?php if ($noAssetsToRemove) { ?>
-           disabled="disabled"
-           <?php } ?>
-           class="button button-primary"
-           value="<?php esc_attr_e('Update', WPACU_PLUGIN_TEXT_DOMAIN); ?>" />
-    <?php
-    if ($noAssetsToRemove) {
-    ?>
-        &nbsp;<small>Note: As there are no unloaded assets (scripts &amp; styles) to be managed, the button is disabled.</small>
-    <?php
-    }
-    ?>
-</p>
+    <div id="wpacu-update-button-area" class="no-left-margin">
+        <p class="submit">
+            <?php
+            wp_nonce_field('wpacu_bulk_unloads_update');
+            ?>
+            <input type="submit"
+                   name="submit"
+                   id="submit"
+                   <?php if ($noAssetsToRemove) { ?>
+                   disabled="disabled"
+                   <?php } ?>
+                   class="button button-primary"
+                   value="<?php esc_attr_e('Update', WPACU_PLUGIN_TEXT_DOMAIN); ?>" />
+            <?php
+            if ($noAssetsToRemove) {
+            ?>
+                &nbsp;<small>Note: As there are no unloaded assets (scripts &amp; styles) to be managed, the button is disabled.</small>
+            <?php
+            }
+            ?>
+        </p>
+    </div>
 </form>
 </div>

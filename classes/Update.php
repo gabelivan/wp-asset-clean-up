@@ -1,6 +1,8 @@
 <?php
 namespace WpAssetCleanUp;
 
+use WpAssetCleanUp\OptimiseAssets\OptimizeCommon;
+
 /**
  * Class Update
  * @package WpAssetCleanUp
@@ -54,7 +56,7 @@ HTML;
     public function init()
     {
 	    // Triggers on front-end view
-	    add_action('plugins_loaded', array($this, 'initAfterPluginsLoaded'), 11);
+	    add_action('init', array($this, 'triggersAfterInit'), 11);
 
         // After post/page is saved - update your styles/scripts lists
         // This triggers ONLY in the Dashboard after "Update" button is clicked (on Edit mode)
@@ -64,7 +66,7 @@ HTML;
 	/**
 	 *
 	 */
-	public function initAfterPluginsLoaded()
+	public function triggersAfterInit()
 	{
 		if (! is_admin() && Main::instance()->settings['frontend_show']) {
 		    if (! empty($_POST)) {
@@ -76,7 +78,9 @@ HTML;
 	}
 
     /**
+     //removeIf(development)
      * TODO: Remove priority later on as it's not needed anymore because there is a redirect after form submit
+     //endRemoveIf(development)
      * Priority: 9 (AFTER current post ID is correctly retrieved and BEFORE the data from the database is fetched)
      * Form was submitted in the frontend view (not Dashboard) from a singular page, front-page etc.
      */
@@ -119,7 +123,7 @@ HTML;
 
         // Form submitted from the homepage
 	    // e.g. from a page such as latest blog posts, not a static page that was selected as home page)
-        if (Misc::isHomePage() && ! ($postId > 0)) {
+        if (! ($postId > 0) && Misc::isHomePage()) {
             $wpacuNoLoadAssets = isset($_POST[WPACU_PLUGIN_ID])
                 ? $_POST[WPACU_PLUGIN_ID] : array();
 
@@ -135,10 +139,12 @@ HTML;
             return;
         }
 
-	    // [wpacu_pro]
-        // Form Submitted from a page such as taxonomy (e.g. 'category'), author page, 404 page, search page etc.
-        do_action('wpacu_pro_frontend_update');
-	    // [/wpacu_pro]
+	    //removeIf(development)
+            // [wpacu_pro]
+            // Form Submitted from a page such as taxonomy (e.g. 'category'), author page, 404 page, search page etc.
+            //do_action('wpacu_pro_frontend_update');
+            // [/wpacu_pro]
+	    //endRemoveIf(development)
     }
 
 	/**
@@ -197,19 +203,22 @@ HTML;
      */
     public function savePost($postId, $post = array())
     {
+	    if (empty($post) || $post === '') {
+		    global $post;
+	    }
+
+	    if (! isset($post->ID) || ! isset($post->post_type)) {
+		    return;
+	    }
+
+	    // Any page options set? From the Side Meta Box "Asset CleanUp Options"
+	    $this->updatePageOptions($post->ID);
+
     	// This is triggered only if the "Asset CleanUp" meta box was loaded with the list of assets
 	    // Otherwise, $_POST[WPACU_PLUGIN_ID] will be taken as empty which might be not if there are values in the database
     	if (! (isset($_POST['wpacu_unload_assets_area_loaded']) && $_POST['wpacu_unload_assets_area_loaded'])) {
     	    return;
 	    }
-
-        if (empty($post)) {
-            global $post;
-        }
-
-        if (! isset($post->ID) || ! isset($post->post_type)) {
-            return;
-        }
 
         // Has to be a public post type
         $obj = get_post_type_object($post->post_type);
@@ -261,7 +270,7 @@ HTML;
         $this->removeBulkUnloads();
 
         // Clear all cache
-        Settings::clearAllCache();
+        OptimizeCommon::clearAllCache();
     }
 
     /**
@@ -296,7 +305,7 @@ HTML;
 	    $this->frontEndUpdateFor['homepage'] = true;
 
 	    // Clear all cache
-	    Settings::clearAllCache();
+	    OptimizeCommon::clearAllCache();
     }
 
 	/**
@@ -315,6 +324,8 @@ HTML;
 	/**
 	 * Lite: For Singular Page (Post, Page, Custom Post Type) and Front Page (Home Page)
 	 * Pro: 'for_pro' would trigger the actions from the premium extension (if available)
+     * UPDATE: Since v1.2.9.5, no fallback for both the lite and pro version activated at the same time would work anymore
+     * Users need to only keep the PRO version since it's standalone since v1.0.3
 	 *
 	 * This is the function that clears and updates the load exceptions for any of the requested pages
 	 *
@@ -341,10 +352,17 @@ HTML;
             delete_post_meta($postId, '_' . WPACU_PLUGIN_ID . '_load_exceptions');
         } elseif ($type === 'front_page') {
             delete_option( WPACU_PLUGIN_ID . '_front_page_load_exceptions');
-        } /* [wpacu_pro] */ elseif ($type === 'for_pro') {
-	        // Clear existing list for pages like: taxonomy, 404, search, date etc.
-	        do_action( 'wpacu_pro_clear_load_exceptions' );
-        } /* [/wpacu_pro] */
+        }
+
+        //removeIf(development)
+            /* [wpacu_pro] */
+                //elseif ($type === 'for_pro') {
+                    // Clear existing list for pages like: taxonomy, 404, search, date etc.
+                    //do_action( 'wpacu_pro_clear_load_exceptions' );
+                //}
+            /* [/wpacu_pro] */
+	    //endRemoveIf(development)
+
 
         if (! $isPostOptionStyles && ! $isPostOptionScripts) {
             return;
@@ -406,10 +424,47 @@ HTML;
                 }
             } elseif ($type === 'front_page') {
                 update_option( WPACU_PLUGIN_ID . '_front_page_load_exceptions', $jsonLoadExceptions);
-            } /* [wpacu_pro] */ elseif ($type === 'for_pro') {
-	            // Update any load extensions for pages like: taxonomy, 404, search, date etc.
-	            do_action( 'wpacu_pro_update_load_exceptions', $jsonLoadExceptions );
-            } /* [/wpacu_pro] */
+            }
+
+	        //removeIf(development)
+                /* [wpacu_pro] */
+                /*
+                elseif ($type === 'for_pro') {
+                    // Update any load extensions for pages like: taxonomy, 404, search, date etc.
+                    do_action( 'wpacu_pro_update_load_exceptions', $jsonLoadExceptions );
+                }
+                */
+                /* [/wpacu_pro] */
+	        //endRemoveIf(development)
+        }
+    }
+
+    /*
+     * This method should ONLY be triggered when the "Asset CleanUp Options" area is visible
+     */
+    public function updatePageOptions($postId)
+    {
+        $pageOptions = array_key_exists(WPACU_PLUGIN_ID.'_page_options', $_POST)
+            ? $_POST[WPACU_PLUGIN_ID.'_page_options']
+            : array();
+
+        // In order for the "Apply the selected options" to work
+        // At least one of the checkboxes above have to be enabled
+        if (isset($pageOptions['apply_options_for']) && $pageOptions['apply_options_for'] && count($pageOptions) === 1) {
+	        $pageOptions = array();
+        }
+
+        // No page options? Delete any entry from the database to free up space
+        // instead of updating it as an empty entry
+        if (empty($pageOptions)) {
+            delete_post_meta($postId, '_' . WPACU_PLUGIN_ID . '_page_options');
+            return;
+        }
+
+        $pageOptionsJson = json_encode($pageOptions);
+
+        if (! add_post_meta($postId, '_' . WPACU_PLUGIN_ID . '_page_options', $pageOptionsJson, true)) {
+            update_post_meta($postId, '_' . WPACU_PLUGIN_ID . '_page_options', $pageOptionsJson);
         }
     }
 

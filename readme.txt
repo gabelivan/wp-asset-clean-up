@@ -3,16 +3,17 @@ Contributors: gabelivan
 Tags: pagespeed, page speed, dequeue, performance, gtmetrix
 Donate link: https://gabelivan.com/items/wp-asset-cleanup-pro/?utm_source=wp_org_lite&utm_medium=donate
 Requires at least: 4.4
-Tested up to: 5.0.3
-Stable tag: 1.2.9.3
+Tested up to: 5.1
+Stable tag: 1.3.2.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
 Make your website load FASTER by preventing specific scripts (.JS) & styles (.CSS) from loading on pages/posts and home page. Works best in addition to a cache plugin!
 
 == Description ==
-* Make your web pages load FASTER with **Asset CleanUp: Page Speed Booster**
-* Faster page load = Happier Visitors = More Conversions = More Revenue
+Don't just minify & combine CSS/JavaScript files: **strip the "fat" and get a faster page load** :)
+
+Faster page load = Happier Visitors = More Conversions = More Revenue
 
 There are often times when you are using a theme and a number of plugins which are enabled and run on the same page. However, you don't need to use all of them and to improve the speed of your website and make the HTML source code cleaner (convenient for debugging purposes), it's better to prevent those styles and scripts from loading.
 
@@ -22,8 +23,9 @@ For instance, you might use a plugin that generates contact forms and it loads i
 
 The plugin works best in combination with a cache plugin such as [WP Rocket](https://gabelivan.com/visit/wp-rocket).
 
-= This plugin's benefits include =
-* Decreases number of HTTP requests loaded (important for faster page load)
+= Main plugin's benefits include =
+* Decreases the number of HTTP requests loaded (important for faster page load) by unloading useless CSS/JS
+* Minify/Combine remaining loaded CSS/JavaScript files
 * Reduces the HTML code of the actual page (that's even better if GZIP compression is enabled)
 * Makes source code easier to scan in case you're a developer and want to search for something
 * Remove possible conflicts between plugins/theme (e.g. 2 JavaScript files that are loading from different plugins and they interfere one with another)
@@ -31,16 +33,36 @@ The plugin works best in combination with a cache plugin such as [WP Rocket](htt
 * Google will love your website more as it would be faster and fast page load is nowadays a factor in search ranking
 * Your server access log files (e.g the Apache ones) will be easier to scan and would take less space on your server
 
+= Remove useless links & meta tags within the <head> section of the website =
+* Really Simple Discovery (RSD) link tag
+* Windows Live Writer link tag
+* REST API link tag
+* Pages/Posts Shortlink tag
+* Post's Relational Links tag
+* WordPress version meta tag (also good for security reasons)
+* All "generator" meta tags (also good for security reasons)
+* RSS Feed Link Tags (usually they are not needed if your website is not used for blogging purposes)
+
+Each that was just mentioned can be turned on/off depending on your needs. Instructions about each of them are given in the plugin's settings page.
+
+= Disable partially or completely XML-RPC protocol =
+This is an API service used by WordPress for 3rd party applications, such as mobile apps, communication between blogs and plugins such as Jetpack. If you use or are planning to use a remote system to post content to your website, you can keep this feature enabled (which it is by default). Many users do not use this function at all and if you’re one of them, you can disable it.
+
 Plugin works with WordPress Multisite Network enabled!
 
 > <strong>Asset CleanUp Pro</strong><br />
-> This plugin is the lite version of Asset CleanUp Pro that comes with more features including managing assets (CSS and JS fies) on all WordPress pages, apply "async" and "defer" on loaded JavaScript files which would boost the speed score even higher, remove query strings from static resources (.css & .js), cleanup head section of the website. <a href="https://gabelivan.com/items/wp-asset-cleanup-pro/?utm_source=wp_org_lite&utm_medium=inside_quote">Click here to purchase Asset CleanUp Pro!</a>
+> This plugin is the lite version of Asset CleanUp Pro that comes with more benefits including managing assets (CSS & JS files) on all WordPress pages, apply "async" and "defer" attributes on loaded JavaScript files which would boost the speed score even higher, move the loading location of CSS/JS files (from HEAD to BODY to reduce render-blocking or vice-versa if you need specific files to trigger earlier) and premium support. <a href="https://gabelivan.com/items/wp-asset-cleanup-pro/?utm_source=wp_org_lite&utm_medium=inside_quote">Click here to purchase Asset CleanUp Pro!</a>
 
 = NOTES =
 People that have tested the plugin are so far happy with it and I want to keep a good reputation for it. In case something is not working for you or have any suggestions, please write to me on the forum and I will be happy to assist you. **BEFORE rating this plugin**, please check the following post http://chrislema.com/theres-wrong-way-give-plugin-feedback-wordpress-org/ and then use your common sense when writing the feedback :)
 
 = GO PRO =
-Give Asset CleanUp a try! If you want to unlock more features, you can <a href="https://gabelivan.com/items/wp-asset-cleanup-pro/?utm_source=wp_org_lite&utm_medium=go_pro">Upgrade to the Pro version</a>.
+* Unload CSS/JS files on all WordPress pages including Categories, Tags, Custom Taxonomy (e.g. WooCommerce product category), 404 Not Found, Date & Author Archives, Search Results)
+* Change the location of the CSS/JS files (could be moved from HEAD to BODY to prevent render-blocking or vice-versa if you need early triggering of specific files)
+* Async & Defer options for JavaScript files
+* Premium support and updates within the Dashboard
+
+Give Asset CleanUp a try! If you want to unlock all features, you can <a href="https://gabelivan.com/items/wp-asset-cleanup-pro/?utm_source=wp_org_lite&utm_medium=go_pro">Upgrade to the Pro version</a>.
 
 == Installation ==
 * If you're planning to use the Lite version of the plugin:
@@ -73,9 +95,9 @@ Web assets are elements such as CSS, JavaScript, Fonts, and image files that mak
 
 No, Asset CleanUp does not do any page caching. It just helps you unload .css and .js that you choose as not needed from specific pages (or all pages). This, combined with an existing caching plugin, will make your website pages load faster and get a higher score in speed checking tools such as GTMetrix (Google PageSpeed and YSlow).
 
-= Has this plugin been tested with other caching / speed booster plugins?
+= Has this plugin been tested with other caching plugins?
 
-Yes, this plugin was tested with W3 Total Cache, WP Rocket and Autoptimize and should work with any caching plugin as any page should be cached only after the page (HTML Source) was rendered and all the enqueueing / dequeueing was already completed (from either the plugins or the theme).
+Yes, this plugin was tested with W3 Total Cache, WP Rocket and WP Fastest Caching and should work with any caching plugin as any page should be cached only after the page (HTML Source) was rendered and all the enqueueing / dequeueing was already completed (from either the plugins or the theme). Asset CleanUp comes with minify/combine files feature. Please do not also enable the same feature on a caching plugin. Example: If you already minified CSS/JS files with Asset CleanUp, do not enable Minify CSS/JS in WP Rocket or other caching plugins.
 
 = I've noticed scripts and styles that are loaded on the page, but they do not show in the "Asset CleanUp" list when editing the page or no assets are showing at all. Why is that? =
 
@@ -95,9 +117,9 @@ You can get access to more features, priority support and automatic updates by <
 
 = jQuery and jQuery Migrate are often loading on pages/post. Are they always needed? =
 
-Well known jQuery library is being used by many themes and plugins so it's recommended to keep it on. jQuery Migrate was created to simplify the transition from older versions of jQuery. It restores deprecated features and behaviors so that older code will still run properly on jQuery 1.9 and later.
+The known jQuery library is being used by many themes and plugins so it's recommended to keep it on. jQuery Migrate was created to simplify the transition from older versions of jQuery. It restores deprecated features and behaviors so that older code will still run properly on jQuery 1.9 and later.
 
-However, there are cases when you might not need jQuery at all in a page. If that's the case, feel free to unload it. Make sure you properly test the page afterwards, including testing it for mobile view.
+However, there are cases when you might not need jQuery at all on a page. If that's the case, feel free to unload it. Make sure you properly test the page afterward, including testing it for mobile view.
 
 = Is the plugin working with WordPress Multisite Network? =
 
@@ -111,33 +133,81 @@ The plugin makes AJAX calls to retrieve the data from the front-end page with 10
 
 - There could be a conflict between plugins or your theme and something is interfering with the script that is retrieving the assets
 
-- You are loading the WordPress Dashboard through HTTPS, but you are forcing the front-end to load via HTTP. Although Asset CleanUp auto-corrects the retrieval URL (e.g. if you're logged in the Dashboard securely via HTTPS, it will attempt to fetch the assets through HTTPS too), there could be cases where another plugin or .htaccess forces a HTTP connection only for the public view. Due to Same Origin Policy (read more here: https://developer.mozilla.org/En/Same_origin_policy_for_JavaScript), you can't make plain HTTP AJAX calls from HTTPS connections. If that's the case, try to enable "WP Remote POST" as a retrieval method in the plugin's settings if you want to manage the assets in the Dashboard.
+- You are loading the WordPress Dashboard through HTTPS, but you are forcing the front-end to load via HTTP. Although Asset CleanUp auto-corrects the retrieval URL (e.g. if you're logged in the Dashboard securely via HTTPS, it will attempt to fetch the assets through HTTPS too), there could be cases where another plugin or .htaccess forces an HTTP connection only for the public view. Due to Same Origin Policy (read more here: https://developer.mozilla.org/En/Same_origin_policy_for_JavaScript), you can't make plain HTTP AJAX calls from HTTPS connections. If that's the case, try to enable "WP Remote POST" as a retrieval method in the plugin's settings if you want to manage the assets in the Dashboard.
 
 - You're using plugins such as Wordfence that block the AJAX request. At this time, if that's the case, it's best to enable managing assets in the front-end view (Settings).
 
-In this case, it's advisable to enable "Manage in the Front-end?" in "Settings" of "Asset CleanUp", thus making the list to show at the bottom of the posts, pages and front-page only for the logged in users with admin privileges.
+In this case, it's advisable to enable "Manage in the Front-end?" in "Settings" of "Asset CleanUp", thus making the list to show at the bottom of the posts, pages, and front-page only for the logged in users with admin privileges.
 
 Although I've written the code to ensure maximum compatibility, there are factors which are not up to the quality of the plugin that could interfere with it.
-In case the assets are not loading for you, please write me on the forum and I will be happy to assist you!
+In case the assets are not loading for you, please write to me on the forum and I will be happy to assist you!
 
 = I do not know or I'm not sure which assets to unload on my pages. What should I do? =
 
 With the recently released "Test Mode" feature, you can safely unload assets on your web pages without affecting the pages' functionality for the regular visitors. It will unload CSS & JavaScript files that you selected ONLY for yourself (logged-in administrator). That's recommended in case you have any doubts about whether you should applying a specific setting or unload any asset. Once you've been through the trial and error and your website is lighter, you can deactivate "Test Mode", clear cache (if using a caching plugin) and the changes will apply for everyone. Then, test the page speed score of your website :)
 
 == Screenshots ==
-1. When editing a post/page (custom post type as well) a meta box will load with the asset list
-2. Styles (.CSS) loaded for the home page when accessing the "Asset CleanUp" Dashboard's menu
-3. Scripts (.JS) loaded for the home page having an alert message when accessing the "Asset CleanUp" Dashboard's menu
-4. Scripts (.JS) are selected for site-wide unload
+1. When editing a page, a meta box will load with the list of loaded CSS & JS files from the active theme & plugins
+2. Plugin Usage Preferences (From "Settings")
+3. Combine CSS & JS files option
+4. Homepage CSS & JS Management (List sorted by location)
 
 == Changelog ==
+= 1.3.2.2 =
+* Security Fix: Updated Freemius SDK to 2.2.4
+* Bug Fix: Within the Dashboard, an error related to an undefined constant in Plugin.php was showing up
+
+= 1.3.2.1 =
+* Prevent AJAX calls from triggering to retrieve asset list when a new post/page is created as the CSS/JS files should only be fetched when after the post/page is published
+* Improved the PHP code to use fewer resources on checking specific IF conditions
+* Added introduction to the "Settings" area about how the plugin is working to give a clear understanding of what needs to be done to optimize the pages
+* Bug Fix: Prevent CSS files containing "@import" from getting combined (they remain minified) to prevent breaking the layout
+* Bug Fix: "Do not minify JS files on this page" checkbox from the side meta box (edit post/page area) wasn't kept as selected after "Update" button was used
+* Bug Fix: Avoid PHP notice errors in case arrays that do not always have specific keys are checked
+* Security Fix: Updated Freemius SDK to its latest version
+
+= 1.3.2 =
+* Minify/Combine JS files & HEAD CleanUp features are now available in the Lite version
+
+= 1.3.1 =
+* CSS Files within <body> are also combined just like the ones from <head>
+* Offer the option to clear the CSS/JS caching even if CSS/JS Minify/Combine options were deactivated
+* Bug Fix: Old links to the manage homepage page from the admin bar were updated with the new ones
+* Bug Fix: On some WordPress setups, the path to the CSS background image URL after combination was updated incorrectly
+
+= 1.3 =
+* New Feature: Minify CSS
+* Bug Fix: Make sure no 500 errors are returned on save settings or save post when the wrong caching directory is read
+
+= 1.2.9.9 =
+* Bug Fix: Side "Asset CleanUp: Options" meta box was not showing in the edit page/post within the Dashboard view
+
+= 1.2.9.8 =
+* New Feature: "Asset CleanUp: Options" side meta box showing options to disable plugin functionality for posts, pages, and custom post types; Ideal to use with the "Preview" feature if you wish to see how a page loads/looks before publishing any changes
+
+= 1.2.9.7 =
+* Bug Fix: Prevent fatal error from showing in PHP 5.4 when the plugin was updated
+* Re-organised the plugin's links within the Dashboard to make it easier to navigate through
+* "Combine CSS files into one" feature update - CSS files having media="print" or media="only screen and (max-width: 768px)" (and so on) are not combined
+* "Combine JS files into fewer ones" feature update - jQuery and jQuery Migrate are combined as a single group (not together with any other files); if just jQuery is loaded (without jQuery Migrate), it will not be added to any group and load independently
+
+= 1.2.9.6 =
+* Bug Fix: After post/page update, a fatal error was showing on calling a method that doesn't exist
+
+= 1.2.9.5 =
+* Changed the way the combined loaded CSS files caching is stored (/wp-content/cache/asset-cleanup/); Transients are not used anymore to avoid having too many records in the options table
+* Clear cache now keeps the old merge CSS files in the "cache/asset-cleanup" folder in case a cached page still makes reference to any of the files
+
+= 1.2.9.4 =
+* Bug Fix: If PHP version is lower than 7, an error is shown when fetching the plugins' icons in the background to be shown on the management list (when sorted by the assets' location)
+
 = 1.2.9.3 =
 * New sorting by location (default) option in "Assets List Layout" setting
 * Cache transients are also cleared when resetting everything
 * Changed plugin's default settings ("Inline code associated with this handle" is contracted by default)
 
 = 1.2.9.2 =
-* WooCommerce & WP Rocket Compatibility - Bug Fix: When both WooCommerce and WP Rocket are active and an administrator user is logged-in and tries to place an order, the "Sorry, your session is expired." message is returned
+* WooCommerce & WP Rocket Compatibility - Bug Fix: When both WooCommerce and WP Rocket are active and an administrator user is logged in and tries to place an order, the "Sorry, your session is expired." message is returned
 
 = 1.2.9.1 =
 * PHP 5.4+ minimum required to use the plugin
@@ -146,7 +216,7 @@ With the recently released "Test Mode" feature, you can safely unload assets on 
 * Made "Settings" as the default page where you (the administrator user) is redirected when activating the plugin for the first time
 
 = 1.2.9 =
-* Added "System Info" to "Tools" page to fetch information about the WordPress environment in case something needs debugged
+* Added "System Info" to "Tools" page to fetch information about the WordPress environment in case something needs debugging
 * Added "Getting Started" page to make things easier for anyone who doesn't understand how the plugin works
 
 = 1.2.8.9 =
@@ -188,7 +258,7 @@ With the recently released "Test Mode" feature, you can safely unload assets on 
 * Added option to expand / contract "Styles" and "Scripts" management list and ability to choose the initial state on page load via plugin's "Settings" page
 
 = 1.2.8.1 =
-* Added "Test Mode" option which will unload assets only if the user is logged in as administrator and has capability of activating plugins.
+* Added "Test Mode" option which will unload assets only if the user is logged in as administrator and has the capability of activating plugins.
 * This is good for debugging in case one might worry that a CSS/JavaScript file could be unloaded by mistake and break the website for the regular (non-logged in) users.
 * Once the page loads fine and all looks good, the "Test Mode" can be disabled so the visitors will load the lighter version of the page.
 
@@ -243,7 +313,7 @@ With the recently released "Test Mode" feature, you can safely unload assets on 
 * Important: If you use the premium extension, please upgrade to 1.0.3
 * Removed "WP" from the plugin's title
 * Prevent the LITE plugin from loading if the PRO version is enabled as loading both plugins is not relevant anymore
-* Avoided loading Asset CleanUp's own CSS and JS within the Dashboard view as they are irrelevant since the're only loaded for the admins that manage the plugin
+* Avoided loading Asset CleanUp's own CSS and JS within the Dashboard view as they are irrelevant since they're only loaded for the admins that manage the plugin
 
 = 1.2.6.7 =
 * Bug Fix: "Unload on All Pages of [post type here] post type" was not showing within the Dashboard view
@@ -319,7 +389,7 @@ With the recently released "Test Mode" feature, you can safely unload assets on 
 * Bug Fix: Sometimes, due to website caching services/plugins, the HTML comments are removed needed from getting the assets
 
 = 1.1.4.6 =
-* Now the asset list can be updated on the front-end (below the loaded page, post, front page) if feature is enabled in the "Settings"
+* Now the asset list can be updated on the front-end (below the loaded page, post, front page) if the feature is enabled in the "Settings"
 * The assets URL is now clickable and loads the CSS/JS file in a new tab
 
 = 1.1.4.5 =

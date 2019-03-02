@@ -12,7 +12,7 @@ class AdminBar
 	 */
 	public function __construct()
 	{
-		add_action( 'plugins_loaded', array( $this, 'topBar' ) );
+		add_action( 'init', array( $this, 'topBar' ) );
 	}
 
 	/**
@@ -51,15 +51,13 @@ class AdminBar
 			'href'   => admin_url( 'admin.php?page=' . WPACU_PLUGIN_ID . '_settings')
 		));
 
-		if (Main::instance()->settings['combine_loaded_css']) {
-			$wp_admin_bar->add_menu( array(
-				'parent' => 'assetcleanup-parent',
-				'id'     => 'assetcleanup-clear-all-css-cache',
-				'title'  => 'Clear Combined CSS Cache',
-				'href'   => wp_nonce_url( admin_url( 'admin-post.php?action=assetcleanup_clear_assets_cache' . $goBackToCurrentUrl ),
-					'purge_css_cache' )
-			) );
-		}
+		$wp_admin_bar->add_menu( array(
+			'parent' => 'assetcleanup-parent',
+			'id'     => 'assetcleanup-clear-css-js-files-cache',
+			'title'  => 'Clear CSS/JS Files Cache',
+			'href'   => wp_nonce_url( admin_url( 'admin-post.php?action=assetcleanup_clear_assets_cache' . $goBackToCurrentUrl ),
+				'assetcleanup_clear_assets_cache' )
+		) );
 
 		// Only trigger in the front-end view
 		if (! is_admin()) {
@@ -67,7 +65,7 @@ class AdminBar
 				// Not on the home page
 				$homepageManageAssetsHref = Main::instance()->settings['frontend_show']
 					? get_site_url().'#wpacu_wrap_assets'
-					: admin_url( 'admin.php?page=' . WPACU_PLUGIN_ID . '_home_page' );
+					: admin_url( 'admin.php?page=' . WPACU_PLUGIN_ID . '_assets_manager&wpacu_for=homepage' );
 
 				$wp_admin_bar->add_menu(array(
 					'parent' => 'assetcleanup-parent',
@@ -83,7 +81,7 @@ class AdminBar
 						'parent' => 'assetcleanup-parent',
 						'id'     => 'assetcleanup-homepage',
 						'title'  => 'Manage Page Assets',
-						'href'   => admin_url( 'admin.php?page=' . WPACU_PLUGIN_ID . '_home_page' )
+						'href'   => admin_url( 'admin.php?page=' . WPACU_PLUGIN_ID . '_assets_manager&wpacu_for=homepage' )
 					) );
 				}
 			}
@@ -101,7 +99,7 @@ class AdminBar
 		$wp_admin_bar->add_menu(array(
 			'parent' => 'assetcleanup-parent',
 			'id'     => 'assetcleanup-bulk-unloaded',
-			'title'  => 'Bulk Unloaded',
+			'title'  => 'Bulk Unloads',
 			'href'   => admin_url( 'admin.php?page=' . WPACU_PLUGIN_ID . '_bulk_unloads')
 		));
 
@@ -113,20 +111,22 @@ class AdminBar
 			'meta'   => array('target' => '_blank')
 		));
 
-		/*
-		if (Main::instance()->settings['test_mode']) {
-			$wp_admin_bar->add_menu(array(
-				'parent' => 'assetcleanup-parent',
-				'id'     => 'assetcleanup-test-mode-info',
-				'title'  => 'With "Test Mode" on, anything will be applied only for your view.',
-			));
+		//removeIf(development)
+			/*
+			if (Main::instance()->settings['test_mode']) {
+				$wp_admin_bar->add_menu(array(
+					'parent' => 'assetcleanup-parent',
+					'id'     => 'assetcleanup-test-mode-info',
+					'title'  => 'With "Test Mode" on, anything will be applied only for your view.',
+				));
 
-			$wp_admin_bar->add_menu(array(
-				'parent' => 'assetcleanup-parent',
-				'id'     => 'assetcleanup-test-mode-info-2',
-				'title'  => 'The visitors will see the pages as if the plugin is disabled. <a target="_blank" style="display:inline-block; text-decoration: underline; padding-left: 5px;" href="https://assetcleanup.com/docs/">More</a>',
-			));
-		}
-		*/
+				$wp_admin_bar->add_menu(array(
+					'parent' => 'assetcleanup-parent',
+					'id'     => 'assetcleanup-test-mode-info-2',
+					'title'  => 'The visitors will see the pages as if the plugin is disabled. <a target="_blank" style="display:inline-block; text-decoration: underline; padding-left: 5px;" href="https://assetcleanup.com/docs/">More</a>',
+				));
+			}
+			*/
+		//endRemoveIf(development)
 	}
 }
